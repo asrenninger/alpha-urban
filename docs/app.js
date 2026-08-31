@@ -598,10 +598,20 @@
     finale: "1,000 CITIES · 2024",
   };
 
+  // The masthead names a city only while the walk is at one: neutral on the
+  // hero and outro, per-scene once a step card is on screen.
+  let stepsOnScreen = 0;
+
+  function updateContext(name) {
+    const contextEl = document.getElementById("masthead-context");
+    if (!contextEl) return;
+    contextEl.textContent =
+      stepsOnScreen > 0 ? CONTEXTS[name] || "SINGAPORE · 2024" : "ALPHAEARTH · 2024";
+  }
+
   function updateChrome(name) {
     captionEl.textContent = CAPTIONS[name] || "";
-    const contextEl = document.getElementById("masthead-context");
-    if (contextEl) contextEl.textContent = CONTEXTS[name] || "SINGAPORE · 2024";
+    updateContext(name);
     if (name === "embmap") {
       legendItems([["A39 → red", "#f00"], ["A62 → green", "#0f0"], ["A08 → blue", "#00f"]]);
     } else if (name === "ndvi" || name === "ndviw") {
@@ -913,14 +923,22 @@
         const n = s.querySelector(".step-index");
         if (n) n.textContent = `${String(i + 1).padStart(2, "0")} / ${steps.length}`;
       });
+      const visibleSteps = new Set();
       const io = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
+              visibleSteps.add(entry.target);
               steps.forEach((s) => s.classList.remove("active"));
               entry.target.classList.add("active");
               const next = entry.target.dataset.scene;
+              stepsOnScreen = visibleSteps.size;
               if (next !== scene) beginTransition(next);
+              else updateContext(scene);
+            } else {
+              visibleSteps.delete(entry.target);
+              stepsOnScreen = visibleSteps.size;
+              updateContext(scene);
             }
           });
         },
