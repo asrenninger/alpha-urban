@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Inside the field — AlphaUrban</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="masthead">
+  <span class="mark"></span>
+  <span class="brand">ALPHAURBAN · INSIDE THE FIELD</span>
+  <span class="context" id="masthead-context">SINGAPORE · 2024</span>
+  <!-- The manuscript class's page-progress sphere (alphaurbanism.cls:95-146),
+       re-shaded on canvas; fills with scroll through the 18 scenes. -->
+  <canvas id="progress-sphere" aria-hidden="true"></canvas>
+</header>
+
+<main>
+  <section class="hero">
+    <p class="kicker">ONE FIELD · 36,864 CELLS · 64 NUMBERS EACH</p>
+    <h1>What does a<br />planetary embedding<br />keep of one city?</h1>
+    <p class="lede">
+      AlphaEarth compresses every place on Earth into 64 numbers, and it
+      separates one city from another easily. This walk follows one
+      36,864-cell field — Singapore, Johor Bahru and Batam — into that
+      representation to see what the same 64 numbers hold of the
+      differences inside a single city.
+    </p>
+    <p class="hero-note">One field in one year, described cell by cell,
+      then set among 1,000 cities measured the same way.</p>
+    <div class="hero-stats">
+      <span>51 × 51 KM</span>
+      <span>36,864 EQUAL-AREA CELLS</span>
+      <span>265 M CELLS · 2024</span>
+    </div>
+  </section>
+
+  <section class="scrolly" id="scrolly">
+    <div class="sticky">
+      <canvas id="field"></canvas>
+      <div class="stage-caption" id="stage-caption"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="steps">
+
+      <article class="step" data-scene="embmap">
+        <p class="step-index">01 / 10</p>
+        <h2>The field in the embedding's own colours.</h2>
+        <p>No land-cover legend was used to draw this map. Each cell takes
+        its colour from three of
+        AlphaEarth's own 64 dimensions, and a geography no one labelled comes
+        back on its own — coastlines, forest, the built strip along the
+        strait. The rest of the walk asks how much structure the same 64
+        dimensions show inside that built strip.</p>
+        <p class="fine">Components A39, A62 and A08 mapped to red, green and
+        blue — the canonical city view — display-stretched over
+        land.</p>
+      </article>
+
+      <article class="step" data-scene="map">
+        <p class="step-index">02 / 10</p>
+        <h2>Seven land-cover classes across three countries.</h2>
+        <p>The same field under a human legend: Singapore in the centre,
+        Johor Bahru across the strait to the north, Batam to the south. ESA
+        WorldCover names seven kinds of land here, and the same built and
+        forest classes appear on all three sides of the strait.</p>
+      </article>
+
+      <article class="step" data-scene="cartogram">
+        <p class="step-index">03 / 10</p>
+        <h2>The land account.</h2>
+        <p>Set the permanent water aside — 14,962 cells of strait and sea —
+        and pack what remains by class. The land becomes an account: forest
+        and built land dominate, and over a third of the land cells are
+        built. Those built cells are what the rest of the walk follows.</p>
+      </article>
+
+      <article class="step" data-scene="sphere">
+        <p class="step-index">04 / 10</p>
+        <h2>Every cell becomes 64 numbers.</h2>
+        <p>AlphaEarth replaces each cell with a unit vector — a direction on
+        a 64-dimensional sphere. Shown here through one fixed 3-D projection,
+        the broad land-cover classes separate on their own.</p>
+        <p class="fine">Positions: fixed PCA display projection, fit on land
+        cells. Every quoted number is computed in the native 64 dimensions.</p>
+      </article>
+
+      <article class="step" data-scene="ndvi">
+        <p class="step-index">05 / 10</p>
+        <h2>Greenness organises the field.</h2>
+        <p>Recolour the same points by measured vegetation (NDVI) and the
+        cloud reads as one smooth gradient: the embedding's dominant axis
+        tracks how green the land is. Vegetation is a reasonable thing for a
+        planetary representation to encode strongly, but it does not
+        separate one part of a city from another.</p>
+      </article>
+
+      <article class="step" data-scene="ndviw">
+        <p class="step-index">06 / 10</p>
+        <h2>The greenness account.</h2>
+        <p>Pack the land cells again, this time ordered by measured NDVI
+        rather than by class. The field becomes one continuous gradient from
+        bare and built to dense forest, with no natural break where "city"
+        ends. Where the legend puts a boundary, the measured gradient runs
+        straight through.</p>
+      </article>
+
+      <article class="step" data-scene="city">
+        <p class="step-index">07 / 10</p>
+        <h2>Now look inside the built class.</h2>
+        <p>Built cells differ widely among themselves. Recoloured by built
+        volume, they run from low sheds and terraces to the dense cores of
+        the CBD and the HDB towns — differences a city plans around, and
+        ones a vegetation index cannot express.</p>
+      </article>
+
+      <article class="step" data-scene="volw">
+        <p class="step-index">08 / 10</p>
+        <h2>The built-volume account.</h2>
+        <p>Order just the 8,293 built cells by their built volume, from low
+        sheds and terraces up to the dense cores. A single class in the land
+        legend contains the full range of urban density, and that
+        within-class variation is what the audit asks the embedding to
+        carry.</p>
+        <p class="fine">Colour is square-root-scaled to the built 98th
+        percentile, so the gradient shows order, not the shape of the
+        distribution.</p>
+      </article>
+
+      <article class="step" data-scene="audit">
+        <p class="step-index">09 / 10</p>
+        <h2>How much of that does the field keep?</h2>
+        <p>In the native 64 dimensions, the entire built class occupies a
+        pocket about as wide as any single natural class, and the mean
+        directions of low-rise and high-rise Singapore sit closer together
+        than forest sits to water. Forms that differ sharply on the ground
+        occupy neighbouring directions here.</p>
+        <div class="metric-cards" id="audit-metrics"></div>
+        <p class="fine">Descriptive geometry for one field and one year,
+        and no verdict is drawn from it.</p>
+      </article>
+
+      <article class="step" data-scene="return">
+        <p class="step-index">10 / 10</p>
+        <h2>Back to the map.</h2>
+        <p>From above, the built area reads as one continuous fabric. Inside
+        the representation, the differences separating one part of that
+        fabric from another are the finest in the field, and no global label
+        set records them at this scale. The audit therefore reads the
+        representation itself.</p>
+      </article>
+
+      <article class="step" data-scene="mx_map">
+        <p class="step-index">11 / 18</p>
+        <h2>The same walk in Mexico City.</h2>
+        <p>Mexico City is a monocentric metropolis in a high basin, and
+        differs in form from the island city-state in almost every respect.
+        It is walked with the same satellite, the same embedding and the
+        same steps, at double speed.</p>
+      </article>
+
+      <article class="step" data-scene="pair">
+        <p class="step-index">12 / 18</p>
+        <h2>Both cities in a shared projection.</h2>
+        <p>Both fields lift into embedding space through a single shared
+        projection, fit on the land cells of both cities together, so what
+        you compare is the representation and not two camera angles. The
+        broad classes organise both clouds the same way.</p>
+      </article>
+
+      <article class="step" data-scene="frame">
+        <p class="step-index">13 / 18</p>
+        <h2>Leave the cities' own frame.</h2>
+        <p>Every view so far used a projection built to spread one or two
+        cities out. Switch to the frame the planet defines — axes fit on the
+        mean directions of 1,000 cities — and the internal detail of each
+        city gathers into a compact region of the sphere.</p>
+        <p class="fine">Display change only: the cells' 64-D coordinates are
+        identical in both frames.</p>
+      </article>
+
+      <article class="step" data-scene="collapse">
+        <p class="step-index">14 / 18</p>
+        <h2>Each city reduced to one direction.</h2>
+        <p>Take the mean direction of every cell in a city: one point for
+        Singapore, one for Mexico City, 85.6° apart on the embedding sphere.
+        The planetary audit compares cities as these single directions.</p>
+      </article>
+
+      <article class="step" data-scene="globe_continent">
+        <p class="step-index">15 / 18</p>
+        <h2>One thousand cities at once.</h2>
+        <p>Every city now has its point: 1,000 functional urban areas, each
+        reduced to its 2024 mean direction. Coloured by continent, the globe
+        organises immediately, with cities from the same continent falling
+        near one another.</p>
+      </article>
+
+      <article class="step" data-scene="globe_climate">
+        <p class="step-index">16 / 18</p>
+        <h2>Köppen climate separates the cities too.</h2>
+        <p>Recolour the same points by Köppen climate family and the globe
+        reorganises just as cleanly. Much of what separates cities in the
+        embedding is environmental context: the same greenness-and-climate
+        signal that organised the field inside Singapore.</p>
+      </article>
+
+      <article class="step" data-scene="globe_pop">
+        <p class="step-index">17 / 18</p>
+        <h2>Population separates cities less clearly.</h2>
+        <p>Colour by population quintile and the pattern is weaker:
+        megacities and small cities interleave. Environment and geography
+        account for more of the arrangement than the human scale of the
+        settlement does.</p>
+      </article>
+
+      <article class="step" data-scene="finale">
+        <p class="step-index">18 / 18</p>
+        <h2>Cities occupy their own corner of the world.</h2>
+        <p>The grey density behind the points is the rest of the land: 273,410
+        non-city pixels sampled across the planet. Cities cluster away from
+        it, in a region of their own, and sit a median 73.7° apart from one
+        another — while Singapore's own cells spread 37.4° around its mean
+        and Mexico City's 33.9°. The embedding separates cities from the
+        world and from each other by wide margins. What those margins cost
+        the detail inside each city is the open question.</p>
+        <div class="metric-cards" id="globe-metrics"></div>
+        <p class="fine">Descriptive numbers: FUA city support, 2024, equal
+        weight per city. Grey density: non-city terrestrial pixels
+        (GHS-SMOD below 21), same projection and camera as the points.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="outro">
+    <p class="kicker">FROM TWO FIELDS TO ONE THOUSAND</p>
+    <h2>Cities will be read through this field.</h2>
+    <p>Planetary embeddings are built once and used everywhere — for land,
+    water, crops, change, and for cities, whether or not the field holds
+    their detail. In both fields the embedding
+    held cities far apart while each city's interior gathered close, and
+    the same geometry organised all 1,000. What the margin between cities
+    costs the neighbourhoods within them is the question that remains.</p>
+  </section>
+</main>
+
+<footer>
+  <span>AlphaUrban</span>
+  <span>Data: Google AlphaEarth · ESA WorldCover · JRC GHSL · DLR WSF3D · NOAA VIIRS</span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

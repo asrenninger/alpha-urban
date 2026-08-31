@@ -1,0 +1,17 @@
+{
+  "source": "data/atlas_global_exports/alphaurban_global_2024_mass_*.csv",
+  "definition": "terrestrial (WorldCover present, not 80) and GHS-SMOD < 21",
+  "rows_total": 307273,
+  "rows_kept": 273410,
+  "centres": 4096,
+  "kappa": 45.0,
+  "grid": 210,
+  "max_alpha": 0.44,
+  "rear_factor": 0.24,
+  "basis": "PCA on 1,000 city mean directions (FUA city support, 2024)",
+  "camera": {
+    "ax": -0.55,
+    "ay": 0.65
+  },
+  "legacy_signed_square_inverse_applied": false
+}
