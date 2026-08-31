@@ -196,7 +196,7 @@
   })();
 
   const SPHERE_SCENES = {
-    sphere: 1, ndvi: 1, city: 1, audit: 1, frame: 1, collapse: 1,
+    sphere: 1, ndvi: 1, city: 1, audit: 1, frame: 1, dou: 1, collapse: 1,
     globe_continent: 1, globe_climate: 1, globe_pop: 1, finale: 1,
   };
 
@@ -209,6 +209,71 @@
     }
     if (SPHERE_SCENES[name]) return [[stage.cx, stage.cy, GLOBE_R()]];
     return [];
+  }
+
+  // Degree-of-urbanisation vectors (Fig. 1C's gesture: a direction on the
+  // sphere is an arrow from its centre; arrow furniture per
+  // render_si_sphere_context_kde.py:975-996). For each featured city,
+  // lighter arrows run from the sphere centre out to each class's mean
+  // direction; the collapse then keeps only the tips.
+  function drawDouArrows(alpha) {
+    if (alpha <= 0.01 || !v2) return;
+    const R = GLOBE_R();
+    const cities = [
+      { dou: v2.sg.dou, cx: stage.cx, globeIndex: v2.sgIndex, color: rgbHex(SG_COLOR) },
+      { dou: v2.mx.dou, cx: stage.cx, globeIndex: v2.mxIndex, color: rgbHex(MX_COLOR) },
+    ];
+    for (const cityDef of cities) {
+      const xyz = cityDef.dou.xyz;
+      const labels = cityDef.dou.labels;
+      const pts = [];
+      const arr = Int16Array.from(xyz);
+      for (let k = 0; k < labels.length; k++) {
+        const o = [0, 0, 0];
+        sphPos(arr, k, cityDef.cx, stage.cy, R, o);
+        pts.push(o.slice());
+      }
+      function vectorArrow(tip, col, front, shaft, headScale, alphaScale) {
+        const dx = tip[0] - cityDef.cx, dy = tip[1] - stage.cy;
+        const len = Math.hypot(dx, dy) || 1;
+        const ux = dx / len, uy = dy / len;
+        const head = Math.max(10, R * 0.085) * headScale;
+        ctx.globalAlpha = alpha * (front ? 1 : 0.32) * alphaScale;
+        // faint ink halo beneath, then the coloured shaft from the centre
+        for (const pass of [0, 1]) {
+          ctx.strokeStyle = pass === 0 ? "rgba(23, 32, 51, 0.28)" : col;
+          ctx.lineWidth = pass === 0 ? shaft + 1.3 : shaft;
+          ctx.beginPath();
+          ctx.moveTo(cityDef.cx, stage.cy);
+          ctx.lineTo(tip[0] - ux * head * 0.85, tip[1] - uy * head * 0.85);
+          ctx.stroke();
+        }
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        ctx.moveTo(tip[0], tip[1]);
+        ctx.lineTo(tip[0] - ux * head - uy * head * 0.42, tip[1] - uy * head + ux * head * 0.42);
+        ctx.lineTo(tip[0] - ux * head + uy * head * 0.42, tip[1] - uy * head - ux * head * 0.42);
+        ctx.closePath();
+        ctx.fill();
+      }
+      // thinner, lighter arrow per degree-of-urbanisation class, in the
+      // city's own colour — thickness alone separates them from the mean
+      for (let k = 0; k < pts.length; k++) {
+        vectorArrow(pts[k], cityDef.color, pts[k][2] >= 0, 1.5, 0.72, 0.5);
+      }
+      // the all-urban mean: one much bolder vector to the city's globe
+      // point — exactly where the collapse lands
+      const cityTip = [0, 0, 0];
+      sphPos(v2.globeArr, cityDef.globeIndex, cityDef.cx, stage.cy, R, cityTip);
+      vectorArrow(cityTip, cityDef.color, cityTip[2] >= 0, 3.6, 1.55, 0.95);
+      // centre hub
+      ctx.globalAlpha = alpha * 0.85;
+      ctx.fillStyle = "#172033";
+      ctx.beginPath();
+      ctx.arc(cityDef.cx, stage.cy, 2.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
   }
 
   // The world-context KDE (baked by site/prepare_world_kde.py with the
@@ -403,10 +468,11 @@
         sphPos(v2.sgPair, k, stage.cx - stage.mapSize * 0.28, stage.cy, stage.mapSize * 0.27, tmp);
         const depth = (tmp[2] + 1) / 2;
         setMark(i, tmp[0], tmp[1], wcColors[wc], isWater ? 0 : 0.22 + depth * 0.6, 0.5 + depth * 0.6);
-      } else if (name === "frame") {
+      } else if (name === "frame" || name === "dou") {
         sphPos(v2.sgGlobal, k, stage.cx, stage.cy, GLOBE_R(), tmp);
         const depth = (tmp[2] + 1) / 2;
-        setMark(i, tmp[0], tmp[1], SG_COLOR, isWater ? 0 : 0.2 + depth * 0.5, 0.5 + depth * 0.6);
+        const dim = name === "dou" ? 0.45 : 1;
+        setMark(i, tmp[0], tmp[1], SG_COLOR, isWater ? 0 : (0.2 + depth * 0.5) * dim, 0.5 + depth * 0.6);
       } else if (name === "collapse") {
         sphPos(v2.globeArr, v2.sgIndex, stage.cx, stage.cy, GLOBE_R(), tmp);
         setMark(i, tmp[0], tmp[1], SG_COLOR, isWater ? 0 : 0.06, 0.5);
@@ -427,10 +493,11 @@
         sphPos(v2.mxPair, k, stage.cx + stage.mapSize * 0.28, stage.cy, stage.mapSize * 0.27, tmp);
         const depth = (tmp[2] + 1) / 2;
         setMark(i, tmp[0], tmp[1], wcColors[wc], isWater ? 0 : 0.22 + depth * 0.6, 0.5 + depth * 0.6);
-      } else if (name === "frame") {
+      } else if (name === "frame" || name === "dou") {
         sphPos(v2.mxGlobal, k, stage.cx, stage.cy, GLOBE_R(), tmp);
         const depth = (tmp[2] + 1) / 2;
-        setMark(i, tmp[0], tmp[1], MX_COLOR, isWater ? 0 : 0.2 + depth * 0.5, 0.5 + depth * 0.6);
+        const dim = name === "dou" ? 0.45 : 1;
+        setMark(i, tmp[0], tmp[1], MX_COLOR, isWater ? 0 : (0.2 + depth * 0.5) * dim, 0.5 + depth * 0.6);
       } else if (name === "collapse") {
         sphPos(v2.globeArr, v2.mxIndex, stage.cx, stage.cy, GLOBE_R(), tmp);
         setMark(i, tmp[0], tmp[1], MX_COLOR, isWater ? 0 : 0.06, 0.5);
@@ -549,6 +616,9 @@
       ctx.fillRect(px[i] - s / 2, py[i] - s / 2, s, s);
     }
     ctx.globalAlpha = 1;
+
+    if (scene === "dou") drawDouArrows(e);
+    else if (prevScene === "dou" && e < 1) drawDouArrows(1 - e);
   }
 
   // ---- chrome ------------------------------------------------------------
@@ -567,6 +637,7 @@
     mx_map: "MEXICO CITY · 110 × 110 KM · 576 M CELLS · ESA WORLDCOVER 2021",
     pair: "ONE SHARED PROJECTION FIT ON BOTH CITIES' LAND CELLS · SINGAPORE LEFT · MEXICO CITY RIGHT",
     frame: "THE GLOBAL FRAME · PROJECTION FIT ON 1,000 CITY MEAN DIRECTIONS · COLOURED BY CITY",
+    dou: "EACH CLOUD SUMMARISED AS VECTORS · BOLD: ALL-URBAN MEAN · THIN: PER URBAN CLASS",
     collapse: "EACH CITY REDUCED TO ITS MEAN DIRECTION · FUA CITY SUPPORT · 2024",
     globe_continent: "1,000 CITY MEAN DIRECTIONS · COLOURED BY CONTINENT",
     globe_climate: "1,000 CITY MEAN DIRECTIONS · COLOURED BY KÖPPEN CLIMATE FAMILY",
@@ -589,6 +660,7 @@
 
   const CONTEXTS = {
     mx_map: "MEXICO CITY · 2024",
+    dou: "TWO CITIES · 2024",
     pair: "TWO CITIES · 2024",
     frame: "TWO CITIES · 2024",
     collapse: "TWO CITIES · 2024",
@@ -627,7 +699,7 @@
         ["dense core", rgbHex(VOLUME_RAMP[2])],
         ["not built / no volume data", rgbHex(FADE)],
       ]);
-    } else if (name === "frame" || name === "collapse") {
+    } else if (name === "dou" || name === "frame" || name === "collapse") {
       legendItems([["Singapore", rgbHex(SG_COLOR)], ["Mexico City", rgbHex(MX_COLOR)]]);
     } else if (name === "globe_continent") {
       const hexes = cutColors("continent");
