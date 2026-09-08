@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "city_pairs_tested_in_both_orders": 56,
+  "colour_modes": 5,
+  "checks": [
+    "two-click selection",
+    "on-demand payloads",
+    "scroll to spheres and back",
+    "same geometry across colour modes",
+    "both cities visibly recoloured",
+    "invalid embedding masks",
+    "all eight cities and all 28 shared projections",
+    "Melbourne measured layers",
+    "selection race",
+    "load failure and retry",
+    "selection reset",
+    "reduced motion"
+  ],
+  "initial_pair_payload_bytes": 1179648
+}

@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "cities": 8,
+  "pairs": 28,
+  "totals": {
+    "locations": 294912,
+    "valid_embeddings": 277326,
+    "ndvi": 277326,
+    "volume": 54468
+  },
+  "preexisting_pair_geometry_unchanged": 21
+}

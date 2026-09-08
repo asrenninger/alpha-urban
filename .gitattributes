@@ -1,0 +1,2 @@
+# Packed pixel arrays must remain byte-for-byte identical across checkouts.
+*.bin binary

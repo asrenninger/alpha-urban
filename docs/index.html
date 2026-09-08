@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Inside the field — AlphaUrban</title>
 <link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="comparison.css" />
 </head>
 <body>
 <header class="masthead">
@@ -251,15 +252,77 @@
     </div>
   </section>
 
-  <section class="outro">
-    <p class="kicker">FROM TWO FIELDS TO ONE THOUSAND</p>
-    <h2>Cities will be read through this field.</h2>
-    <p>Planetary embeddings are built once and used everywhere — for land,
-    water, crops, change, and for cities, whether or not the field holds
-    their detail. In both fields the embedding
-    held cities far apart while each city's interior gathered close, and
-    the same geometry organised all 1,000. What the margin between cities
-    costs the neighbourhoods within them is the question that remains.</p>
+  <section class="city-atlas" id="city-atlas" aria-labelledby="atlas-title">
+    <div class="atlas-intro">
+      <p class="kicker">INSIDE TWO OF THOSE CITIES</p>
+      <h2 id="atlas-title">Pick a city.<br />Then pick another.</h2>
+      <p>Each point on the sphere stands for a city. Open two of them
+        and follow their pixels from the map into the embedding.</p>
+    </div>
+    <div class="atlas-selection">
+      <p id="pair-prompt" role="status">Loading city views…</p>
+      <button id="pair-reset" type="button" hidden>Start again</button>
+    </div>
+    <div id="city-tiles" class="city-tiles" role="group" aria-label="Choose two cities"></div>
+    <p class="atlas-note">Eight city fields available to explore. The tiles use the same three
+      embedding dimensions and colour scale. Each field’s width is shown below its name.</p>
+    <noscript><p>This comparison needs JavaScript to load and move the city pixels.</p></noscript>
+  </section>
+
+  <section id="city-comparison" class="city-comparison" aria-labelledby="comparison-title" hidden>
+    <div class="comparison-stage">
+      <div class="comparison-heading">
+        <div>
+          <p class="kicker" id="comparison-phase">01 / 02 · ON THE MAP</p>
+          <h2 id="comparison-title" tabindex="-1">Two cities, in the embedding’s own colours.</h2>
+        </div>
+        <button type="button" id="choose-pair">Choose another pair <span aria-hidden="true">↑</span></button>
+      </div>
+      <div class="comparison-palette">
+        <p class="map-colours">A39 → red &nbsp; A62 → green &nbsp; A08 → blue</p>
+        <fieldset id="comparison-controls" disabled>
+          <legend>Colour both cities by</legend>
+          <div class="colour-options">
+            <label><input type="radio" name="comparison-colour" value="rgb" checked /><span>False colour</span></label>
+            <label><input type="radio" name="comparison-colour" value="smod" /><span>Urbanisation</span></label>
+            <label><input type="radio" name="comparison-colour" value="ndvi" /><span>NDVI</span></label>
+            <label><input type="radio" name="comparison-colour" value="worldcover" /><span>Land cover</span></label>
+            <label><input type="radio" name="comparison-colour" value="volume" /><span>Building volume</span></label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="comparison-fields">
+        <figure>
+          <figcaption><span class="city-letter">A</span> <span id="comparison-name-a"></span><small id="comparison-meta-a"></small></figcaption>
+          <div class="city-canvas-wrap"><canvas id="comparison-canvas-a" role="img"></canvas></div>
+        </figure>
+        <figure>
+          <figcaption><span class="city-letter">B</span> <span id="comparison-name-b"></span><small id="comparison-meta-b"></small></figcaption>
+          <div class="city-canvas-wrap"><canvas id="comparison-canvas-b" role="img"></canvas></div>
+        </figure>
+      </div>
+      <div id="comparison-legend" class="comparison-legend" aria-live="polite"></div>
+      <div class="comparison-caption">
+        <p id="comparison-note">The same colours mean the same values in both fields. Pale blue marks water.</p>
+        <a href="#city-comparison" id="comparison-advance">Scroll to follow the pixels <span aria-hidden="true">↓</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="comparison-methods" id="comparison-methods" hidden>
+    <details>
+      <summary>About these city fields</summary>
+      <p>These are rectangular fields around each city, with 192 × 192 locations per field.
+        Their widths differ, so the maps have different geographic scales. All locations
+        with valid embeddings are shown, including water. Missing measurements appear grey.</p>
+      <p>Each pair uses a single three-dimensional projection fitted to all valid land
+        embeddings in both fields, with the same axes and camera on both sides.
+        The spheres show a projection of the 64-dimensional representation;
+        distances on screen are not distances in the full embedding.</p>
+      <p>Embeddings and Sentinel-2 NDVI: 2024. ESA WorldCover: 2021. GHSL Degree of Urbanisation:
+        2020. Building volume: DLR WSF3D. NDVI and volume use a common colour scale across
+        all eight fields; volume is square-root-scaled to the pooled built-cell 98th percentile.</p>
+    </details>
   </section>
 </main>
 
@@ -269,5 +332,6 @@
 </footer>
 
 <script src="app.js"></script>
+<script src="comparison.js"></script>
 </body>
 </html>
