@@ -4,6 +4,8 @@ const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),asse
 const root=path.resolve(__dirname,'../docs');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const source=fs.readFileSync(path.join(root,'comparison.js'),'utf8');
+const statisticsSource=fs.readFileSync(path.join(root,'comparison-statistics.js'),'utf8');
+const statistics=JSON.parse(fs.readFileSync(path.join(root,'data/comparison/statistics.json')));
 const dataRoot=process.env.COMPARISON_DATA_ROOT?path.resolve(process.env.COMPARISON_DATA_ROOT):path.join(root,'data/comparison');
 const manifest=JSON.parse(fs.readFileSync(path.join(dataRoot,'manifest.json')));
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
@@ -38,12 +40,12 @@ function harness(reduced=false){
   const stage=new Element();stage.className='comparison-stage';ids.get('city-comparison').append(stage);ids.get('city-comparison').offsetHeight=2250;
   for(const key of ['a','b']){const wrap=new Element();wrap.append(ids.get('comparison-canvas-'+key));}
   const emit=k=>(events[k]||[]).forEach(f=>f());
-  const ctx={console:{log(){},error:(...a)=>errors.push(a)},document:{getElementById:id=>ids.get(id),querySelectorAll:s=>all.filter(e=>matches(e,s)),createElement:t=>new Element(t),createTextNode:t=>({textContent:t})},Uint8Array,Uint16Array,Int16Array,Float32Array,Uint8ClampedArray,Map,Set,Array,Object,Math,Number,String,Promise,Error,JSON,matchMedia:()=>({matches:reduced}),devicePixelRatio:1,scrollY:0,
+  const ctx={console:{log(){},error:(...a)=>errors.push(a)},document:{getElementById:id=>ids.get(id),querySelectorAll:s=>all.filter(e=>matches(e,s)),createElement:t=>new Element(t),createElementNS:(_ns,t)=>new Element(t),createTextNode:t=>({textContent:t})},Uint8Array,Uint16Array,Int16Array,Float32Array,Uint8ClampedArray,Map,Set,Array,Object,Math,Number,String,Promise,Error,JSON,matchMedia:()=>({matches:reduced}),devicePixelRatio:1,scrollY:0,
     addEventListener:(k,f)=>(events[k]??=[]).push(f),scrollTo(o){ids.get('city-comparison').top=52-o.top;scrolls.push(o.top);emit('scroll');},
     ResizeObserver:class{constructor(f){this.f=f;}observe(){}},
     requestAnimationFrame(f){const t=setTimeout(()=>{timers.delete(t);try{f();}catch(e){errors.push(e);}},0);timers.add(t);return t;},
     fetch:async url=>{requests.push(url);pending++;try{if(delays.has(url))await pause(delays.get(url));if(failures.delete(url))return {ok:false,status:503};const b=await fs.promises.readFile(path.join(dataRoot,url.replace(/^data\/comparison\//,'')));return {ok:true,status:200,json:async()=>JSON.parse(b),arrayBuffer:async()=>b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength)};}finally{pending--;}}
-  };ctx.window=ctx;vm.runInNewContext(source,ctx,{filename:'comparison.js'});
+  };ctx.window=ctx;vm.runInNewContext(statisticsSource,ctx,{filename:'comparison-statistics.js'});vm.runInNewContext(source,ctx,{filename:'comparison.js'});
   return {ids,requests,errors,scrolls,delays,failures,stage,
     get:id=>ids.get(id),tile:slug=>ids.get('city-tiles').children.find(b=>b.dataset.slug===slug),
     async settle(){for(let i=0;i<150;i++){await pause(10);if(!pending&&!timers.size&&ids.get('city-tiles').children.length)return;}throw Error('Application did not settle');},
@@ -55,12 +57,18 @@ function harness(reduced=false){
   const h=harness();await h.settle();
   assert.equal(h.get('city-tiles').children.length,8);assert.equal(h.requests.length,1,'No pixel buffers before a pair is selected');
   h.tile('singapore').trigger('click');assert.match(h.get('pair-prompt').textContent,/Now choose another/);assert.equal(h.requests.length,1);
-  h.tile('singapore').trigger('click');assert.equal(h.requests.length,1,'Cannot compare a city to itself');
+  h.tile('singapore').trigger('click');assert.equal(h.requests.length,1,'Deselecting A does not load pixels');
+  assert.match(h.get('pair-prompt').textContent,/first city/);assert.equal(h.tile('singapore').getAttribute('aria-pressed'),'false');
+  assert(h.get('pair-reset').hidden);assert(h.get('city-comparison').hidden);
+  h.tile('singapore').trigger('click');
   h.tile('mexico_city').trigger('click');await h.settle();
   assert.equal(h.requests.filter(x=>x.endsWith('.bin')).length,3,'Only two city buffers and one pair projection load');
   assert.equal(h.get('city-comparison').hidden,false);assert.equal(h.get('comparison-controls').disabled,true);
   assert(h.get('comparison-canvas-a').ctx.imageDraws>0);assert(h.get('comparison-canvas-b').ctx.imageDraws>0);
   await h.sphere();assert.equal(h.get('comparison-controls').disabled,false);assert.match(h.get('comparison-title').textContent,/two spheres/);
+  assert.equal(h.get('comparison-distributions').hidden,false);
+  assert.equal(h.requests.filter(u=>u.endsWith('statistics.json')).length,1);
+  const initialMetrics=[h.get('comparison-mean-angle').textContent,h.get('comparison-covariance').textContent];
   const geometries=['a','b'].map(k=>h.get('comparison-canvas-'+k).ctx.geometry),colours=[new Set(),new Set()];
   for(const mode of ['rgb','smod','ndvi','worldcover','volume']){
     h.get('comparison-controls').trigger('change',{value:mode});await h.settle();
@@ -69,7 +77,20 @@ function harness(reduced=false){
       assert.equal(c.points,36864,'All valid pixels, including water, must be retained');colours[i].add(c.colours);
     }
     assert.match(h.get('comparison-canvas-a').getAttribute('aria-label'),/sphere coloured by/);
+    assert.deepEqual([h.get('comparison-mean-angle').textContent,h.get('comparison-covariance').textContent],initialMetrics,'Native metrics are independent of colour');
+    assert.equal(h.get('comparison-colour-'+mode).checked,true);
+    assert.equal(h.get('distribution-colour-'+mode).checked,true,'Both controls stay synchronized');
+    const svg=h.get('distribution-plot').querySelector('svg');assert(svg,'Selected variable has a chart');
+    assert(!JSON.stringify(svg.attrs).match(/NaN|Infinity/));
+    if(mode==='smod'||mode==='worldcover')assert.equal(svg.querySelectorAll('rect').length,2*statistics.distributions.variables[mode].codes.length,'Categories use exact shares');
+    else assert.equal(svg.querySelectorAll('path').length,4,'Both continuous distributions have a filled curve and outline');
+    assert.match(h.get('distribution-city-key').textContent,/Singapore/);assert.match(h.get('distribution-city-key').textContent,/Mexico City/);
+
   }
+  h.get('distribution-controls').trigger('change',{value:'ndvi'});await h.settle();
+  assert.equal(h.get('comparison-colour-ndvi').checked,true,'Lower plot control recolours the upper spheres');
+  assert.match(h.get('comparison-canvas-a').getAttribute('aria-label'),/NDVI/);
+  assert.equal(h.requests.filter(u=>u.endsWith('statistics.json')).length,1,'Colour changes reuse statistics');
   assert.equal(colours[0].size,5);assert.equal(colours[1].size,5,'Every colour mode changes both views');
   await h.maps();assert(h.get('comparison-controls').disabled);assert.match(h.get('comparison-meta-a').textContent,/51 km/);
   const before=h.get('comparison-canvas-a').ctx.imageDraws;h.get('comparison-controls').trigger('change',{value:'ndvi'});await h.settle();
@@ -80,11 +101,40 @@ function harness(reduced=false){
   h.failures.add('data/comparison/lagos.bin');h.tile('lagos').trigger('click');await h.settle();assert.match(h.get('pair-prompt').textContent,/could not load/);
   const retry=h.get('pair-prompt').querySelector('button');assert(retry);retry.trigger('click');await h.settle();assert.equal(h.get('comparison-name-b').textContent,'Lagos');
   h.get('pair-reset').trigger('click');assert.match(h.get('pair-prompt').textContent,/first city/);
+  assert(h.get('city-comparison').hidden);assert(h.get('comparison-methods').hidden);assert(h.get('comparison-distributions').hidden);
+  // A can be vacated while B stays selected, including during in-flight loads.
+  const replacement=harness();await replacement.settle();
+  replacement.delays.set('data/comparison/mexico_city.bin',180);
+  replacement.tile('singapore').trigger('click');replacement.tile('mexico_city').trigger('click');
+  replacement.tile('singapore').trigger('click');
+  assert.match(replacement.get('pair-prompt').textContent,/Mexico City remains B.*replacement first city \(A\)/);
+  assert.equal(replacement.tile('singapore').querySelector('.tile-selection').textContent,'');
+  assert.equal(replacement.tile('mexico_city').querySelector('.tile-selection').textContent,'B');
+  assert.equal(replacement.tile('mexico_city').getAttribute('aria-pressed'),'true');
+  assert.equal(replacement.get('city-tiles').getAttribute('aria-busy'),'false');
+  await replacement.settle();assert(replacement.get('city-comparison').hidden,'A late load cannot reopen a vacated comparison');
+  const vacantRequests=replacement.requests.length;replacement.tile('mexico_city').trigger('click');
+  assert.equal(replacement.requests.length,vacantRequests,'Clicking preserved B cannot fill A with the same city');
+  replacement.tile('london').trigger('click');await replacement.settle();await replacement.sphere();
+  assert.equal(replacement.get('comparison-name-a').textContent,'London');assert.equal(replacement.get('comparison-name-b').textContent,'Mexico City');
+  replacement.tile('london').trigger('click');
+  assert(replacement.get('city-comparison').hidden);assert(replacement.get('comparison-methods').hidden);assert(replacement.get('comparison-controls').disabled);
+  assert(!replacement.stage.classList.contains('show-spheres'));
+  replacement.delays.set('data/comparison/new_york.bin',180);
+  replacement.tile('new_york').trigger('click');replacement.tile('new_york').trigger('click');replacement.tile('dubai').trigger('click');
+  await replacement.settle();
+  assert.equal(replacement.get('comparison-name-a').textContent,'Dubai','Late replacement-A loads cannot overwrite the latest choice');
+  assert.equal(replacement.get('comparison-name-b').textContent,'Mexico City');
+  assert.equal(replacement.tile('dubai').querySelector('.tile-selection').textContent,'A');
+  assert.equal(replacement.tile('new_york').getAttribute('aria-pressed'),'false');
+  replacement.tile('lagos').trigger('click');await replacement.settle();
+  assert.equal(replacement.get('comparison-name-a').textContent,'Dubai','Ordinary unselected tiles still replace B');
+  assert.equal(replacement.get('comparison-name-b').textContent,'Lagos');assert.equal(replacement.errors.length,0);
   // Every supported pair can be selected in either order; the manifest's two
   // coordinate arrays must be associated with city ids, never selection order.
   let tested=0;const bulk=harness(true);await bulk.settle();
   for(const pair of manifest.pairs){
-    let firstGeometry;
+    let firstGeometry,firstMetrics;
     for(const order of [pair.slugs,[...pair.slugs].reverse()]){
       bulk.get('pair-reset').trigger('click');bulk.tile(order[0]).trigger('click');bulk.tile(order[1]).trigger('click');await bulk.settle();await bulk.sphere();
       for(const [i,k] of ['a','b'].entries()){
@@ -92,6 +142,16 @@ function harness(reduced=false){
       }
       const geometry=['a','b'].map(k=>bulk.get('comparison-canvas-'+k).ctx.geometry);
       if(firstGeometry)assert.deepEqual(geometry,[...firstGeometry].reverse(),'Reversing city selection must reverse the correct coordinate arrays');else firstGeometry=geometry;
+      const pairMetrics=[bulk.get('comparison-mean-angle').textContent,bulk.get('comparison-covariance').textContent];
+      if(firstMetrics)assert.deepEqual(pairMetrics,firstMetrics,'Pair metrics are symmetric');else firstMetrics=pairMetrics;
+      for(const mode of ['rgb','smod','ndvi','worldcover','volume']){
+        bulk.get('distribution-controls').trigger('change',{value:mode});await bulk.settle();
+        const values=statistics.distributions.cities[order[0]].variables[mode];
+        assert.match(bulk.get('distribution-city-key').textContent,new RegExp(manifest.cities.find(c=>c.slug===order[0]).name));
+        if(values)assert(bulk.get('distribution-city-key').textContent.includes(values.n.toLocaleString('en-GB')+' observed'));
+        const svg=bulk.get('distribution-plot').querySelector('svg');assert(svg);
+        for(const element of svg.querySelectorAll('path'))assert(!/NaN|Infinity/.test(element.attrs.d));
+      }
       tested++;
     }
   }
@@ -104,6 +164,18 @@ function harness(reduced=false){
   }
   assert.equal(melbourneColours.size,5,'Melbourne must have all four working measured layers');
   const reduced=harness(true);await reduced.settle();reduced.tile('dubai').trigger('click');reduced.tile('london').trigger('click');await reduced.settle();await reduced.sphere();assert.equal(reduced.get('comparison-controls').disabled,false);await reduced.maps();assert.equal(reduced.get('comparison-controls').disabled,true);assert.equal(reduced.errors.length,0);
-  const result={status:'passed',city_pairs_tested_in_both_orders:tested,colour_modes:5,checks:['two-click selection','on-demand payloads','scroll to spheres and back','same geometry across colour modes','both cities visibly recoloured','invalid embedding masks','all eight cities and all 28 shared projections','Melbourne measured layers','selection race','load failure and retry','selection reset','reduced motion'],initial_pair_payload_bytes:2*manifest.cities[0].bytes+manifest.pairs[0].bytes};
+  const failure=harness();failure.failures.add('data/comparison/statistics.json');await failure.settle();
+  failure.tile('singapore').trigger('click');failure.tile('dubai').trigger('click');await failure.settle();
+  assert.equal(failure.get('city-comparison').hidden,false,'Statistics failure does not block maps/spheres');
+  assert.equal(failure.get('comparison-statistics-retry').hidden,false);assert.equal(failure.get('distribution-plot').children.length,0);
+  failure.get('comparison-statistics-retry').trigger('click');await failure.settle();
+  assert.equal(failure.get('comparison-statistics-retry').hidden,true);assert(failure.get('distribution-plot').querySelector('svg'));
+  const race=harness();race.delays.set('data/comparison/statistics.json',200);await race.settle();
+  race.tile('singapore').trigger('click');race.tile('london').trigger('click');await pause(60);race.tile('dubai').trigger('click');await race.settle();
+  assert.match(race.get('distribution-city-key').textContent,/Dubai/);assert(!race.get('distribution-city-key').textContent.includes('London'));
+  const cleared=harness();cleared.delays.set('data/comparison/statistics.json',200);await cleared.settle();
+  cleared.tile('singapore').trigger('click');cleared.tile('london').trigger('click');await pause(60);cleared.get('pair-reset').trigger('click');await cleared.settle();
+  assert(cleared.get('comparison-distributions').hidden,'Late statistics cannot reopen cleared selection');
+  const result={status:'passed',statistics_checks:['all56pairorders at5variables','symmetric native metrics','metrics unchanged by colour','two filled continuous curves','exact categorical shares','synchronized controls','coverage counts','single cached statistics download','statistics failure and retry','selection race','cleared selection race'],city_pairs_tested_in_both_orders:tested,colour_modes:5,checks:['two-click selection','deselect A before B','replace A while preserving B','vacated A hides stale comparison','deselect A during pending load','replacement-A request race','B replacement preserved','on-demand payloads','scroll to spheres and back','same geometry across colour modes','both cities visibly recoloured','invalid embedding masks','all eight cities and all 28 shared projections','Melbourne measured layers','selection race','load failure and retry','selection reset','reduced motion'],initial_pair_payload_bytes:2*manifest.cities[0].bytes+manifest.pairs[0].bytes};
   fs.writeFileSync(path.join(__dirname,'validation_result.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result,null,2));
 })().catch(e=>{console.error(e);process.exitCode=1;});

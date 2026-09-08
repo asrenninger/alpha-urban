@@ -85,3 +85,56 @@
 @media (prefers-reduced-motion: reduce) {
   .city-tile img, #comparison-controls, .colour-options span { transition: none; }
 }
+
+/* Native geometry stays with the spheres; measured distributions continue below. */
+.comparison-similarity { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 30px; max-width: 880px; width: 100%; align-self: center; flex-shrink: 0; margin: 8px 0 0; padding-top: 10px; border-top: 1px solid var(--structure); font-family: var(--figsans); }
+.comparison-similarity > div { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 1px 12px; }
+.similarity-label { font-size: 14px; }
+.comparison-similarity strong { font-family: var(--serif); font-size: clamp(24px,2.6vw,32px); line-height: 1; font-weight: 400; font-variant-numeric: tabular-nums; grid-column: 2; grid-row: 1 / 3; }
+.comparison-similarity small { font-size: 12px; color: var(--muted); }
+.comparison-similarity > p { grid-column: 1 / -1; margin: 3px 0 0; text-align: center; font-size: 12px; color: var(--muted); }
+.comparison-fields figure:first-child .city-letter { color: var(--accent); }
+.comparison-fields figure:last-child .city-letter { color: var(--navy); }
+.comparison-distributions[hidden], .statistics-retry[hidden] { display: none; }
+.comparison-distributions { max-width: 1180px; padding: 56px 28px 20px; margin: 0 auto; scroll-margin-top: 76px; }
+.distribution-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 28px; }
+.distribution-heading h2 { font-size: clamp(28px,3.5vw,43px); line-height: 1.12; margin: 0; }
+.distribution-heading > p { max-width: 360px; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.55; }
+#distribution-controls { border: 0; padding: 0 0 24px; margin: 0 0 26px; border-bottom: 1px solid var(--structure); }
+#distribution-controls legend { font-family: var(--figsans); color: var(--muted); font-size: 14px; margin-bottom: 12px; }
+#distribution-controls .colour-options { justify-content: flex-start; }
+#distribution-controls .colour-options span { font-size: 14px; padding: 9px 14px; }
+.distribution-chart-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+.distribution-chart-heading h3 { font-family: var(--figsans); font-size: 16px; font-weight: 500; margin: 0; }
+.distribution-city-key { display: flex; flex-wrap: wrap; gap: 12px 30px; font-family: var(--figsans); font-size: 14px; }
+.distribution-key-item { display: grid; grid-template-columns: 18px auto; gap: 2px 7px; }
+.distribution-key-item > i { width: 18px; height: 3px; margin-top: 8px; }
+.distribution-key-item:nth-child(2) > i { background: repeating-linear-gradient(to right,var(--navy) 0 5px,transparent 5px 8px) !important; }
+.distribution-key-item small { grid-column: 2; color: var(--muted); font-size: 12px; }
+.distribution-plot { width: 100%; min-height: 315px; }
+.distribution-plot svg { display: block; overflow: visible; }
+.distribution-tick, .distribution-axis-label { font-family: var(--figsans); font-size: 14px; fill: var(--muted); }
+.distribution-axis-label { font-size: 14px; }
+.distribution-note { margin: 20px 0 0; font-size: 14px; line-height: 1.6; color: var(--muted); max-width: 850px; }
+.statistics-retry { font: inherit; font-size: 14px; cursor: pointer; background: none; border: 1px solid var(--structure); padding: 8px 14px; margin-top: 12px; }
+@media (max-width:760px) {
+  .comparison-similarity { gap: 6px 16px; }
+  .comparison-similarity > div { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+  .comparison-similarity strong { margin-left: auto; font-size: 25px; }
+  .comparison-similarity small { flex-basis: 100%; font-size: 12px; }
+  .comparison-similarity > p { text-align: left; }
+  .comparison-distributions { padding: 40px 20px 12px; }
+  .distribution-heading, .distribution-chart-heading { display: block; }
+  .distribution-heading > p { margin-top: 18px; max-width: 32em; }
+  .distribution-city-key { margin-top: 18px; }
+  .comparison-stage { min-height: 720px; }
+}
+@media (max-width:440px) {
+  .comparison-similarity strong { margin-left: 0; }
+  .similarity-label { flex-basis: 100%; }
+  .comparison-similarity small { max-width: 14em; }
+  .comparison-stage { min-height: 840px; }
+}
+@media (max-height:620px) and (min-width:761px) {
+  .comparison-stage { min-height: 640px; }
+}

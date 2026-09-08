@@ -1,9 +1,28 @@
 {
   "status": "passed",
+  "statistics_checks": [
+    "all56pairorders at5variables",
+    "symmetric native metrics",
+    "metrics unchanged by colour",
+    "two filled continuous curves",
+    "exact categorical shares",
+    "synchronized controls",
+    "coverage counts",
+    "single cached statistics download",
+    "statistics failure and retry",
+    "selection race",
+    "cleared selection race"
+  ],
   "city_pairs_tested_in_both_orders": 56,
   "colour_modes": 5,
   "checks": [
     "two-click selection",
+    "deselect A before B",
+    "replace A while preserving B",
+    "vacated A hides stale comparison",
+    "deselect A during pending load",
+    "replacement-A request race",
+    "B replacement preserved",
     "on-demand payloads",
     "scroll to spheres and back",
     "same geometry across colour modes",

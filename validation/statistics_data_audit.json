@@ -1,0 +1,467 @@
+{
+  "status": "passed",
+  "scope": "Independent source-to-shipped asset audit for existing eight-field statistics only; no website writes, browser use, model work or additional analytical samples.",
+  "cities": 8,
+  "pairs": 28,
+  "grid_locations": 294912,
+  "valid_embeddings": 277326,
+  "recognized_land": 221647,
+  "water_retained": 54500,
+  "unknown_cover_retained_native": 1179,
+  "native_support_summaries_checked": 16,
+  "native_pair_support_metrics_checked": 56,
+  "native_numerical_errors": {
+    "maximum_mean_angle_error_deg": 2.842170943040401e-14,
+    "maximum_covariance_overlap_error": 5.440092820663267e-15,
+    "maximum_subspace_projector_error": 2.5923707624997405e-14,
+    "maximum_rms_angle_error_deg": 1.7763568394002505e-14
+  },
+  "source_support": [
+    {
+      "slug": "singapore",
+      "slots": 36864,
+      "valid": 36864,
+      "recognized_land": 21902,
+      "water": 14962,
+      "unknown_cover": 0
+    },
+    {
+      "slug": "mexico_city",
+      "slots": 36864,
+      "valid": 36864,
+      "recognized_land": 36711,
+      "water": 153,
+      "unknown_cover": 0
+    },
+    {
+      "slug": "london",
+      "slots": 36864,
+      "valid": 36836,
+      "recognized_land": 33819,
+      "water": 3017,
+      "unknown_cover": 0
+    },
+    {
+      "slug": "new_york",
+      "slots": 36864,
+      "valid": 26592,
+      "recognized_land": 21418,
+      "water": 5174,
+      "unknown_cover": 0
+    },
+    {
+      "slug": "buenos_aires",
+      "slots": 36864,
+      "valid": 36864,
+      "recognized_land": 30127,
+      "water": 6737,
+      "unknown_cover": 0
+    },
+    {
+      "slug": "dubai",
+      "slots": 36864,
+      "valid": 32258,
+      "recognized_land": 20671,
+      "water": 10408,
+      "unknown_cover": 1179
+    },
+    {
+      "slug": "lagos",
+      "slots": 36864,
+      "valid": 34915,
+      "recognized_land": 26412,
+      "water": 8503,
+      "unknown_cover": 0
+    },
+    {
+      "slug": "melbourne",
+      "slots": 36864,
+      "valid": 36133,
+      "recognized_land": 30587,
+      "water": 5546,
+      "unknown_cover": 0
+    }
+  ],
+  "variable_observation_totals": {
+    "ndvi": 277326,
+    "volume": 54468,
+    "smod": 277326,
+    "worldcover": 276147
+  },
+  "continuous_source_checks": [
+    {
+      "slug": "singapore",
+      "variable": "ndvi",
+      "n": 36864,
+      "missing": 0,
+      "minimum": -0.6698412895202637,
+      "maximum": 0.9113237857818604,
+      "zero_observations": 5,
+      "observations_outside_color_display_range_retained": 2244
+    },
+    {
+      "slug": "singapore",
+      "variable": "volume",
+      "n": 10463,
+      "missing": 26401,
+      "minimum": 0.0,
+      "maximum": 1011603.0,
+      "zero_observations": 465,
+      "observations_outside_color_display_range_retained": 495
+    },
+    {
+      "slug": "mexico_city",
+      "variable": "ndvi",
+      "n": 36864,
+      "missing": 0,
+      "minimum": -0.6754250526428223,
+      "maximum": 0.8423736691474915,
+      "zero_observations": 2,
+      "observations_outside_color_display_range_retained": 21
+    },
+    {
+      "slug": "mexico_city",
+      "variable": "volume",
+      "n": 9885,
+      "missing": 26979,
+      "minimum": 0.0,
+      "maximum": 349732.0,
+      "zero_observations": 631,
+      "observations_outside_color_display_range_retained": 26
+    },
+    {
+      "slug": "london",
+      "variable": "ndvi",
+      "n": 36836,
+      "missing": 0,
+      "minimum": -0.6384915709495544,
+      "maximum": 0.902597427368164,
+      "zero_observations": 0,
+      "observations_outside_color_display_range_retained": 2482
+    },
+    {
+      "slug": "london",
+      "variable": "volume",
+      "n": 7802,
+      "missing": 29034,
+      "minimum": 0.0,
+      "maximum": 325808.0,
+      "zero_observations": 1186,
+      "observations_outside_color_display_range_retained": 40
+    },
+    {
+      "slug": "new_york",
+      "variable": "ndvi",
+      "n": 26592,
+      "missing": 0,
+      "minimum": -1.0,
+      "maximum": 0.8795357942581177,
+      "zero_observations": 0,
+      "observations_outside_color_display_range_retained": 4501
+    },
+    {
+      "slug": "new_york",
+      "variable": "volume",
+      "n": 7081,
+      "missing": 19511,
+      "minimum": 0.0,
+      "maximum": 344844.0,
+      "zero_observations": 2152,
+      "observations_outside_color_display_range_retained": 16
+    },
+    {
+      "slug": "buenos_aires",
+      "variable": "ndvi",
+      "n": 36864,
+      "missing": 0,
+      "minimum": -0.7321016192436218,
+      "maximum": 0.9249072670936584,
+      "zero_observations": 0,
+      "observations_outside_color_display_range_retained": 6522
+    },
+    {
+      "slug": "buenos_aires",
+      "variable": "volume",
+      "n": 6117,
+      "missing": 30747,
+      "minimum": 0.0,
+      "maximum": 314993.0,
+      "zero_observations": 641,
+      "observations_outside_color_display_range_retained": 27
+    },
+    {
+      "slug": "dubai",
+      "variable": "ndvi",
+      "n": 32258,
+      "missing": 0,
+      "minimum": -0.7552447319030762,
+      "maximum": 0.8414540886878967,
+      "zero_observations": 6,
+      "observations_outside_color_display_range_retained": 608
+    },
+    {
+      "slug": "dubai",
+      "variable": "volume",
+      "n": 3596,
+      "missing": 28662,
+      "minimum": 0.0,
+      "maximum": 574436.0,
+      "zero_observations": 31,
+      "observations_outside_color_display_range_retained": 67
+    },
+    {
+      "slug": "lagos",
+      "variable": "ndvi",
+      "n": 34915,
+      "missing": 0,
+      "minimum": -0.3609885275363922,
+      "maximum": 0.8214625120162964,
+      "zero_observations": 12,
+      "observations_outside_color_display_range_retained": 472
+    },
+    {
+      "slug": "lagos",
+      "variable": "volume",
+      "n": 6219,
+      "missing": 28696,
+      "minimum": 0.0,
+      "maximum": 217378.0,
+      "zero_observations": 798,
+      "observations_outside_color_display_range_retained": 5
+    },
+    {
+      "slug": "melbourne",
+      "variable": "ndvi",
+      "n": 36133,
+      "missing": 0,
+      "minimum": -1.0,
+      "maximum": 0.9498375058174132,
+      "zero_observations": 12,
+      "observations_outside_color_display_range_retained": 1472
+    },
+    {
+      "slug": "melbourne",
+      "variable": "volume",
+      "n": 3305,
+      "missing": 32828,
+      "minimum": 0.0,
+      "maximum": 192905.0,
+      "zero_observations": 321,
+      "observations_outside_color_display_range_retained": 4
+    }
+  ],
+  "density_checks_after_rounding": [
+    {
+      "slug": "singapore",
+      "variable": "ndvi",
+      "integral_after_shipped_rounding": 1.0,
+      "absolute_integral_error": 0.0,
+      "maximum_density_error": 4.958380150910102e-09,
+      "rounding_integral_bound": 1.00001e-08
+    },
+    {
+      "slug": "singapore",
+      "variable": "volume",
+      "integral_after_shipped_rounding": 0.9999999994140625,
+      "absolute_integral_error": 5.859375207251105e-10,
+      "maximum_density_error": 4.98474835713969e-09,
+      "rounding_integral_bound": 3.50001e-08
+    },
+    {
+      "slug": "singapore",
+      "variable": "native_angle",
+      "integral_after_shipped_rounding": 0.999999997,
+      "absolute_integral_error": 3.000000026176508e-09,
+      "maximum_density_error": 4.992369881211267e-10,
+      "rounding_integral_bound": 9.000010000000002e-08
+    },
+    {
+      "slug": "mexico_city",
+      "variable": "ndvi",
+      "integral_after_shipped_rounding": 1.000000000546875,
+      "absolute_integral_error": 5.468749897374892e-10,
+      "maximum_density_error": 4.985466241862169e-09,
+      "rounding_integral_bound": 1.00001e-08
+    },
+    {
+      "slug": "mexico_city",
+      "variable": "volume",
+      "integral_after_shipped_rounding": 1.0000000002343752,
+      "absolute_integral_error": 2.3437518592572815e-10,
+      "maximum_density_error": 4.958084661420021e-09,
+      "rounding_integral_bound": 3.50001e-08
+    },
+    {
+      "slug": "mexico_city",
+      "variable": "native_angle",
+      "integral_after_shipped_rounding": 1.0000000045,
+      "absolute_integral_error": 4.49999992824246e-09,
+      "maximum_density_error": 4.988074606138149e-10,
+      "rounding_integral_bound": 9.000010000000002e-08
+    },
+    {
+      "slug": "london",
+      "variable": "ndvi",
+      "integral_after_shipped_rounding": 0.99999999921875,
+      "absolute_integral_error": 7.812499536186124e-10,
+      "maximum_density_error": 4.9648303246385694e-09,
+      "rounding_integral_bound": 1.00001e-08
+    },
+    {
+      "slug": "london",
+      "variable": "volume",
+      "integral_after_shipped_rounding": 1.0000000002343752,
+      "absolute_integral_error": 2.3437518592572815e-10,
+      "maximum_density_error": 4.9983759353722235e-09,
+      "rounding_integral_bound": 3.50001e-08
+    },
+    {
+      "slug": "london",
+      "variable": "native_angle",
+      "integral_after_shipped_rounding": 0.999999998,
+      "absolute_integral_error": 2.0000000544584395e-09,
+      "maximum_density_error": 4.996615309005303e-10,
+      "rounding_integral_bound": 9.000010000000002e-08
+    },
+    {
+      "slug": "new_york",
+      "variable": "ndvi",
+      "integral_after_shipped_rounding": 0.9999999996875,
+      "absolute_integral_error": 3.1250002585636594e-10,
+      "maximum_density_error": 4.975192591238908e-09,
+      "rounding_integral_bound": 1.00001e-08
+    },
+    {
+      "slug": "new_york",
+      "variable": "volume",
+      "integral_after_shipped_rounding": 1.0000000002343752,
+      "absolute_integral_error": 2.3437518592572815e-10,
+      "maximum_density_error": 4.9450678551998806e-09,
+      "rounding_integral_bound": 3.50001e-08
+    },
+    {
+      "slug": "new_york",
+      "variable": "native_angle",
+      "integral_after_shipped_rounding": 0.999999999,
+      "absolute_integral_error": 9.999999717180685e-10,
+      "maximum_density_error": 4.999803395193576e-10,
+      "rounding_integral_bound": 9.000010000000002e-08
+    },
+    {
+      "slug": "buenos_aires",
+      "variable": "ndvi",
+      "integral_after_shipped_rounding": 1.00000000078125,
+      "absolute_integral_error": 7.812499536186124e-10,
+      "maximum_density_error": 4.976013379121014e-09,
+      "rounding_integral_bound": 1.00001e-08
+    },
+    {
+      "slug": "buenos_aires",
+      "variable": "volume",
+      "integral_after_shipped_rounding": 0.99999999859375,
+      "absolute_integral_error": 1.4062500053313443e-09,
+      "maximum_density_error": 4.961869555855647e-09,
+      "rounding_integral_bound": 3.50001e-08
+    },
+    {
+      "slug": "buenos_aires",
+      "variable": "native_angle",
+      "integral_after_shipped_rounding": 0.9999999999999999,
+      "absolute_integral_error": 1.1102230246251565e-16,
+      "maximum_density_error": 4.981545106974572e-10,
+      "rounding_integral_bound": 9.000010000000002e-08
+    },
+    {
+      "slug": "dubai",
+      "variable": "ndvi",
+      "integral_after_shipped_rounding": 0.9999999995312499,
+      "absolute_integral_error": 4.687501498068514e-10,
+      "maximum_density_error": 4.895393868054043e-09,
+      "rounding_integral_bound": 1.00001e-08
+    },
+    {
+      "slug": "dubai",
+      "variable": "volume",
+      "integral_after_shipped_rounding": 1.0000000005078125,
+      "absolute_integral_error": 5.078124587498678e-10,
+      "maximum_density_error": 4.94860127962099e-09,
+      "rounding_integral_bound": 3.50001e-08
+    },
+    {
+      "slug": "dubai",
+      "variable": "native_angle",
+      "integral_after_shipped_rounding": 0.9999999985000001,
+      "absolute_integral_error": 1.4999999020659516e-09,
+      "maximum_density_error": 4.97499142576574e-10,
+      "rounding_integral_bound": 9.000010000000002e-08
+    },
+    {
+      "slug": "lagos",
+      "variable": "ndvi",
+      "integral_after_shipped_rounding": 1.00000000046875,
+      "absolute_integral_error": 4.687499277622464e-10,
+      "maximum_density_error": 4.974403555735307e-09,
+      "rounding_integral_bound": 1.00001e-08
+    },
+    {
+      "slug": "lagos",
+      "variable": "volume",
+      "integral_after_shipped_rounding": 0.9999999983203126,
+      "absolute_integral_error": 1.6796873891777864e-09,
+      "maximum_density_error": 4.985734047835422e-09,
+      "rounding_integral_bound": 3.50001e-08
+    },
+    {
+      "slug": "lagos",
+      "variable": "native_angle",
+      "integral_after_shipped_rounding": 1.000000003,
+      "absolute_integral_error": 3.000000026176508e-09,
+      "maximum_density_error": 4.987786059282469e-10,
+      "rounding_integral_bound": 9.000010000000002e-08
+    },
+    {
+      "slug": "melbourne",
+      "variable": "ndvi",
+      "integral_after_shipped_rounding": 1.0000000000781248,
+      "absolute_integral_error": 7.812483993063779e-11,
+      "maximum_density_error": 4.98989755071122e-09,
+      "rounding_integral_bound": 1.00001e-08
+    },
+    {
+      "slug": "melbourne",
+      "variable": "volume",
+      "integral_after_shipped_rounding": 1.0000000007812502,
+      "absolute_integral_error": 7.812501756632173e-10,
+      "maximum_density_error": 4.950156298755282e-09,
+      "rounding_integral_bound": 3.50001e-08
+    },
+    {
+      "slug": "melbourne",
+      "variable": "native_angle",
+      "integral_after_shipped_rounding": 0.999999997,
+      "absolute_integral_error": 3.000000026176508e-09,
+      "maximum_density_error": 4.97554816791812e-10,
+      "rounding_integral_bound": 9.000010000000002e-08
+    }
+  ],
+  "maximum_density_integral_error_after_rounding": 4.49999992824246e-09,
+  "class_code_and_exact_count_alignment": true,
+  "common_edges_and_bandwidths_per_variable": true,
+  "all_histogram_counts_reconcile": true,
+  "full_uncapped_source_values_retained": true,
+  "shipped_payload_matches_work_assets": true,
+  "read_only_inputs_unchanged": true,
+  "reviewed_formula_result": "No substantive formula errors found. Native means, spherical log map, common-reference transport, centered covariance/n and rank10 overlap agree with independent64D reconstruction. Reflected Gaussian histogram smoothing agrees with an explicit symmetric convolution.",
+  "density_interpretation": "Normalization is the bin-width-weighted sum of sampled density ordinates; shipped decimal rounding introduces only the reported bounded errors. Volume density is on log10(1+raw volume), with zeros retained and missing values excluded rather than imputed.",
+  "checked_input_hashes": {
+    "counterbakeoff_20260908/website/data/comparison/manifest.json": "1aa9270f7ee089ec98f0f132d410e975fce6c11e7d98f69b5c1d9fb0363675d6",
+    "counterbakeoff_20260908/website/data/comparison/statistics.json": "973d8f1ebe97e86e65fa71991949396c88a0f38b0596f812e3965558ada79519",
+    "counterbakeoff_20260908/site_work/comparison_statistics/native64_statistics.json": "67ee6426aacd7ce7e812aba8386da8feeb61559b69baee0b62390b4f71aa8060",
+    "counterbakeoff_20260908/site_work/comparison_statistics/native64_geometry_audit.npz": "6b3981830b1841949b63a2bbfee347c17e2799c081fb93ad51274380e3a6ea8f",
+    "counterbakeoff_20260908/site_work/comparison_statistics/distributions.json": "2d0ac58b9247e36ec227ba7d825ac8bb66626569028a2afe80205eb291f6f246",
+    "counterbakeoff_20260908/site_work/comparison_statistics/compute_native64_statistics.py": "1d6529b164a92940aceaa0c02ebaeb33ad6fce81ae2ba1be44b55de30cb9d504",
+    "counterbakeoff_20260908/site_work/comparison_statistics/build_distributions.py": "2678eeaae9960899ed8af0d0b1330190b9faab967f3ac0fbc1e570651c797cb4",
+    "counterbakeoff_20260908/site_work/comparison_statistics/package_statistics.py": "f741553ed282557e856d1d28a29b6f6739c2b4f0ea67696a55fb2f3398d0328d"
+  },
+  "failures": []
+}

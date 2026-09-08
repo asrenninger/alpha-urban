@@ -1,0 +1,203 @@
+{
+  "status": "passed",
+  "starting_grid_locations": 294912,
+  "valid_embeddings": 277326,
+  "retained_cities": 8,
+  "retained_countries": 8,
+  "retained_city_years": 8,
+  "year": 2024,
+  "cities": {
+    "singapore": {
+      "ndvi": {
+        "n": 36864,
+        "missing": 0,
+        "minimum": -0.6698412895202637,
+        "maximum": 0.9113237857818604,
+        "zeros": 5
+      },
+      "volume": {
+        "n": 10463,
+        "missing": 26401,
+        "minimum": 0.0,
+        "maximum": 1011603.0,
+        "zeros": 465
+      },
+      "smod": {
+        "n": 36864,
+        "missing": 0
+      },
+      "worldcover": {
+        "n": 36864,
+        "missing": 0
+      }
+    },
+    "mexico_city": {
+      "ndvi": {
+        "n": 36864,
+        "missing": 0,
+        "minimum": -0.6754250526428223,
+        "maximum": 0.8423736691474915,
+        "zeros": 2
+      },
+      "volume": {
+        "n": 9885,
+        "missing": 26979,
+        "minimum": 0.0,
+        "maximum": 349732.0,
+        "zeros": 631
+      },
+      "smod": {
+        "n": 36864,
+        "missing": 0
+      },
+      "worldcover": {
+        "n": 36864,
+        "missing": 0
+      }
+    },
+    "london": {
+      "ndvi": {
+        "n": 36836,
+        "missing": 0,
+        "minimum": -0.6384915709495544,
+        "maximum": 0.902597427368164,
+        "zeros": 0
+      },
+      "volume": {
+        "n": 7802,
+        "missing": 29034,
+        "minimum": 0.0,
+        "maximum": 325808.0,
+        "zeros": 1186
+      },
+      "smod": {
+        "n": 36836,
+        "missing": 0
+      },
+      "worldcover": {
+        "n": 36836,
+        "missing": 0
+      }
+    },
+    "new_york": {
+      "ndvi": {
+        "n": 26592,
+        "missing": 0,
+        "minimum": -1.0,
+        "maximum": 0.8795357942581177,
+        "zeros": 0
+      },
+      "volume": {
+        "n": 7081,
+        "missing": 19511,
+        "minimum": 0.0,
+        "maximum": 344844.0,
+        "zeros": 2152
+      },
+      "smod": {
+        "n": 26592,
+        "missing": 0
+      },
+      "worldcover": {
+        "n": 26592,
+        "missing": 0
+      }
+    },
+    "buenos_aires": {
+      "ndvi": {
+        "n": 36864,
+        "missing": 0,
+        "minimum": -0.7321016192436218,
+        "maximum": 0.9249072670936584,
+        "zeros": 0
+      },
+      "volume": {
+        "n": 6117,
+        "missing": 30747,
+        "minimum": 0.0,
+        "maximum": 314993.0,
+        "zeros": 641
+      },
+      "smod": {
+        "n": 36864,
+        "missing": 0
+      },
+      "worldcover": {
+        "n": 36864,
+        "missing": 0
+      }
+    },
+    "dubai": {
+      "ndvi": {
+        "n": 32258,
+        "missing": 0,
+        "minimum": -0.7552447319030762,
+        "maximum": 0.8414540886878967,
+        "zeros": 6
+      },
+      "volume": {
+        "n": 3596,
+        "missing": 28662,
+        "minimum": 0.0,
+        "maximum": 574436.0,
+        "zeros": 31
+      },
+      "smod": {
+        "n": 32258,
+        "missing": 0
+      },
+      "worldcover": {
+        "n": 31079,
+        "missing": 1179
+      }
+    },
+    "lagos": {
+      "ndvi": {
+        "n": 34915,
+        "missing": 0,
+        "minimum": -0.3609885275363922,
+        "maximum": 0.8214625120162964,
+        "zeros": 12
+      },
+      "volume": {
+        "n": 6219,
+        "missing": 28696,
+        "minimum": 0.0,
+        "maximum": 217378.0,
+        "zeros": 798
+      },
+      "smod": {
+        "n": 34915,
+        "missing": 0
+      },
+      "worldcover": {
+        "n": 34915,
+        "missing": 0
+      }
+    },
+    "melbourne": {
+      "ndvi": {
+        "n": 36133,
+        "missing": 0,
+        "minimum": -1.0,
+        "maximum": 0.9498375058174132,
+        "zeros": 12
+      },
+      "volume": {
+        "n": 3305,
+        "missing": 32828,
+        "minimum": 0.0,
+        "maximum": 192905.0,
+        "zeros": 321
+      },
+      "smod": {
+        "n": 36133,
+        "missing": 0
+      },
+      "worldcover": {
+        "n": 36133,
+        "missing": 0
+      }
+    }
+  }
+}

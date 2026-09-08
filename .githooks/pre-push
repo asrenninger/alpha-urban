@@ -1,0 +1,3 @@
+#!/bin/sh
+# Validate committed paths, including files force-added past .gitignore.
+exec python3 validation/verify_publish_scope.py --pre-push

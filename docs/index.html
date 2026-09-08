@@ -283,11 +283,11 @@
         <fieldset id="comparison-controls" disabled>
           <legend>Colour both cities by</legend>
           <div class="colour-options">
-            <label><input type="radio" name="comparison-colour" value="rgb" checked /><span>False colour</span></label>
-            <label><input type="radio" name="comparison-colour" value="smod" /><span>Urbanisation</span></label>
-            <label><input type="radio" name="comparison-colour" value="ndvi" /><span>NDVI</span></label>
-            <label><input type="radio" name="comparison-colour" value="worldcover" /><span>Land cover</span></label>
-            <label><input type="radio" name="comparison-colour" value="volume" /><span>Building volume</span></label>
+            <label><input id="comparison-colour-rgb" type="radio" name="comparison-colour" value="rgb" checked /><span>False colour</span></label>
+            <label><input id="comparison-colour-smod" type="radio" name="comparison-colour" value="smod" /><span>Urbanisation</span></label>
+            <label><input id="comparison-colour-ndvi" type="radio" name="comparison-colour" value="ndvi" /><span>NDVI</span></label>
+            <label><input id="comparison-colour-worldcover" type="radio" name="comparison-colour" value="worldcover" /><span>Land cover</span></label>
+            <label><input id="comparison-colour-volume" type="radio" name="comparison-colour" value="volume" /><span>Building volume</span></label>
           </div>
         </fieldset>
       </div>
@@ -301,12 +301,38 @@
           <div class="city-canvas-wrap"><canvas id="comparison-canvas-b" role="img"></canvas></div>
         </figure>
       </div>
+      <div id="comparison-similarity" class="comparison-similarity" aria-label="Similarity in the full AlphaEarth embedding">
+        <div><span class="similarity-label">Mean direction distance</span><strong id="comparison-mean-angle">—</strong><small>Smaller angle · closer means</small></div>
+        <div><span class="similarity-label">Variation overlap</span><strong id="comparison-covariance">—</strong><small>Higher overlap · more aligned variation</small></div>
+        <p id="comparison-similarity-note" role="status">Comparing the original 64-dimensional embeddings…</p>
+      </div>
       <div id="comparison-legend" class="comparison-legend" aria-live="polite"></div>
       <div class="comparison-caption">
         <p id="comparison-note">The same colours mean the same values in both fields. Pale blue marks water.</p>
         <a href="#city-comparison" id="comparison-advance">Scroll to follow the pixels <span aria-hidden="true">↓</span></a>
       </div>
     </div>
+  </section>
+
+  <section id="comparison-distributions" class="comparison-distributions" aria-labelledby="distribution-title" hidden>
+    <div class="distribution-heading">
+      <div><p class="kicker">LOOK INSIDE THE COLOURS</p><h2 id="distribution-title">Two cities. Two distributions.</h2></div>
+      <p>Compare the pixels behind each colour. Curves overlap where the two fields have similar measured values.</p>
+    </div>
+    <fieldset id="distribution-controls">
+      <legend>Compare the same measurement in both cities</legend>
+      <div class="colour-options">
+        <label><input id="distribution-colour-rgb" type="radio" name="distribution-colour" value="rgb" checked /><span>Embedding spread</span></label>
+        <label><input id="distribution-colour-smod" type="radio" name="distribution-colour" value="smod" /><span>Urbanisation</span></label>
+        <label><input id="distribution-colour-ndvi" type="radio" name="distribution-colour" value="ndvi" /><span>NDVI</span></label>
+        <label><input id="distribution-colour-worldcover" type="radio" name="distribution-colour" value="worldcover" /><span>Land cover</span></label>
+        <label><input id="distribution-colour-volume" type="radio" name="distribution-colour" value="volume" /><span>Building volume</span></label>
+      </div>
+    </fieldset>
+    <div class="distribution-chart-heading"><h3 id="distribution-variable">Within-city angular spread</h3><div id="distribution-city-key" class="distribution-city-key"></div></div>
+    <div id="distribution-plot" class="distribution-plot"></div>
+    <p id="distribution-note" class="distribution-note" role="status">Loading observed distributions…</p>
+    <button id="comparison-statistics-retry" class="statistics-retry" type="button" hidden>Retry comparison statistics</button>
   </section>
 
   <section class="comparison-methods" id="comparison-methods" hidden>
@@ -322,6 +348,20 @@
       <p>Embeddings and Sentinel-2 NDVI: 2024. ESA WorldCover: 2021. GHSL Degree of Urbanisation:
         2020. Building volume: DLR WSF3D. NDVI and volume use a common colour scale across
         all eight fields; volume is square-root-scaled to the pooled built-cell 98th percentile.</p>
+      <p>The similarity readouts use the paper’s measures, recalculated for every valid embedding
+        in the two displayed rectangular fields, including water. They are not the paper’s
+        city-wide atlas estimates. Mean direction distance is the angle between normalized
+        mean vectors in 64 dimensions. Variation overlap compares the leading ten spherical
+        covariance directions after parallel transport to one reference shared by all eight fields.
+        It measures alignment of variation, not equality of the whole distributions; random
+        ten-dimensional subspaces in this 63-dimensional tangent space overlap by about 15.9% on average.</p>
+      <p>Each continuous curve uses all observed values with valid embeddings and integrates to one;
+        both cities use the same bins and smoothing. Building volume is shown on a log axis,
+        using uncapped measurements. Missing measurements are excluded from that variable only,
+        with coverage shown beside each city. Urbanisation and land cover use exact class shares,
+        rather than smoothing between categories. Embedding spread is each pixel’s angular
+        distance from its own field’s mean direction. These comparisons describe pixels in the
+        displayed fields, whose extents differ; they do not compare whole-city area or population.</p>
     </details>
   </section>
 </main>
@@ -332,6 +372,7 @@
 </footer>
 
 <script src="app.js"></script>
+<script src="comparison-statistics.js"></script>
 <script src="comparison.js"></script>
 </body>
 </html>

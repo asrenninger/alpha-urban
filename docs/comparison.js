@@ -108,11 +108,11 @@
     updateSelection();
   }
   function updateSelection(message) {
-    $('pair-reset').hidden=selected.length===0;
-    $('pair-prompt').textContent=message || (selected.length===0 ? 'Choose your first city.' : selected.length===1 ? `${selected[0].name} selected. Now choose another city.` : `${selected[0].name} and ${selected[1].name}. Choose a tile to change the second city.`);
+    $('pair-reset').hidden=!selected.some(Boolean);
+    $('pair-prompt').textContent=message || (!selected[0] ? (selected[1] ? `${selected[1].name} remains B. Choose a replacement first city (A).` : 'Choose your first city.') : !selected[1] ? `${selected[0].name} selected. Now choose another city.` : `${selected[0].name} and ${selected[1].name}. Click A to replace it, or choose a tile to change B.`);
     $('city-tiles').setAttribute('aria-busy',String(loading));
     document.querySelectorAll('.city-tile').forEach(button=>{
-      const slot=selected.findIndex(c=>c.slug===button.dataset.slug);
+      const slot=selected.findIndex(c=>c?.slug===button.dataset.slug);
       const city=manifest.cities.find(c=>c.slug===button.dataset.slug);
       button.setAttribute('aria-pressed',String(slot>=0));
       button.setAttribute('aria-label',slot<0?`Choose ${city.name}`:`${city.name}, selected as ${slot===0?'A':'B'}`);
@@ -120,13 +120,23 @@
     });
   }
   function pick(city) {
-    if (selected.some(c=>c.slug===city.slug)) return;
-    if (selected.length<2) selected.push(city); else selected[1]=city;
+    if (selected[0]?.slug===city.slug) {
+      selected=selected[1] ? [null,selected[1]] : [];
+      clearComparison(); updateSelection(); return;
+    }
+    if (selected[1]?.slug===city.slug) return;
+    if (!selected[0]) selected[0]=city; else selected[1]=city;
     updateSelection();
-    if(selected.length===2) openPair();
+    if(selected[0]&&selected[1]) openPair();
+  }
+  function clearComparison() {
+    generation++; loading=false; fields=[]; sizes=[]; morph=target=0; phase='';
+    window.ComparisonStatistics.clear();
+    section.hidden=true; $('comparison-methods').hidden=true; controls.disabled=true;
+    stage.classList.toggle('show-spheres',false);
   }
   function resetSelection() {
-    generation++; loading=false; selected=[]; updateSelection();
+    clearComparison(); selected=[]; updateSelection();
   }
   function changePair() {
     resetSelection();
@@ -134,6 +144,7 @@
     const first=$('city-tiles').querySelector('button'); if(first) first.focus({preventScroll:true});
   }
   async function openPair() {
+    if(!selected[0]||!selected[1]) return;
     const ticket=++generation, chosen=selected.slice(); loading=true;
     updateSelection(`Opening ${chosen[0].name} and ${chosen[1].name}…`);
     try {
@@ -196,6 +207,7 @@
     const notes={rgb:'The same axes and camera in both spheres. Choose a measurement to recolour the pixels.',smod:'Urbanisation describes settlement context, from rural areas to urban centres. GHSL, 2020.',ndvi:'NDVI measures vegetation greenness. Both cities use the same −0.2 to 0.9 scale. Sentinel-2, 2024.',worldcover:'Land cover describes the surface of each pixel. Both cities use the same ESA WorldCover classes, 2021.',volume:'Building volume uses the same square-root colour scale in both cities. Grey marks missing coverage. DLR WSF3D.'};
     $('comparison-note').textContent=spheres?notes[colour]:'The same colours mean the same values in both fields. Pale blue marks water.';
     legend();
+    window.ComparisonStatistics.update(fields,colour);
   }
   function resize() {
     if(section.hidden||!fields.length) return;
@@ -251,14 +263,20 @@
   function schedule() {if(!frame)frame=requestAnimationFrame(tick);}
   function tick() {
     frame=0;
+    if(section.hidden||fields.length!==2) return;
     if(reduced||Math.abs(target-morph)<.002)morph=target;else morph+=(target-morph)*.3;
     setPhase(morph>=.995);draw();
     if(Math.abs(target-morph)>.0001)schedule();
   }
-  controls.addEventListener('change',event=>{
-    if(controls.disabled||!Object.hasOwn(NAMES,event.target.value))return;
-    colour=event.target.value;updateDescription();schedule();
-  });
+  function chooseColour(value) {
+    if(!fields.length||!Object.hasOwn(NAMES,value))return;
+    colour=value;
+    for(const key of Object.keys(NAMES))for(const prefix of ['comparison','distribution'])
+      $(prefix+'-colour-'+key).checked=key===colour;
+    updateDescription();schedule();
+  }
+  controls.addEventListener('change',event=>{if(!controls.disabled)chooseColour(event.target.value);});
+  $('distribution-controls').addEventListener('change',event=>chooseColour(event.target.value));
   $('pair-reset').addEventListener('click',resetSelection);
   $('choose-pair').addEventListener('click',changePair);
   $('comparison-advance').addEventListener('click',event=>{

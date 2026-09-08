@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "checks": [
+    "reviewed baseline accepted",
+    "new research file ignored",
+    "force-added research file rejected",
+    "research file removed from final tree still rejected in pushed history"
+  ]
+}
