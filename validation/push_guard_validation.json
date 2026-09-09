@@ -2,7 +2,9 @@
   "status": "passed",
   "checks": [
     "reviewed baseline accepted",
+    "prospective working tree accepted",
     "new research file ignored",
+    "force-added worktree path rejected",
     "force-added research file rejected",
     "research file removed from final tree still rejected in pushed history"
   ]

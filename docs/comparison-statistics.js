@@ -3,7 +3,7 @@
   'use strict';
   const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
   const COLOURS=['var(--accent)','var(--navy)'];
-  const NAMES={rgb:'Within-city angular spread',ndvi:'Vegetation greenness · NDVI',volume:'Building volume · m³, log scale',smod:'Urbanisation · share of observed pixels',worldcover:'Land cover · share of observed pixels'};
+  const NAMES={rgb:'Spread within each city',ndvi:'Vegetation greenness · NDVI',volume:'Building volume · m³, log scale',smod:'Urbanisation · share of pixels',worldcover:'Land cover · share of pixels'};
   const LABELS={smod:['Water','Very low rural','Low rural','Rural cluster','Peri-urban','Semi-dense','Dense cluster','Urban centre'],worldcover:['Trees','Shrubland','Grassland','Cropland','Built-up','Bare ground','Snow & ice','Water','Wetland','Mangrove','Moss / lichen']};
   let payload, pending, current, serial=0;
   const number=n=>n.toLocaleString('en-GB');
@@ -58,11 +58,11 @@
       const item=document.createElement('span');item.className='distribution-key-item';
       const swatch=document.createElement('i');swatch.style.background=s.colour;swatch.setAttribute('aria-hidden','true');
       const label=document.createElement('span');label.textContent=s.letter+' · '+s.name;
-      const support=document.createElement('small');support.textContent=number(s.n)+' observed'+(s.missing?' · '+number(s.missing)+' missing':'');
+      const support=document.createElement('small');support.textContent=number(s.n)+' pixels'+(s.missing?' · '+number(s.missing)+' missing':'');
       item.append(swatch,label,support);key.append(item);
     });
     const categorical=mode==='smod'||mode==='worldcover';
-    const notes={rgb:'Each curve shows the angle of every pixel from its own field’s mean embedding. More mass to the right means greater internal angular spread.',ndvi:'Smoothed observed NDVI, including water. Each city’s curve has area one; height shows concentration, not the number of pixels.',volume:'Smoothed observed building volume on a log axis, including recorded zeros and values above the colour-scale cap. Each curve has area one; missing coverage is excluded.',smod:'Exact shares of observed pixels in each settlement category. The categories are not smoothed or interpolated.',worldcover:'Exact shares of observed pixels in each land-cover class. The categories are not smoothed or interpolated.'};
+    const notes={rgb:'Each curve shows the angle of every pixel from its own field’s mean direction. More mass to the right means a more spread-out field.',ndvi:'NDVI, including water. Each city’s curve has area one; height shows concentration, not the number of pixels.',volume:'Building volume on a log axis, including recorded zeros and values above the colour cap. Each curve has area one; missing coverage is excluded.',smod:'Share of pixels at each degree of urbanisation.',worldcover:'Share of pixels in each kind of land cover.'};
     $('distribution-note').textContent=notes[mode];
     if(mode==='volume')$('distribution-note').textContent+=' Recorded zero volume: '+series.map(s=>s.name+' '+number(s.values.zeros)).join('; ')+'.';
     draw(series,mode,categorical,data);
@@ -75,7 +75,7 @@
     const w=width-margins.left-margins.right,h=height-margins.top-margins.bottom;
     const svg=el('svg',{viewBox:`0 0 ${width} ${height}`,width:'100%',height,role:'img','aria-labelledby':'distribution-svg-title distribution-svg-desc'});
     svg.append(el('title',{id:'distribution-svg-title'},NAMES[mode]+': '+series.map(s=>s.name).join(' and ')));
-    const desc=series.map(s=>s.name+': '+number(s.n)+' observed pixels'+(s.missing?', '+number(s.missing)+' missing':'')).join('. ');
+    const desc=series.map(s=>s.name+': '+number(s.n)+' pixels'+(s.missing?', '+number(s.missing)+' missing':'')).join('. ');
     svg.append(el('desc',{id:'distribution-svg-desc'},desc+'. '+$('distribution-note').textContent));
     const max=Math.max(.001,...series.flatMap(s=>categorical?s.values.shares:s.values.density))*1.08;
     const y=v=>margins.top+h*(1-v/max), bottom=y(0);

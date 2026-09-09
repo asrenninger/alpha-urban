@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "sourceRun": "joint_adapter_v2_20260909",
+  "all79FitsAccessible": true,
+  "globalVisualSampleRendered": true,
+  "visualSamplePoints": 15970,
+  "allEligibleCitiesRetained": true,
+  "colorsLeaveGeometryFixed": true,
+  "cityRasterBoxesRemoved": true,
+  "baselineReturn": true,
+  "keyboardRotation": true,
+  "rapidSelectionAndRetry": true,
+  "continuousTrianglePreview": true,
+  "multiFrameGeometryTween": true,
+  "errors": 0
+}

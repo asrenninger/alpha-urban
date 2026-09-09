@@ -131,6 +131,7 @@
   }
   function clearComparison() {
     generation++; loading=false; fields=[]; sizes=[]; morph=target=0; phase='';
+    window.JointAdapter?.clear();
     window.ComparisonStatistics.clear();
     section.hidden=true; $('comparison-methods').hidden=true; controls.disabled=true;
     stage.classList.toggle('show-spheres',false);
@@ -146,6 +147,7 @@
   async function openPair() {
     if(!selected[0]||!selected[1]) return;
     const ticket=++generation, chosen=selected.slice(); loading=true;
+    window.JointAdapter?.clear();
     updateSelection(`Opening ${chosen[0].name} and ${chosen[1].name}…`);
     try {
       const pair=manifest.pairs.find(p=>chosen.every(c=>p.slugs.includes(c.slug)));
@@ -158,6 +160,7 @@
       morph=target=0; phase=''; section.hidden=false; $('comparison-methods').hidden=false;
       for(let i=0;i<2;i++) $('comparison-name-'+(i?'b':'a')).textContent=chosen[i].name;
       resize(); setPhase(false); draw(); loading=false; updateSelection();
+      window.JointAdapter?.select(chosen.map(c=>c.slug));
       $('comparison-title').focus({preventScroll:true});
       section.scrollIntoView({behavior:reduced?'instant':'smooth',block:'start'});
     } catch(error) {
@@ -204,7 +207,7 @@
       $('comparison-meta-'+key).textContent=spheres?`${number(m.valid_count)} pixels · shared projection`:`${Math.round(m.box.side_m/1000)} km across · ${Math.round(m.cell_size_m)} m cells`;
       $('comparison-canvas-'+key).setAttribute('aria-label',`${m.name}: ${spheres?'embedding sphere coloured by '+NAMES[colour]:'false-colour map'}, ${number(m.valid_count)} valid pixels.`);
     }
-    const notes={rgb:'The same axes and camera in both spheres. Choose a measurement to recolour the pixels.',smod:'Urbanisation describes settlement context, from rural areas to urban centres. GHSL, 2020.',ndvi:'NDVI measures vegetation greenness. Both cities use the same −0.2 to 0.9 scale. Sentinel-2, 2024.',worldcover:'Land cover describes the surface of each pixel. Both cities use the same ESA WorldCover classes, 2021.',volume:'Building volume uses the same square-root colour scale in both cities. Grey marks missing coverage. DLR WSF3D.'};
+    const notes={rgb:'The same axes and camera in both spheres. Choose a measurement to recolour the pixels.',smod:'Urbanisation runs from rural areas to urban centres. GHSL, 2020.',ndvi:'NDVI measures vegetation greenness. Both cities use the same −0.2 to 0.9 scale. Sentinel-2, 2024.',worldcover:'Land cover describes the surface of each pixel. Both cities use the same ESA WorldCover classes, 2021.',volume:'Building volume uses the same square-root colour scale in both cities. Grey marks missing coverage. DLR WSF3D.'};
     $('comparison-note').textContent=spheres?notes[colour]:'The same colours mean the same values in both fields. Pale blue marks water.';
     legend();
     window.ComparisonStatistics.update(fields,colour);

@@ -4,8 +4,11 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Inside the field — AlphaUrban</title>
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48" />
+<link rel="icon" type="image/png" href="favicon.png" sizes="64x64" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="comparison.css" />
+  <link rel="stylesheet" href="joint-adapter.css" />
 </head>
 <body>
 <header class="masthead">
@@ -13,7 +16,7 @@
   <span class="brand">ALPHAURBAN · INSIDE THE FIELD</span>
   <span class="context" id="masthead-context">ALPHAEARTH · 2024</span>
   <!-- The manuscript class's page-progress sphere (alphaurbanism.cls:95-146),
-       re-shaded on canvas; fills with scroll through the 18 scenes. -->
+       re-shaded on canvas; fills with scroll through the 19 scenes. -->
   <canvas id="progress-sphere" aria-hidden="true"></canvas>
 </header>
 
@@ -46,7 +49,7 @@
     <div class="steps">
 
       <article class="step" data-scene="embmap">
-        <p class="step-index">01 / 10</p>
+        <p class="step-index">01 / 19</p>
         <h2>The field in the embedding's own colours.</h2>
         <p>No land-cover legend was used to draw this map. Each cell takes
         its colour from three of
@@ -54,41 +57,39 @@
         back on its own — coastlines, forest, the built strip along the
         strait. The rest of the walk asks how much structure the same 64
         dimensions show inside that built strip.</p>
-        <p class="fine">Components A39, A62 and A08 mapped to red, green and
-        blue — the canonical city view — display-stretched over
-        land.</p>
+        <p class="fine">Dimensions A39, A62 and A08 as red, green and blue,
+        stretched over land.</p>
       </article>
 
       <article class="step" data-scene="map">
-        <p class="step-index">02 / 10</p>
-        <h2>Seven land-cover classes across three countries.</h2>
+        <p class="step-index">02 / 19</p>
+        <h2>Seven kinds of land across three countries.</h2>
         <p>The same field under a human legend: Singapore in the centre,
         Johor Bahru across the strait to the north, Batam to the south. ESA
-        WorldCover names seven kinds of land here, and the same built and
-        forest classes appear on all three sides of the strait.</p>
+        WorldCover draws the legend, and the same built and forest classes
+        appear on all three sides of the strait.</p>
       </article>
 
       <article class="step" data-scene="cartogram">
-        <p class="step-index">03 / 10</p>
-        <h2>The land account.</h2>
+        <p class="step-index">03 / 19</p>
+        <h2>The land, packed by class.</h2>
         <p>Set the permanent water aside — 14,962 cells of strait and sea —
-        and pack what remains by class. The land becomes an account: forest
-        and built land dominate, and over a third of the land cells are
-        built. Those built cells are what the rest of the walk follows.</p>
+        and pack what remains by class. Forest and built land dominate, and
+        over a third of the land cells are built. Those built cells are what the rest of the walk follows.</p>
       </article>
 
       <article class="step" data-scene="sphere">
-        <p class="step-index">04 / 10</p>
+        <p class="step-index">04 / 19</p>
         <h2>Every cell becomes 64 numbers.</h2>
         <p>AlphaEarth replaces each cell with a unit vector — a direction on
         a 64-dimensional sphere. Shown here through one fixed 3-D projection,
         the broad land-cover classes separate on their own.</p>
-        <p class="fine">Positions: fixed PCA display projection, fit on land
-        cells. Every quoted number is computed in the native 64 dimensions.</p>
+        <p class="fine">Positions come from one fixed projection, fit on land
+        cells. Every number is computed in all 64 dimensions.</p>
       </article>
 
       <article class="step" data-scene="ndvi">
-        <p class="step-index">05 / 10</p>
+        <p class="step-index">05 / 19</p>
         <h2>Greenness organises the field.</h2>
         <p>Recolour the same points by measured vegetation (NDVI) and the
         cloud reads as one smooth gradient: the embedding's dominant axis
@@ -98,155 +99,147 @@
       </article>
 
       <article class="step" data-scene="ndviw">
-        <p class="step-index">06 / 10</p>
-        <h2>The greenness account.</h2>
+        <p class="step-index">06 / 19</p>
+        <h2>The land, ordered by greenness.</h2>
         <p>Pack the land cells again, this time ordered by measured NDVI
         rather than by class. The field becomes one continuous gradient from
         bare and built to dense forest, with no natural break where "city"
-        ends. Where the legend puts a boundary, the measured gradient runs
-        straight through.</p>
+        ends.</p>
       </article>
 
       <article class="step" data-scene="city">
-        <p class="step-index">07 / 10</p>
+        <p class="step-index">07 / 19</p>
         <h2>Now look inside the built class.</h2>
         <p>Built cells differ widely among themselves. Recoloured by built
         volume, they run from low sheds and terraces to the dense cores of
-        the CBD and the HDB towns — differences a city plans around, and
+        the city centre and the housing towns — differences a city plans around, and
         ones a vegetation index cannot express.</p>
       </article>
 
       <article class="step" data-scene="volw">
-        <p class="step-index">08 / 10</p>
-        <h2>The built-volume account.</h2>
+        <p class="step-index">08 / 19</p>
+        <h2>Built cells, ordered by volume.</h2>
         <p>Order just the 8,293 built cells by their built volume, from low
         sheds and terraces up to the dense cores. A single class in the land
         legend contains the full range of urban density, and that
-        within-class variation is what the audit asks the embedding to
-        carry.</p>
+        variation is what we ask the embedding to carry.</p>
         <p class="fine">Colour is square-root-scaled to the built 98th
         percentile, so the gradient shows order, not the shape of the
         distribution.</p>
       </article>
 
       <article class="step" data-scene="audit">
-        <p class="step-index">09 / 10</p>
+        <p class="step-index">09 / 19</p>
         <h2>How much of that does the field keep?</h2>
-        <p>In the native 64 dimensions, the entire built class occupies a
-        pocket about as wide as any single natural class, and the mean
-        directions of low-rise and high-rise Singapore sit closer together
-        than forest sits to water. Forms that differ sharply on the ground
-        occupy neighbouring directions here.</p>
+        <p>In all 64 dimensions, the entire built class occupies a pocket
+        about as wide as any single natural class, and the mean directions
+        of low-rise and high-rise Singapore sit closer together than forest
+        sits to water.</p>
         <div class="metric-cards" id="audit-metrics"></div>
-        <p class="fine">Descriptive geometry for one field and one year,
-        and no verdict is drawn from it.</p>
+        <p class="fine">These numbers describe one field in one year.</p>
       </article>
 
       <article class="step" data-scene="return">
-        <p class="step-index">10 / 10</p>
+        <p class="step-index">10 / 19</p>
         <h2>Back to the map.</h2>
         <p>From above, the built area reads as one continuous fabric. Inside
         the representation, the differences separating one part of that
         fabric from another are the finest in the field, and no global label
-        set records them at this scale. The audit therefore reads the
-        representation itself.</p>
+        set records them at this scale. So what follows measures the
+        representation directly.</p>
       </article>
 
       <article class="step" data-scene="mx_map">
-        <p class="step-index">11 / 18</p>
+        <p class="step-index">11 / 19</p>
         <h2>The same walk in Mexico City.</h2>
-        <p>Mexico City is a monocentric metropolis in a high basin, and
-        differs in form from the island city-state in almost every respect.
+        <p>Mexico City has one centre, sits in a high basin, and differs
+        from the island city-state in almost every respect.
         It is walked with the same satellite, the same embedding and the
         same steps, at double speed.</p>
       </article>
 
       <article class="step" data-scene="pair">
-        <p class="step-index">12 / 18</p>
+        <p class="step-index">12 / 19</p>
         <h2>Both cities in a shared projection.</h2>
-        <p>Both fields lift into embedding space through a single shared
-        projection, fit on the land cells of both cities together, so what
-        you compare is the representation and not two camera angles. The
-        broad classes organise both clouds the same way.</p>
+        <p>Both fields share one projection, fit on the land cells of both
+        cities, so both clouds are seen from the same camera. The broad
+        classes organise both clouds the same way.</p>
       </article>
 
       <article class="step" data-scene="frame">
-        <p class="step-index">13 / 18</p>
+        <p class="step-index">13 / 19</p>
         <h2>Leave the cities' own frame.</h2>
         <p>Every view so far used a projection built to spread one or two
         cities out. Switch to the frame the planet defines — axes fit on the
-        mean directions of 1,000 cities — and the internal detail of each
-        city gathers into a compact region of the sphere.</p>
-        <p class="fine">Display change only: the cells' 64-D coordinates are
-        identical in both frames.</p>
+        mean directions of 1,000 cities — and each city's detail gathers
+        into a small patch of the sphere.</p>
+        <p class="fine">Only the display changes. The cells' 64 numbers are
+        the same in both frames.</p>
       </article>
 
       <article class="step" data-scene="dou">
         <p class="step-index">14 / 19</p>
         <h2>Each cloud, summarised as vectors.</h2>
         <p>A direction on this sphere is a vector from its centre, and the
-        arrows aggregate each cloud into its vectors: the bold arrow points
-        to the city's all-urban mean, the thin arrows to the mean of each
-        degree-of-urbanisation class — suburban, semi-dense, dense, urban
-        centre. At this scale the thin arrows hug the bold one: every urban
-        class of a city points within a few degrees of the same direction.
+        arrows summarise each cloud: the bold arrow points to the mean of
+        the city's urban cells, the thin arrows to the mean of each degree
+        of urbanisation. At this scale the thin arrows hug the bold one:
+        every degree of urbanisation in a city points almost the same way.
         The next scene keeps only the tips.</p>
-        <p class="fine">Class mean directions in the global display frame,
-        2024, where they sit 0.5–6° from each city's all-urban mean; in the
-        two-city frame the same classes spread about 25°. Classes without
-        enough valid pixels are omitted, and Mexico City's mean lies on the
-        far side of the sphere, so its arrows are drawn fainter.</p>
+        <p class="fine">In the global frame, 2024, each degree sits 0.5–6°
+        from the mean of its city's urban cells; in the two-city frame the
+        same degrees spread about 25°. Degrees with too few valid pixels are
+        omitted, and Mexico City's mean lies on the far side of the sphere,
+        so its arrows are drawn fainter.</p>
       </article>
 
       <article class="step" data-scene="collapse">
-        <p class="step-index">14 / 18</p>
+        <p class="step-index">15 / 19</p>
         <h2>Each city reduced to one direction.</h2>
         <p>Take the mean direction of every cell in a city: one point for
         Singapore, one for Mexico City, 85.6° apart on the embedding sphere.
-        The planetary audit compares cities as these single directions.</p>
+        From here on, each city is one such direction.</p>
       </article>
 
       <article class="step" data-scene="globe_continent">
-        <p class="step-index">15 / 18</p>
+        <p class="step-index">16 / 19</p>
         <h2>One thousand cities at once.</h2>
-        <p>Every city now has its point: 1,000 functional urban areas, each
-        reduced to its 2024 mean direction. Coloured by continent, the globe
+        <p>Every city now has its point: 1,000 cities, each reduced to its
+        mean direction in 2024. Coloured by continent, the globe
         organises immediately, with cities from the same continent falling
         near one another.</p>
       </article>
 
       <article class="step" data-scene="globe_climate">
-        <p class="step-index">16 / 18</p>
-        <h2>Köppen climate separates the cities too.</h2>
-        <p>Recolour the same points by Köppen climate family and the globe
-        reorganises just as cleanly. Much of what separates cities in the
-        embedding is environmental context: the same greenness-and-climate
-        signal that organised the field inside Singapore.</p>
+        <p class="step-index">17 / 19</p>
+        <h2>Climate separates the cities too.</h2>
+        <p>Recolour the same points by climate and the globe reorganises
+        just as cleanly. Much of what separates cities in the embedding is
+        environment: the same greenness and climate that organised the
+        field inside Singapore.</p>
       </article>
 
       <article class="step" data-scene="globe_pop">
-        <p class="step-index">17 / 18</p>
+        <p class="step-index">18 / 19</p>
         <h2>Population separates cities less clearly.</h2>
         <p>Colour by population quintile and the pattern is weaker:
         megacities and small cities interleave. Environment and geography
-        account for more of the arrangement than the human scale of the
-        settlement does.</p>
+        arrange the cities more than population does.</p>
       </article>
 
       <article class="step" data-scene="finale">
-        <p class="step-index">18 / 18</p>
-        <h2>Cities occupy their own corner of the world.</h2>
+        <p class="step-index">19 / 19</p>
+        <h2>Cities cluster away from the rest of the land.</h2>
         <p>The grey density behind the points is the rest of the land: 273,410
-        non-city pixels sampled across the planet. Cities cluster away from
-        it, in a region of their own, and sit a median 73.7° apart from one
-        another — while Singapore's own cells spread 37.4° around its mean
-        and Mexico City's 33.9°. The embedding separates cities from the
-        world and from each other by wide margins. What those margins cost
-        the detail inside each city is the open question.</p>
+        non-city pixels sampled across the planet. Cities sit apart from it,
+        in a region of their own, a median 73.7° from one another — while
+        Singapore's own cells spread 37.4° around its mean and Mexico
+        City's 33.9°. The embedding separates cities from the world and
+        from each other by wide margins. Whether it also separates the
+        parts of one city is the question the next section asks.</p>
         <div class="metric-cards" id="globe-metrics"></div>
-        <p class="fine">Descriptive numbers: FUA city support, 2024, equal
-        weight per city. Grey density: non-city terrestrial pixels
-        (GHS-SMOD below 21), same projection and camera as the points.</p>
+        <p class="fine">Each city counts once, 2024. Grey density: non-city
+        land pixels, same projection and camera as the points.</p>
       </article>
 
     </div>
@@ -255,7 +248,7 @@
   <section class="city-atlas" id="city-atlas" aria-labelledby="atlas-title">
     <div class="atlas-intro">
       <p class="kicker">INSIDE TWO OF THOSE CITIES</p>
-      <h2 id="atlas-title">Pick a city.<br />Then pick another.</h2>
+      <h2 id="atlas-title">Choose two cities.</h2>
       <p>Each point on the sphere stands for a city. Open two of them
         and follow their pixels from the map into the embedding.</p>
     </div>
@@ -264,7 +257,7 @@
       <button id="pair-reset" type="button" hidden>Start again</button>
     </div>
     <div id="city-tiles" class="city-tiles" role="group" aria-label="Choose two cities"></div>
-    <p class="atlas-note">Eight city fields available to explore. The tiles use the same three
+    <p class="atlas-note">Eight cities. The tiles use the same three
       embedding dimensions and colour scale. Each field’s width is shown below its name.</p>
     <noscript><p>This comparison needs JavaScript to load and move the city pixels.</p></noscript>
   </section>
@@ -316,8 +309,8 @@
 
   <section id="comparison-distributions" class="comparison-distributions" aria-labelledby="distribution-title" hidden>
     <div class="distribution-heading">
-      <div><p class="kicker">LOOK INSIDE THE COLOURS</p><h2 id="distribution-title">Two cities. Two distributions.</h2></div>
-      <p>Compare the pixels behind each colour. Curves overlap where the two fields have similar measured values.</p>
+      <div><p class="kicker">THE VALUES BEHIND THE COLOURS</p><h2 id="distribution-title">Compare the pixels behind each colour.</h2></div>
+      <p>Curves overlap where the two fields have similar values.</p>
     </div>
     <fieldset id="distribution-controls">
       <legend>Compare the same measurement in both cities</legend>
@@ -329,41 +322,72 @@
         <label><input id="distribution-colour-volume" type="radio" name="distribution-colour" value="volume" /><span>Building volume</span></label>
       </div>
     </fieldset>
-    <div class="distribution-chart-heading"><h3 id="distribution-variable">Within-city angular spread</h3><div id="distribution-city-key" class="distribution-city-key"></div></div>
+    <div class="distribution-chart-heading"><h3 id="distribution-variable">Spread within each city</h3><div id="distribution-city-key" class="distribution-city-key"></div></div>
     <div id="distribution-plot" class="distribution-plot"></div>
-    <p id="distribution-note" class="distribution-note" role="status">Loading observed distributions…</p>
-    <button id="comparison-statistics-retry" class="statistics-retry" type="button" hidden>Retry comparison statistics</button>
+    <p id="distribution-note" class="distribution-note" role="status">Loading distributions…</p>
+    <button id="comparison-statistics-retry" class="statistics-retry" type="button" hidden>Try again</button>
   </section>
 
   <section class="comparison-methods" id="comparison-methods" hidden>
     <details>
       <summary>About these city fields</summary>
-      <p>These are rectangular fields around each city, with 192 × 192 locations per field.
-        Their widths differ, so the maps have different geographic scales. All locations
-        with valid embeddings are shown, including water. Missing measurements appear grey.</p>
-      <p>Each pair uses a single three-dimensional projection fitted to all valid land
-        embeddings in both fields, with the same axes and camera on both sides.
+      <p>Each field is a rectangle of 192 × 192 cells around a city. Their widths differ,
+        so the maps have different scales. All cells with valid embeddings are shown,
+        including water. Missing measurements appear grey.</p>
+      <p>Each pair shares one projection, fit on the land cells of both fields, with the
+        same axes and camera on both sides.
         The spheres show a projection of the 64-dimensional representation;
         distances on screen are not distances in the full embedding.</p>
       <p>Embeddings and Sentinel-2 NDVI: 2024. ESA WorldCover: 2021. GHSL Degree of Urbanisation:
         2020. Building volume: DLR WSF3D. NDVI and volume use a common colour scale across
-        all eight fields; volume is square-root-scaled to the pooled built-cell 98th percentile.</p>
-      <p>The similarity readouts use the paper’s measures, recalculated for every valid embedding
-        in the two displayed rectangular fields, including water. They are not the paper’s
-        city-wide atlas estimates. Mean direction distance is the angle between normalized
-        mean vectors in 64 dimensions. Variation overlap compares the leading ten spherical
-        covariance directions after parallel transport to one reference shared by all eight fields.
-        It measures alignment of variation, not equality of the whole distributions; random
-        ten-dimensional subspaces in this 63-dimensional tangent space overlap by about 15.9% on average.</p>
-      <p>Each continuous curve uses all observed values with valid embeddings and integrates to one;
-        both cities use the same bins and smoothing. Building volume is shown on a log axis,
+        all eight fields; volume is square-root scaled and capped at the 98th percentile of all built cells.</p>
+      <p>The similarity readouts are calculated for every valid embedding in the two
+        displayed fields, including water. Mean direction distance is the angle between the
+        two mean directions in 64 dimensions. Variation overlap compares the ten main
+        directions of spread in each field. It measures alignment of variation, not equality
+        of the whole distributions; two random sets of ten directions overlap by about 15.9%.</p>
+      <p>Each curve has area one, and both cities use the same bins and smoothing. Building volume is shown on a log axis,
         using uncapped measurements. Missing measurements are excluded from that variable only,
-        with coverage shown beside each city. Urbanisation and land cover use exact class shares,
-        rather than smoothing between categories. Embedding spread is each pixel’s angular
+        with coverage shown beside each city. Urbanisation and land cover show exact shares. Embedding spread is each pixel’s angular
         distance from its own field’s mean direction. These comparisons describe pixels in the
         displayed fields, whose extents differ; they do not compare whole-city area or population.</p>
     </details>
   </section>
+<section id="joint-adapter" class="joint-adapter" aria-labelledby="joint-adapter-title">
+<div class="jo-main">
+<div class="jo-eyebrow" style="margin-bottom:9px">Global experiment · Joint adapter v2</div>
+<h2 id="joint-adapter-title">What should a shared representation learn?</h2>
+<div class="jo-sub">Vegetation, building volume, land cover. Move through the global trade-off surface.</div>
+<div class="jo-topline"><span>2024 global city atlas</span><button type="button" id="jo-original" aria-pressed="false">Compare with original AlphaEarth</button></div>
+<div class="jo-loading"><span id="jo-status" role="status">Loading the v2 global experiment…</span><button type="button" id="jo-retry" hidden>Try again</button></div>
+<div class="jo-lab">
+<section class="jo-control" aria-label="Objective balance">
+<div class="jo-section-title">Training priorities <span class="jo-small">79 fitted results</span></div>
+<svg class="jo-triangle" id="jo-triangle" role="img" aria-label="Equilateral triangle of training priorities. Drag for a continuous representation blend; filled dots are lattice fits and outlined dots are off-grid audit fits."></svg>
+<div aria-live="polite" id="jo-weights">
+<div class="jo-weight"><span><i class="jo-dot"></i>Vegetation</span><span id="jo-w0">33.3%</span></div>
+<div class="jo-weight"><span><i class="jo-dot" style="background:var(--jo-orange)"></i>Building volume</span><span id="jo-w1">33.3%</span></div>
+<div class="jo-weight"><span><i class="jo-dot" style="background:var(--jo-purple)"></i>Land cover</span><span id="jo-w2">33.3%</span></div>
+</div>
+<div class="jo-presets"><button type="button" data-preset="center">Equal priorities</button><button type="button" data-preset="g10_00">Vegetation</button><button type="button" data-preset="g00_10">Volume</button><button type="button" data-preset="g00_00">Land cover</button></div>
+<select class="jo-select" id="jo-setting" aria-label="Select a trained model"></select>
+<div class="jo-small" style="margin-top:8px">Drag anywhere. Filled dots define the surface; orange rings are independent interpolation checks.</div>
+</section>
+<section class="jo-view" aria-label="Embedding comparison">
+<div class="jo-section-title"><span id="jo-view-title">Adapted embedding</span><span class="jo-small">Global visual sample · shared projection</span></div>
+<div class="jo-color-control"><label for="jo-color" class="jo-small">Colour by</label><select id="jo-color"><option value="landcover">Land cover</option><option value="ndvi">Vegetation · NDVI</option><option value="volume">Building volume · log scale</option></select></div>
+<div class="jo-spatial"><canvas id="jo-sphere" class="jo-sphere" role="img" aria-label="A global visual sample of embeddings coloured by land cover in a shared three-dimensional projection; drag to rotate."></canvas></div>
+<div class="jo-legend" id="jo-outcome-legend" aria-label="Colour legend"></div>
+<div class="jo-view-meta"><span class="jo-small" id="jo-model-state">Equal priorities · trained model</span><div class="jo-rotation"><button type="button" id="jo-left" aria-label="Rotate sphere left">←</button><span class="jo-small">Rotate</span><button type="button" id="jo-right" aria-label="Rotate sphere right">→</button></div></div>
+<div class="jo-small" style="margin-top:8px">Colours stay fixed as embeddings move · every eligible city retained in the visual layer</div>
+</section>
+</div>
+<div class="jo-scores-head"><div><div class="jo-section-title">How well does it predict?</div><span class="jo-small" id="jo-score-note">Exact ensemble score · lower error is better · original AlphaEarth is the reference</span></div><select id="jo-scope" aria-label="Evaluation sample"><option value="test">Held-out countries</option><option value="validation">Validation countries</option></select></div>
+<div class="jo-score-grid" id="jo-scores" aria-live="polite"></div>
+<div class="jo-footer"><span>● Exact ensemble &nbsp; ━ Range across 3 fitted seeds &nbsp; ┆ Original</span><span id="jo-support"></span></div>
+<details><summary>About this experiment</summary><div class="jo-method"><p>A 64 → 24 → 64 residual adapter nudges existing AlphaEarth embeddings toward three weighted goals. It does not retrain AlphaEarth, and v2 does not impose a geometry-preservation penalty.</p><p>The regular 66-model lattice and the exact equal-priority fit define the continuous display surface. Between anchors, the browser blends neighbouring three-seed mean representations before the fixed projection. Twelve separately trained off-grid fits test that interpolation: 11 of 12 were within 5% of their trained validation objective, with mean cosine similarity 0.970. Score values between dots are labelled lattice estimates; exact ensemble scores appear at every fitted dot.</p><p>The sphere is a visual-only common-support layer: 15,970 deterministic rows retain all 998 eligible cities, 162 countries and 998 city-years from 501,969 rows with all three observed, non-water outcomes. It is not the analytical sample. Score cards use every target-valid row: the held-out test has 216,504 NDVI pixels, 138,473 volume pixels and 1,036,656 non-water land-cover pixels. Land cover begins with 3,982,891 rows; 224,503 permanent-water rows are excluded, leaving 3,758,388. Colours show observations and never model predictions.</p><p>The sphere is one fixed three-dimensional projection of the 64-dimensional ensemble means. Visible separation is not the prediction score. The sealed test is reported once; any best point on that surface is descriptive, not a selected optimum.</p><p><a href="JOINT_ADAPTER_DATA.md">Data, samples and limits</a></p></div></details>
+</div>
+</section>
 </main>
 
 <footer>
@@ -373,6 +397,7 @@
 
 <script src="app.js"></script>
 <script src="comparison-statistics.js"></script>
+<script src="joint-adapter.js"></script>
 <script src="comparison.js"></script>
 </body>
 </html>

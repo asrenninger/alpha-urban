@@ -11,6 +11,7 @@ const manifest=JSON.parse(fs.readFileSync(path.join(dataRoot,'manifest.json')));
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
 function harness(reduced=false){
   const all=[],ids=new Map(),events={},errors=[],requests=[],scrolls=[],timers=new Set();
+  const joint={selection:null,clears:0};
   const delays=new Map(),failures=new Set();let pending=0;
   class Element{
     constructor(tag='div'){this.tagName=tag;this.children=[];this.dataset={};this.attrs={};this.style={};this.handlers={};this.hidden=false;this.disabled=false;this._classes=new Set();this._text='';this.offsetHeight=850;this.top=52;this.classList={toggle:(c,on)=>on?this._classes.add(c):this._classes.delete(c),contains:c=>this._classes.has(c)};all.push(this);}
@@ -45,8 +46,8 @@ function harness(reduced=false){
     ResizeObserver:class{constructor(f){this.f=f;}observe(){}},
     requestAnimationFrame(f){const t=setTimeout(()=>{timers.delete(t);try{f();}catch(e){errors.push(e);}},0);timers.add(t);return t;},
     fetch:async url=>{requests.push(url);pending++;try{if(delays.has(url))await pause(delays.get(url));if(failures.delete(url))return {ok:false,status:503};const b=await fs.promises.readFile(path.join(dataRoot,url.replace(/^data\/comparison\//,'')));return {ok:true,status:200,json:async()=>JSON.parse(b),arrayBuffer:async()=>b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength)};}finally{pending--;}}
-  };ctx.window=ctx;vm.runInNewContext(statisticsSource,ctx,{filename:'comparison-statistics.js'});vm.runInNewContext(source,ctx,{filename:'comparison.js'});
-  return {ids,requests,errors,scrolls,delays,failures,stage,
+  };ctx.window=ctx;ctx.JointAdapter={select:slugs=>{joint.selection=[...slugs];},clear:()=>{joint.selection=null;joint.clears++;}};vm.runInNewContext(statisticsSource,ctx,{filename:'comparison-statistics.js'});vm.runInNewContext(source,ctx,{filename:'comparison.js'});
+  return {ids,requests,errors,scrolls,delays,failures,stage,joint,
     get:id=>ids.get(id),tile:slug=>ids.get('city-tiles').children.find(b=>b.dataset.slug===slug),
     async settle(){for(let i=0;i<150;i++){await pause(10);if(!pending&&!timers.size&&ids.get('city-tiles').children.length)return;}throw Error('Application did not settle');},
     async sphere(){ids.get('city-comparison').top=-1100;emit('scroll');await this.settle();},
@@ -62,6 +63,7 @@ function harness(reduced=false){
   assert(h.get('pair-reset').hidden);assert(h.get('city-comparison').hidden);
   h.tile('singapore').trigger('click');
   h.tile('mexico_city').trigger('click');await h.settle();
+  assert.deepEqual(h.joint.selection,['singapore','mexico_city'],'Joint experiment receives the selected gallery pair');
   assert.equal(h.requests.filter(x=>x.endsWith('.bin')).length,3,'Only two city buffers and one pair projection load');
   assert.equal(h.get('city-comparison').hidden,false);assert.equal(h.get('comparison-controls').disabled,true);
   assert(h.get('comparison-canvas-a').ctx.imageDraws>0);assert(h.get('comparison-canvas-b').ctx.imageDraws>0);
@@ -97,6 +99,7 @@ function harness(reduced=false){
   assert.equal(h.get('comparison-canvas-a').ctx.imageDraws,before,'Disabled controls cannot silently alter an unseen view');
   h.delays.set('data/comparison/london.bin',180);h.tile('london').trigger('click');h.tile('new_york').trigger('click');await h.settle();
   assert.equal(h.get('comparison-name-b').textContent,'New York','Late requests cannot replace the latest pair');
+  assert.deepEqual(h.joint.selection,['singapore','new_york'],'Joint experiment follows the winning pair request');
   await h.sphere();assert.equal(h.get('comparison-canvas-b').ctx.points,26592,'Missing embeddings must be omitted, not invented');
   h.failures.add('data/comparison/lagos.bin');h.tile('lagos').trigger('click');await h.settle();assert.match(h.get('pair-prompt').textContent,/could not load/);
   const retry=h.get('pair-prompt').querySelector('button');assert(retry);retry.trigger('click');await h.settle();assert.equal(h.get('comparison-name-b').textContent,'Lagos');
@@ -148,7 +151,7 @@ function harness(reduced=false){
         bulk.get('distribution-controls').trigger('change',{value:mode});await bulk.settle();
         const values=statistics.distributions.cities[order[0]].variables[mode];
         assert.match(bulk.get('distribution-city-key').textContent,new RegExp(manifest.cities.find(c=>c.slug===order[0]).name));
-        if(values)assert(bulk.get('distribution-city-key').textContent.includes(values.n.toLocaleString('en-GB')+' observed'));
+        if(values)assert(bulk.get('distribution-city-key').textContent.includes(values.n.toLocaleString('en-GB')+' pixels'));
         const svg=bulk.get('distribution-plot').querySelector('svg');assert(svg);
         for(const element of svg.querySelectorAll('path'))assert(!/NaN|Infinity/.test(element.attrs.d));
       }

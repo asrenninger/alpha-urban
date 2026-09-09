@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "sourceRun": "joint_adapter_v2_20260909",
+  "trainedSettings": 79,
+  "interpolationAnchors": 67,
+  "offgridAuditSettings": 12,
+  "projectionChunks": 80,
+  "visualSamplePoints": 15970,
+  "visualSampleCities": 998,
+  "visualSampleCountries": 162,
+  "pointChecks": 1261630,
+  "maxRadius": 0.8325932320684217,
+  "maximumContinuityStep": 0.000043004751205444336,
+  "continuousRepresentationInterpolation": true,
+  "fullTaskScoreSupport": true,
+  "cacheRetryAndRaceChecks": true,
+  "observedOutcomesFixed": true
+}

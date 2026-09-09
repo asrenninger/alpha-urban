@@ -25,9 +25,12 @@ def main():
         assert run(root,*commit,'Reviewed baseline').returncode==0
         baseline=run(root,'git','rev-parse','HEAD').stdout.strip()
         assert run(root,sys.executable,'validation/verify_publish_scope.py').returncode==0
+        assert run(root,sys.executable,'validation/verify_publish_scope.py','--worktree').returncode==0
         (root/'research.csv').write_text('not intended for publication\n')
         assert run(root,'git','check-ignore','-q','research.csv').returncode==0
         assert run(root,'git','add','-f','research.csv').returncode==0
+        prospective=run(root,sys.executable,'validation/verify_publish_scope.py','--worktree')
+        assert prospective.returncode!=0 and 'unapproved path research.csv' in prospective.stderr
         assert run(root,*commit,'Accidental force-add').returncode==0
         bad=run(root,sys.executable,'validation/verify_publish_scope.py')
         assert bad.returncode!=0 and 'unapproved path research.csv' in bad.stderr
@@ -37,7 +40,7 @@ def main():
         assert run(root,sys.executable,'validation/verify_publish_scope.py').returncode==0
         hidden=run(root,sys.executable,'validation/verify_publish_scope.py','--pre-push',input=f'refs/heads/main {tip} refs/heads/main {baseline}\n')
         assert hidden.returncode!=0 and 'unapproved path research.csv' in hidden.stderr
-    result={'status':'passed','checks':['reviewed baseline accepted','new research file ignored','force-added research file rejected','research file removed from final tree still rejected in pushed history']}
+    result={'status':'passed','checks':['reviewed baseline accepted','prospective working tree accepted','new research file ignored','force-added worktree path rejected','force-added research file rejected','research file removed from final tree still rejected in pushed history']}
     (HERE/'push_guard_validation.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result,indent=2))
 if __name__=='__main__':main()

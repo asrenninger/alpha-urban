@@ -59,10 +59,27 @@ def validate(refs,paths,max_bytes):
         raise ValueError('Publication guard rejected the push:\n  '+'\n  '.join(failures[:20])+'\nReview publication files and the explicit allowlist before trying again.')
     print('Publication guard passed: %d commit(s), %d file checks.'%(len(refs),checks))
 
+def validate_worktree(paths,max_bytes):
+    failures=[];checks=0
+    listed=git('ls-files','-co','--exclude-standard','-z').split(b'\0')
+    for encoded in listed:
+        if not encoded:continue
+        path=encoded.decode('utf-8');file=ROOT/path
+        # Cached paths deleted by the proposed working tree are intentionally absent.
+        if not file.exists():continue
+        checks+=1
+        if path not in paths:failures.append('worktree: unapproved path '+path)
+        if not file.is_file() or file.is_symlink():failures.append('worktree: unsupported file type '+path)
+        elif file.stat().st_size>max_bytes:failures.append('worktree: oversized file '+path)
+    if failures:
+        raise ValueError('Publication guard rejected the working tree:\n  '+'\n  '.join(failures[:20])+'\nReview publication files and the explicit allowlist before trying again.')
+    print('Publication guard passed: prospective working tree, %d file checks.'%checks)
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--write-ignore',action='store_true')
     parser.add_argument('--pre-push',action='store_true')
+    parser.add_argument('--worktree',action='store_true')
     parser.add_argument('--ref',default='HEAD')
     args=parser.parse_args()
     paths,max_bytes=config()
@@ -72,6 +89,9 @@ def main():
         return
     if (ROOT/'.gitignore').read_text()!=expected:
         raise ValueError('.gitignore differs from the publication allowlist; regenerate it first.')
+    if args.worktree:
+        validate_worktree(paths,max_bytes)
+        return
     if args.pre_push:
         refs=set()
         for line in sys.stdin:

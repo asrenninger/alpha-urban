@@ -1,0 +1,676 @@
+{
+  "name": "Joint-adapter v2 global website checkpoint",
+  "createdUtc": "2026-09-09T16:37:44.605209+00:00",
+  "publication": "Prepared in the website checkout; no remote push performed.",
+  "sourceExperiment": "joint_adapter_v2_20260909",
+  "features": [
+    "Global visual layer spanning all 998 eligible cities and 162 countries",
+    "79 fitted settings: 66 regular lattice, equal-priority fit, and 12 off-grid audits",
+    "Equilateral ternary control at every viewport size",
+    "Continuous representation-space interpolation with animated point motion",
+    "Observed non-water land cover, NDVI, and log1p building-volume colours",
+    "Exact three-seed ensemble scores at fitted settings",
+    "Full target-valid country-test and validation support",
+    "Original AlphaEarth reference",
+    "No city raster cards in the global adapter section",
+    "Lazy-loaded 7.7 MB v2 display payload"
+  ],
+  "validation": [
+    "validation/joint_v2_asset_audit.json",
+    "validation/joint_validation_result.json",
+    "validation/joint_interface_result.json",
+    "validation/validation_result.json"
+  ],
+  "websiteBytes": 28611717,
+  "fileCount": 162,
+  "files": {
+    "docs/.nojekyll": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "docs/COMPARISON_DATA.md": {
+      "bytes": 8504,
+      "sha256": "5df8d871de7a41e54aaf18a1122fb63c3e0232f1a4e83e9d76457ee336c7fb90"
+    },
+    "docs/JOINT_ADAPTER_DATA.md": {
+      "bytes": 5804,
+      "sha256": "5b4a71cb229a79fded974706a3e9dcdc13f463cfc0625eb579e6390bb4cc9720"
+    },
+    "docs/LIVE_BASELINE.json": {
+      "bytes": 2072,
+      "sha256": "5e73101ce7d55185867d5b8c568fdb2cc330d8254f461ac3181976461e3f930a"
+    },
+    "docs/README.md": {
+      "bytes": 2950,
+      "sha256": "37bd7fd17df57b436b812734ec9e2d829a4866b89c9eec2d713b9484bc2829c0"
+    },
+    "docs/app.js": {
+      "bytes": 40523,
+      "sha256": "c4e5192510fa27a2f66b771785021eb387197ef9e8f5cfb8775139c24be97ec8"
+    },
+    "docs/assets/fonts/IBMPlexSans-Bold.ttf": {
+      "bytes": 200872,
+      "sha256": "9e6c74a889a700d707613d24548fe4ffa6bc59559a0689d2cf9e133bdcdafb2f"
+    },
+    "docs/assets/fonts/IBMPlexSans-Medium.ttf": {
+      "bytes": 202460,
+      "sha256": "331c8639d7598b2cde62a911a71db195e30cb655cd6bdf2e324a7e984955f907"
+    },
+    "docs/assets/fonts/IBMPlexSans-Regular.ttf": {
+      "bytes": 200500,
+      "sha256": "975dcda37d80f038dcd143c22e33ca2d97a0cc5a929aace1c749153b0fe1afa5"
+    },
+    "docs/assets/fonts/LMMono10-Regular.otf": {
+      "bytes": 64684,
+      "sha256": "22deb6d3be3ffcb40b33f0e010afb256c677d97c2a2bdee1f5740cdc97751558"
+    },
+    "docs/assets/fonts/LMSans10-Regular.otf": {
+      "bytes": 95128,
+      "sha256": "d431b786b9b603662718e79cfe9b441f47a8b0b3e854dde89d5acb3ed7cfd682"
+    },
+    "docs/assets/fonts/SpaceGrotesk-Bold.ttf": {
+      "bytes": 116056,
+      "sha256": "7209bbb75fc0f5c546a5f5773b0db74ffc6abf04c2148c1105cace5765a96bdb"
+    },
+    "docs/assets/fonts/SpaceGrotesk-Regular.ttf": {
+      "bytes": 114428,
+      "sha256": "5ede28c4425f3fe4830c8f4754b39e9a87a93d0c3baa5e0a9924532aaa8a98bd"
+    },
+    "docs/assets/fonts/XCharter-Bold.otf": {
+      "bytes": 134920,
+      "sha256": "baf595556bbd65749a83b41034c900a8d7f8f5b2a1aa24314319501fdcacce9b"
+    },
+    "docs/assets/fonts/XCharter-BoldItalic.otf": {
+      "bytes": 115708,
+      "sha256": "9ce94d1882126720f84e5a39ef9cc5a87a8b13e230ff21549143f6df179c73df"
+    },
+    "docs/assets/fonts/XCharter-Italic.otf": {
+      "bytes": 126472,
+      "sha256": "63103c22a07316c4e2f30a780f7420201750fea43b600d84092c3c975230a82d"
+    },
+    "docs/assets/fonts/XCharter-Roman.otf": {
+      "bytes": 149640,
+      "sha256": "f144535025bfc9aba7d6e28e12187b057efaa19aff921cc0f173c827d387e355"
+    },
+    "docs/comparison-statistics.js": {
+      "bytes": 9054,
+      "sha256": "4bcab2e3316f3ca94f6753eee879aea24bfd93efd6c7c73a4cffc7751bcb788d"
+    },
+    "docs/comparison.css": {
+      "bytes": 12170,
+      "sha256": "f4f7109525b6a3de6f3337a6cd8a0532d20c1dd517aa1d1fcf30d0201683eaf4"
+    },
+    "docs/comparison.js": {
+      "bytes": 17699,
+      "sha256": "a92f406a3b0b094a569561a84b6f2b7da476565ae2cee2ed894e69e7fb36bc2d"
+    },
+    "docs/data/comparison/buenos_aires--dubai.bin": {
+      "bytes": 442368,
+      "sha256": "ea3315451fcd901408c727a31e9a7afeea381dc1da99413e0d0817f3a59c622d"
+    },
+    "docs/data/comparison/buenos_aires--lagos.bin": {
+      "bytes": 442368,
+      "sha256": "afb430bf8e1eb5fcea3fd1bc28fb493f86a2b9ba25a90df3ede798e5bc7ffa32"
+    },
+    "docs/data/comparison/buenos_aires--melbourne.bin": {
+      "bytes": 442368,
+      "sha256": "d9869b7a60d327f8f5278d5893fdeca79f48ddc1dd3224433ac342c51959a19e"
+    },
+    "docs/data/comparison/buenos_aires.bin": {
+      "bytes": 368640,
+      "sha256": "637231d0f9b3a0374c68a5a81a122ebb9eccc25b360321b016baba7628d0c16d"
+    },
+    "docs/data/comparison/buenos_aires.webp": {
+      "bytes": 16474,
+      "sha256": "0ab512a04d11803d3667925b8f9d258fcebed044f9da0b9ec6b3446fef6a4092"
+    },
+    "docs/data/comparison/dubai--lagos.bin": {
+      "bytes": 442368,
+      "sha256": "b8ea61eab5247dbb8ea1ab1e3105ca72a3505a00674fe69d3fb3838d5927bfc5"
+    },
+    "docs/data/comparison/dubai--melbourne.bin": {
+      "bytes": 442368,
+      "sha256": "d43d374a59a2269540926205cd9283c6a28349a6a7c7e9a410ed55cb31cf2412"
+    },
+    "docs/data/comparison/dubai.bin": {
+      "bytes": 368640,
+      "sha256": "4b29b35bc09c3a41992d876c3aad9d9a320d9ce4d38e10cb646b196a0809f141"
+    },
+    "docs/data/comparison/dubai.webp": {
+      "bytes": 13810,
+      "sha256": "36835d6e079d5f0b1a8e65e033b97d0bb45c3507c3a2f93368c79f9fb0729e31"
+    },
+    "docs/data/comparison/lagos--melbourne.bin": {
+      "bytes": 442368,
+      "sha256": "febe146b193cd131403e45a1b2fbcbac72d321c91f87797da3b5289803a50fac"
+    },
+    "docs/data/comparison/lagos.bin": {
+      "bytes": 368640,
+      "sha256": "be94f2e310c759a0841d5d5724bcd45361d9028b923f1ee62838bc96833eb5be"
+    },
+    "docs/data/comparison/lagos.webp": {
+      "bytes": 15804,
+      "sha256": "f602026988172f4719764a3e23b95ff16fb2ec85403d7b980673dcdf6ea2d652"
+    },
+    "docs/data/comparison/london--buenos_aires.bin": {
+      "bytes": 442368,
+      "sha256": "eb7c9bf6ed6ce79cbcc6f5fd3a10eef9eb5e0431aadabffa09beeba5e8b7758a"
+    },
+    "docs/data/comparison/london--dubai.bin": {
+      "bytes": 442368,
+      "sha256": "7f6eb9c52f8ca464dabaa88df22edbf1618723aa21e9a03624d9febb4a339f8b"
+    },
+    "docs/data/comparison/london--lagos.bin": {
+      "bytes": 442368,
+      "sha256": "52dad36b332e61cc861da46b52cb745cf77e11e5fe43eccf66b514b12aab3b8b"
+    },
+    "docs/data/comparison/london--melbourne.bin": {
+      "bytes": 442368,
+      "sha256": "af1fd90acb4ed6f9ca65dad49200dac7f787148dcde45e65eb10e85f926d8b8d"
+    },
+    "docs/data/comparison/london--new_york.bin": {
+      "bytes": 442368,
+      "sha256": "5e2e8b6a04524e840939430ed247ee23f01b7190517511e6c00fe1e3909c1a0c"
+    },
+    "docs/data/comparison/london.bin": {
+      "bytes": 368640,
+      "sha256": "c2853010add01ad4b52e509c4b712d40871f0462e22421cda1c1d622ab5b0f94"
+    },
+    "docs/data/comparison/london.webp": {
+      "bytes": 24380,
+      "sha256": "e14e3a4642dd36a1afc647eb7d9ad6ef7b54f4debef190591c89db9d458cf01d"
+    },
+    "docs/data/comparison/manifest.json": {
+      "bytes": 18883,
+      "sha256": "1aa9270f7ee089ec98f0f132d410e975fce6c11e7d98f69b5c1d9fb0363675d6"
+    },
+    "docs/data/comparison/melbourne.bin": {
+      "bytes": 368640,
+      "sha256": "566d81c557da780520cf05b29866dcc4a22e0c0264d7f60b174f0bb923f645bf"
+    },
+    "docs/data/comparison/melbourne.webp": {
+      "bytes": 18842,
+      "sha256": "94a7ca94d548498b0debc76f36fab6f157431b0d5a12ffe19032baf3748be86d"
+    },
+    "docs/data/comparison/mexico_city--buenos_aires.bin": {
+      "bytes": 442368,
+      "sha256": "dfb06920604097103395551c8b0751d7f3ed9fbaa67fabd7f3e598b1334e1e37"
+    },
+    "docs/data/comparison/mexico_city--dubai.bin": {
+      "bytes": 442368,
+      "sha256": "fd4fa17f59c8955505eb3cad5acf1e9c4b07b27fa498156b06297b06ea588657"
+    },
+    "docs/data/comparison/mexico_city--lagos.bin": {
+      "bytes": 442368,
+      "sha256": "d9c5657cec0617eb4bcefb6647d3aefb3e717db935b0f8293aeb777b4da46793"
+    },
+    "docs/data/comparison/mexico_city--london.bin": {
+      "bytes": 442368,
+      "sha256": "d28163e7cbfc1aa3707f8dada3dc7fa187785229b8ef5b1897ebddcaa4215377"
+    },
+    "docs/data/comparison/mexico_city--melbourne.bin": {
+      "bytes": 442368,
+      "sha256": "3e1a384978f5a7db8e181f935e6a682b55e0fdee41bc219b4dfe46437d583f32"
+    },
+    "docs/data/comparison/mexico_city--new_york.bin": {
+      "bytes": 442368,
+      "sha256": "eeae3e453e86d20b0ce90c48104651a997e3a741701720c235e12a74b6acd343"
+    },
+    "docs/data/comparison/mexico_city.bin": {
+      "bytes": 368640,
+      "sha256": "83a61e58691ec96e0e2ccbafec6b9beb35e198e2a06e43df27783f1c7794eeea"
+    },
+    "docs/data/comparison/mexico_city.webp": {
+      "bytes": 23790,
+      "sha256": "a42a6a80f766b5bf3b9e7e5b178015fe049f7c3845e952f5348021ac78e71e7a"
+    },
+    "docs/data/comparison/new_york--buenos_aires.bin": {
+      "bytes": 442368,
+      "sha256": "028661983ce88bdaed098593213e4fcef8453e83ab4bb05036ade59fc1a3317c"
+    },
+    "docs/data/comparison/new_york--dubai.bin": {
+      "bytes": 442368,
+      "sha256": "af12721d2097a1b99083056d1a1feb853b235f2eddf97f6cb1ccc83ef2e803a6"
+    },
+    "docs/data/comparison/new_york--lagos.bin": {
+      "bytes": 442368,
+      "sha256": "b4e590bb25ccd80dacdeea33af2af56ec5f96c86d1c65a42ca3ff2dc6b88a417"
+    },
+    "docs/data/comparison/new_york--melbourne.bin": {
+      "bytes": 442368,
+      "sha256": "1449f9a6430243ad2a443fafee6461ef0beb596bdd980115716551adc51172f1"
+    },
+    "docs/data/comparison/new_york.bin": {
+      "bytes": 368640,
+      "sha256": "06ddebd6726b16b763b4fa7fbc03a5c0b492ab1b5a866f64eab79511b2d5a3fd"
+    },
+    "docs/data/comparison/new_york.webp": {
+      "bytes": 17052,
+      "sha256": "30c0b6e695d63c3b10503970a16c50da9358a4aae0868dbd794b12514973e693"
+    },
+    "docs/data/comparison/singapore--buenos_aires.bin": {
+      "bytes": 442368,
+      "sha256": "2203b369e14622c5cdcf9703809a65070f8c50e8c0554541ee1bffc30e6b512d"
+    },
+    "docs/data/comparison/singapore--dubai.bin": {
+      "bytes": 442368,
+      "sha256": "1dc4cd420d6bc9e8c77c32f3f31324c02f59c9918b15735fe935db2d8a47e09f"
+    },
+    "docs/data/comparison/singapore--lagos.bin": {
+      "bytes": 442368,
+      "sha256": "1181f79fb3ef8a2958a204cb9b88aa85c1b906c7d1c027e9d33db8f6dc40dc75"
+    },
+    "docs/data/comparison/singapore--london.bin": {
+      "bytes": 442368,
+      "sha256": "3f647fc3383de8e893d8136a0902e9d332ee2d6d157eee4d95cf5309ec5e31e4"
+    },
+    "docs/data/comparison/singapore--melbourne.bin": {
+      "bytes": 442368,
+      "sha256": "d597be1485e48b35b0c0e9899bbb908ffa3904e4b712883732d65e4818cc5183"
+    },
+    "docs/data/comparison/singapore--mexico_city.bin": {
+      "bytes": 442368,
+      "sha256": "81d07a7852e70ff11b1ad77ffe5fb6d10420890f20796eb519ca5203f525cd0f"
+    },
+    "docs/data/comparison/singapore--new_york.bin": {
+      "bytes": 442368,
+      "sha256": "024dc1283d0b45064c99fa7d788b6aa71056247bbe7838df47fd4a0374b0ae3d"
+    },
+    "docs/data/comparison/singapore.bin": {
+      "bytes": 368640,
+      "sha256": "bdbde37f5a251f54ddf2faa4a25283bc75d1d06a548cee5da04e79d4727ab33f"
+    },
+    "docs/data/comparison/singapore.webp": {
+      "bytes": 18552,
+      "sha256": "38529cda839f19f330766303d6b875736c67e866870ae6cf00b4c9cfcccca08f"
+    },
+    "docs/data/comparison/statistics.json": {
+      "bytes": 127544,
+      "sha256": "973d8f1ebe97e86e65fa71991949396c88a0f38b0596f812e3965558ada79519"
+    },
+    "docs/data/joint-adapter-v2/manifest.json": {
+      "bytes": 28982,
+      "sha256": "b8e8a86f998634603272a4a5afab3420652d9b071a673830e91f56e58a592b2d"
+    },
+    "docs/data/joint-adapter-v2/observations.bin.gz": {
+      "bytes": 110350,
+      "sha256": "d11c4c43b592c9419fce9a3ed6bd2d6f8e9ffdcfed6919bd5d6b9d3560529ecf"
+    },
+    "docs/data/joint-adapter-v2/projections/baseline.bin.gz": {
+      "bytes": 93355,
+      "sha256": "721d5fd142b18959a8c5ff80656a1eb576f98589239493ee53f3aa0f2495bd34"
+    },
+    "docs/data/joint-adapter-v2/projections/center.bin.gz": {
+      "bytes": 93489,
+      "sha256": "2e89598a2578176d1b93e4b74d25960ed6857e35503852ec987fc8a69f7dab7d"
+    },
+    "docs/data/joint-adapter-v2/projections/g00_00.bin.gz": {
+      "bytes": 93590,
+      "sha256": "63a4ff88f3b66bbff73adbd1f8ecae0f11b6da3a70ab145d61ccec9417c2d5f3"
+    },
+    "docs/data/joint-adapter-v2/projections/g00_01.bin.gz": {
+      "bytes": 93150,
+      "sha256": "64e62596927476e7f41b7e11c54f0db873c3dc3aa0a2bd5b33e3dccbd23d3f63"
+    },
+    "docs/data/joint-adapter-v2/projections/g00_02.bin.gz": {
+      "bytes": 92829,
+      "sha256": "9fca6e6459bd3197e3f15e60ae9a0e4d220ce5f84f8d83937c93ae3884e0ee0a"
+    },
+    "docs/data/joint-adapter-v2/projections/g00_03.bin.gz": {
+      "bytes": 93164,
+      "sha256": "c5e1458d6a575380c076e45789477d3017006cd2417b6c9504590d636dc4d281"
+    },
+    "docs/data/joint-adapter-v2/projections/g00_04.bin.gz": {
+      "bytes": 92912,
+      "sha256": "fcafd2f10f0ebf5a5caa9697435cf1915d4217a8ced8ec4249e7ee0ab53ab675"
+    },
+    "docs/data/joint-adapter-v2/projections/g00_05.bin.gz": {
+      "bytes": 92972,
+      "sha256": "dbb157bfcc3ba1f2f25e86aefcbaabbeab609db11eaa629444556b23181765b8"
+    },
+    "docs/data/joint-adapter-v2/projections/g00_06.bin.gz": {
+      "bytes": 93312,
+      "sha256": "f9ed1c1c2f498bd355c6a83d654a04dc45439b024c3b7dbbb9de275167b49235"
+    },
+    "docs/data/joint-adapter-v2/projections/g00_07.bin.gz": {
+      "bytes": 93804,
+      "sha256": "df1138da316d47c995e53d1c57511d24d8550476877265e5732504c747e0305f"
+    },
+    "docs/data/joint-adapter-v2/projections/g00_08.bin.gz": {
+      "bytes": 93955,
+      "sha256": "dbaeb20fd72778018c550f0c0c3b74812925c689ea59052873807a330edb7c39"
+    },
+    "docs/data/joint-adapter-v2/projections/g00_09.bin.gz": {
+      "bytes": 94173,
+      "sha256": "decabeb7b7e8207a712efd7418ea1ff767ea52e18ab7983515677ee0fb495d48"
+    },
+    "docs/data/joint-adapter-v2/projections/g00_10.bin.gz": {
+      "bytes": 93449,
+      "sha256": "e54d3475df914d51d87fb9a233eacc6a315ae326feaf18c15a54462a83a37cf0"
+    },
+    "docs/data/joint-adapter-v2/projections/g01_00.bin.gz": {
+      "bytes": 92422,
+      "sha256": "4ca36a02bdfd9f3873f111a3caefa8aef6ff4d756ce7cebeb5fc202562967ac2"
+    },
+    "docs/data/joint-adapter-v2/projections/g01_01.bin.gz": {
+      "bytes": 92872,
+      "sha256": "fceaa85142fbd73f1c303438ca1eafb7a28a07c1dca4aa978706ae6199cce38f"
+    },
+    "docs/data/joint-adapter-v2/projections/g01_02.bin.gz": {
+      "bytes": 92876,
+      "sha256": "efecd7d701fa6a2db6f9fa58b3b288acc7730beea052b1a01b674fd5a21234be"
+    },
+    "docs/data/joint-adapter-v2/projections/g01_03.bin.gz": {
+      "bytes": 92752,
+      "sha256": "c679fdd005c99ffd62f780ee9a29bb4c218c058911b479f99c0fe3a6354368f5"
+    },
+    "docs/data/joint-adapter-v2/projections/g01_04.bin.gz": {
+      "bytes": 93064,
+      "sha256": "f79bfb756234f87b959d7eeb9c5b323b8e9a4d0a71bdb755ac79c0d89671449c"
+    },
+    "docs/data/joint-adapter-v2/projections/g01_05.bin.gz": {
+      "bytes": 93192,
+      "sha256": "687c8be8951198a0221a9d44f1e8691065a04d8f0603c4fd2e9fabec308dfbd9"
+    },
+    "docs/data/joint-adapter-v2/projections/g01_06.bin.gz": {
+      "bytes": 93001,
+      "sha256": "de96f70b8df41ae4ea078493359523f3fc71cd6f0322020149040b0523243191"
+    },
+    "docs/data/joint-adapter-v2/projections/g01_07.bin.gz": {
+      "bytes": 92920,
+      "sha256": "25589c8217c2306b1ccdba01e058d1ddd9cd6a3f59430532b84c8df3ef4243f4"
+    },
+    "docs/data/joint-adapter-v2/projections/g01_08.bin.gz": {
+      "bytes": 92936,
+      "sha256": "89c7f522e03a33547a36b5a5e4dc0d3f422e899aac53d7894d2fdce3b57a0aae"
+    },
+    "docs/data/joint-adapter-v2/projections/g01_09.bin.gz": {
+      "bytes": 92987,
+      "sha256": "c2d031f05ee21c5231fb2e3dd71591c024796b062490010c8b9c6624c8a244a7"
+    },
+    "docs/data/joint-adapter-v2/projections/g02_00.bin.gz": {
+      "bytes": 92662,
+      "sha256": "536e34412bddb2295b3562a98b96c3ddf92293105c47e4a01439e8296d46b37f"
+    },
+    "docs/data/joint-adapter-v2/projections/g02_01.bin.gz": {
+      "bytes": 93018,
+      "sha256": "b3700191c9e8d1db89e5e0847ff155bdb13535e5613850c14a96ae3549539010"
+    },
+    "docs/data/joint-adapter-v2/projections/g02_02.bin.gz": {
+      "bytes": 92959,
+      "sha256": "823e7a140045f5ca35f56fd6e7d163d2b7cad55abf38cba06a5126444df7da48"
+    },
+    "docs/data/joint-adapter-v2/projections/g02_03.bin.gz": {
+      "bytes": 93328,
+      "sha256": "347e6aec8aff7926bf58b80ded01a11914fe96609ec199defe3978bbc627f92e"
+    },
+    "docs/data/joint-adapter-v2/projections/g02_04.bin.gz": {
+      "bytes": 93278,
+      "sha256": "26d56f1c2b984f0fe08f05345c541bcd64f99a0d0051fabe4844e317db9818fd"
+    },
+    "docs/data/joint-adapter-v2/projections/g02_05.bin.gz": {
+      "bytes": 93401,
+      "sha256": "7158f3af1e43c32b18c34427da3e962600a1e19c7a24e858be932c2c7418f93d"
+    },
+    "docs/data/joint-adapter-v2/projections/g02_06.bin.gz": {
+      "bytes": 93369,
+      "sha256": "a6af0c37b3d6e6daa128057e52ef454ef5101ece6a35af501d096f3178d39b9d"
+    },
+    "docs/data/joint-adapter-v2/projections/g02_07.bin.gz": {
+      "bytes": 93380,
+      "sha256": "dac1677f818abdb719415d4740c73feeecd8338a3196f5fc53f5394cfd52401c"
+    },
+    "docs/data/joint-adapter-v2/projections/g02_08.bin.gz": {
+      "bytes": 93397,
+      "sha256": "6152f03b56f3310a0ad8ddfc370486cf88d9300f36738fc7228ff8360fdb9ee5"
+    },
+    "docs/data/joint-adapter-v2/projections/g03_00.bin.gz": {
+      "bytes": 93374,
+      "sha256": "5747ea12e73d937a9672c87f49c8b55426c445cf40e277dde5beacefbd951c1c"
+    },
+    "docs/data/joint-adapter-v2/projections/g03_01.bin.gz": {
+      "bytes": 93575,
+      "sha256": "d8d8ed965e997b5cfcf48cdd6888af5491dc7e2a882e8695cbf494c922567c38"
+    },
+    "docs/data/joint-adapter-v2/projections/g03_02.bin.gz": {
+      "bytes": 93120,
+      "sha256": "7372520eb29b0b8a483f902be18f14a1379717c54e52f2fce39f6b7a8b8f38d0"
+    },
+    "docs/data/joint-adapter-v2/projections/g03_03.bin.gz": {
+      "bytes": 93361,
+      "sha256": "af1a5c5caaa233c0920a9d9db4ddff90a2a71ad7615e2160dc6cf8290bec2721"
+    },
+    "docs/data/joint-adapter-v2/projections/g03_04.bin.gz": {
+      "bytes": 93496,
+      "sha256": "e0ca04868f10d21f43b227f8039ef31d2c0269218e300a0b142b05a2cf240eb6"
+    },
+    "docs/data/joint-adapter-v2/projections/g03_05.bin.gz": {
+      "bytes": 93580,
+      "sha256": "24cb11a314c99636e7bb7b51841c98504c5d2faa6b69043eb11e221e4aed71b1"
+    },
+    "docs/data/joint-adapter-v2/projections/g03_06.bin.gz": {
+      "bytes": 93607,
+      "sha256": "c13269f29a7685bf1cbfc55a8f929afed02f992a417bb61d11064b8e486b1f26"
+    },
+    "docs/data/joint-adapter-v2/projections/g03_07.bin.gz": {
+      "bytes": 93678,
+      "sha256": "17a498d1f573b2c99f5dc86e69cba1e54c45f70049cb5f889c3826b5992f4fa3"
+    },
+    "docs/data/joint-adapter-v2/projections/g04_00.bin.gz": {
+      "bytes": 93731,
+      "sha256": "40dfad0db6141901930e6c8e4c2d67757056f02c815e25d04f9b0caa37a4e0d8"
+    },
+    "docs/data/joint-adapter-v2/projections/g04_01.bin.gz": {
+      "bytes": 93793,
+      "sha256": "76f56752f5cf71ac5de05b56e006a66b89f5cf17b060fd4546a54890f26a2866"
+    },
+    "docs/data/joint-adapter-v2/projections/g04_02.bin.gz": {
+      "bytes": 93604,
+      "sha256": "7be6ddb1f704b52e216aede79e3d85f8ca2e5c2847a2f05a7bcb377dca4721bf"
+    },
+    "docs/data/joint-adapter-v2/projections/g04_03.bin.gz": {
+      "bytes": 93780,
+      "sha256": "571fb715fa0d196927781fe01d5af4f0fb62b72a5fa448ecfb096e7f72f160f5"
+    },
+    "docs/data/joint-adapter-v2/projections/g04_04.bin.gz": {
+      "bytes": 93758,
+      "sha256": "331f9703fcc1583b12ad0d7712dc1de46a1c7865ba4abe3a4e00eed39199d43f"
+    },
+    "docs/data/joint-adapter-v2/projections/g04_05.bin.gz": {
+      "bytes": 94168,
+      "sha256": "e6eea080785904b9bfbcbb2cf7685f95ec361999e3e14949933078bde84c4f78"
+    },
+    "docs/data/joint-adapter-v2/projections/g04_06.bin.gz": {
+      "bytes": 93980,
+      "sha256": "7eb33935c387591436f09189a2b4c57e199a88567cfc3b828e1ec00bb05deb52"
+    },
+    "docs/data/joint-adapter-v2/projections/g05_00.bin.gz": {
+      "bytes": 93901,
+      "sha256": "da2bc9d2660e89fb0bfe5dba4cf974de6786bc70edd3f84539f943350a178e94"
+    },
+    "docs/data/joint-adapter-v2/projections/g05_01.bin.gz": {
+      "bytes": 93817,
+      "sha256": "65cbd47a28449ef98f165fbead999ba89d6b48586dd92b609ca4ff124e757ddf"
+    },
+    "docs/data/joint-adapter-v2/projections/g05_02.bin.gz": {
+      "bytes": 93761,
+      "sha256": "a5f5dbcec7bc75b37e229b15c78e6b584bd8667533855902527973d0bc537658"
+    },
+    "docs/data/joint-adapter-v2/projections/g05_03.bin.gz": {
+      "bytes": 93774,
+      "sha256": "cb58ce6fb2d8dc2fee9722f4a16f3df89dc780263f7c1a211ba77c5489146a52"
+    },
+    "docs/data/joint-adapter-v2/projections/g05_04.bin.gz": {
+      "bytes": 94258,
+      "sha256": "260c29a3f1dd7acbe90529cb85d9220c062840bbb6218c5c54959c0d1679c741"
+    },
+    "docs/data/joint-adapter-v2/projections/g05_05.bin.gz": {
+      "bytes": 94200,
+      "sha256": "9467b47219c009fc00064de44fcb969f52ac3d18249c9ae5b45ad184deb9880c"
+    },
+    "docs/data/joint-adapter-v2/projections/g06_00.bin.gz": {
+      "bytes": 93781,
+      "sha256": "18fcd57d3b6da92a2d57546df27b065d19149b232afd6bf7980e75a9ca4d905b"
+    },
+    "docs/data/joint-adapter-v2/projections/g06_01.bin.gz": {
+      "bytes": 93931,
+      "sha256": "7b767fc4a0d6c05800cd373fd781b60950ed782f48944c623250697310cf77d1"
+    },
+    "docs/data/joint-adapter-v2/projections/g06_02.bin.gz": {
+      "bytes": 94014,
+      "sha256": "71a2dff64a32a48ffae068bd826992a2587361cb72856bb7e7595442bbac219e"
+    },
+    "docs/data/joint-adapter-v2/projections/g06_03.bin.gz": {
+      "bytes": 94309,
+      "sha256": "2f0c8aa8726e14a5791da74edc5481a2797114a233aa4c5dcb913266a3435b66"
+    },
+    "docs/data/joint-adapter-v2/projections/g06_04.bin.gz": {
+      "bytes": 94265,
+      "sha256": "5bc7970264969afa4eb35eca008ec7433bcf0fc0d0c996afbab4b6b64495c80a"
+    },
+    "docs/data/joint-adapter-v2/projections/g07_00.bin.gz": {
+      "bytes": 94069,
+      "sha256": "043cb69806e7b4beac7190aa4818d64e0d6208a398032fa04cf752041138907f"
+    },
+    "docs/data/joint-adapter-v2/projections/g07_01.bin.gz": {
+      "bytes": 94179,
+      "sha256": "1557049c127fc3e57b858eb8b8c8a00a097b9c48c9a321f214fcee4109bc2f6a"
+    },
+    "docs/data/joint-adapter-v2/projections/g07_02.bin.gz": {
+      "bytes": 94125,
+      "sha256": "e09c8d44d6368dad0354b1aa1abb19e520e178f1fdceeee5d89196f1533b471c"
+    },
+    "docs/data/joint-adapter-v2/projections/g07_03.bin.gz": {
+      "bytes": 94486,
+      "sha256": "52f80011973e8f1ae750d5edf05b5dae5d4be0974a61fc84a336b051e0acb82d"
+    },
+    "docs/data/joint-adapter-v2/projections/g08_00.bin.gz": {
+      "bytes": 94135,
+      "sha256": "044613dfb7701df34f512895963504e44768e096cb86f8033b6fec2cf02955a4"
+    },
+    "docs/data/joint-adapter-v2/projections/g08_01.bin.gz": {
+      "bytes": 94278,
+      "sha256": "7252f0e9c5891d5ad12d8f41ef7d9efc556880deda2457be7ace25f6be9a243d"
+    },
+    "docs/data/joint-adapter-v2/projections/g08_02.bin.gz": {
+      "bytes": 94448,
+      "sha256": "4bdeea465e03f99d18e7628d1fd2ca4331f228a8256953482266065b0eb737bd"
+    },
+    "docs/data/joint-adapter-v2/projections/g09_00.bin.gz": {
+      "bytes": 94451,
+      "sha256": "0fd17f2e678ace101ec6182e4fa843a6c395ff87e9c73a0e6593649a1895f35d"
+    },
+    "docs/data/joint-adapter-v2/projections/g09_01.bin.gz": {
+      "bytes": 94584,
+      "sha256": "84058cbda0965ee4ba4a8c9ece9f3c60e132735aec7fa0fa71334b056351895d"
+    },
+    "docs/data/joint-adapter-v2/projections/g10_00.bin.gz": {
+      "bytes": 94607,
+      "sha256": "e15a76bcf2f6e08bb31ea56445c900c151e238416d3921d2b7bed4db5e9373d8"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_00.bin.gz": {
+      "bytes": 92710,
+      "sha256": "62ae24d691726032834364a71298d96e392c1b2ba187bef38d81b57ebe0f8710"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_01.bin.gz": {
+      "bytes": 93822,
+      "sha256": "4aa8ea8b83d05a99d39ab3e785c4298b61e00f202c4fd19f91b87d8d59c6d02d"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_02.bin.gz": {
+      "bytes": 93514,
+      "sha256": "d26316961af5f6db20ba2e1bbd8dae221bd66c36f591526c7210277aff2d325a"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_03.bin.gz": {
+      "bytes": 93517,
+      "sha256": "1eca9d139fd83cc0f638c53948aa7872fd5f0977f164da9358c2e997726443c1"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_04.bin.gz": {
+      "bytes": 93812,
+      "sha256": "9a8e0b278078f156d6cbb0b06ecb989979169909b45a4bc0e24a6a6bae2ca75b"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_05.bin.gz": {
+      "bytes": 93662,
+      "sha256": "9b5fab09e298d3b9d0b3a44f7d5e032db98248536364c355dbf194fcf81a0bb8"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_06.bin.gz": {
+      "bytes": 93694,
+      "sha256": "c14c9f4d38ef3b538e0da06be5a7df9cc6b0443a2a41d0cf187d2419d6ccc0f3"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_07.bin.gz": {
+      "bytes": 93768,
+      "sha256": "5376b40817efaeda5b520963bb8e3d2064f698d0c9b6885b4fd1b3860450de36"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_08.bin.gz": {
+      "bytes": 93492,
+      "sha256": "476a64302bb8c8ba5ccba5357fbb55450450f7cd89af88115ef29764e562e76b"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_09.bin.gz": {
+      "bytes": 93969,
+      "sha256": "b4d4acbff375c4fbdaa1638d4121d22b71a1436d4b1a869bb5a1e90f816eacf6"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_10.bin.gz": {
+      "bytes": 93047,
+      "sha256": "07f03ffd4b948e9ee21efe662572c4beead7ddafc254ecc40a113e9e99a8da04"
+    },
+    "docs/data/joint-adapter-v2/projections/offgrid_11.bin.gz": {
+      "bytes": 93032,
+      "sha256": "353b2516884a1181a3ae854836a9e94cfa6bd65b354175b4194e6fd3c5c1e2bd"
+    },
+    "docs/data/joint-adapter-v2/scores.json": {
+      "bytes": 73513,
+      "sha256": "9a3d1edba570662d43dffb5e587f44993c096db3573c21faaeb79416cec43ff0"
+    },
+    "docs/data/singapore_story.json": {
+      "bytes": 1467367,
+      "sha256": "33fd282732fe7a86dbb56d4d2ad10a0e45394c1fb6a82740bf32509c28a551fb"
+    },
+    "docs/data/story_v2.json": {
+      "bytes": 2061089,
+      "sha256": "e40ea3a7525ac8422eb2ba25e42c41057c6fb6f8e99d0f5a879aaa9790d9e648"
+    },
+    "docs/data/world_kde_front.png": {
+      "bytes": 37728,
+      "sha256": "c97f6167d05cf04064ba05135360c60326996c7a150d7d056b772fa265309177"
+    },
+    "docs/data/world_kde_manifest.json": {
+      "bytes": 470,
+      "sha256": "7de8fa579fd437042c3f8dc9395682f4af449b8e53aaed8c0b3c74f5acf31cda"
+    },
+    "docs/data/world_kde_rear.png": {
+      "bytes": 10694,
+      "sha256": "58f996d46cee4cc1fb58597708c082d7258c3cf428d5a5f3cf20f6e30819e0f4"
+    },
+    "docs/favicon.ico": {
+      "bytes": 7429,
+      "sha256": "2c2c72ce035add66b005741c9c5de6219a3f455dd3dd3930b006165b2afb5544"
+    },
+    "docs/favicon.png": {
+      "bytes": 6286,
+      "sha256": "9d6094a803e1892000a7aa332d52f6128e9f2deb2e824f4bee14c18b87296a50"
+    },
+    "docs/index.html": {
+      "bytes": 25544,
+      "sha256": "199ae595308dce37b2c5a2e12c66c3b1e03f0d773dc8870f771335957453c2ab"
+    },
+    "docs/joint-adapter-data.mjs": {
+      "bytes": 10029,
+      "sha256": "b3f9ad984b57c68138e7af7a26a9eb998d4585be4a749e82df52485dec762981"
+    },
+    "docs/joint-adapter-view.mjs": {
+      "bytes": 17046,
+      "sha256": "a978b05aa9a897326121faa5b90510a7393f6b0998e444414bbd98b1a9ba99c1"
+    },
+    "docs/joint-adapter.css": {
+      "bytes": 9396,
+      "sha256": "fb8286a08cc8dc812c6fc82489fb2649c0d2539bb5c8e98e5c04d3fe3324fa88"
+    },
+    "docs/joint-adapter.js": {
+      "bytes": 1169,
+      "sha256": "45d1b3a23ded0a2f86e6020f3d0845ca8a78f90840f9511dc321eeea346598fd"
+    },
+    "docs/styles.css": {
+      "bytes": 8441,
+      "sha256": "141f8b6da8e95b6987f218ada7aa379c0d509a07eed15d354e52e5e3c6fd77af"
+    }
+  }
+}
