@@ -19,7 +19,12 @@
   const SG0 = 0;
   const MX0 = NCELL;
   const GB0 = 2 * NCELL;
-  let NT = 0; // total marks, set after load
+  const GLOBE_COUNT = 1000;
+  const V2_SCENES = new Set([
+    "mx_map", "pair", "frame", "dou", "collapse",
+    "globe_continent", "globe_climate", "globe_pop", "finale",
+  ]);
+  const NT = 2 * NCELL + GLOBE_COUNT;
 
   let data = null; // Act I Singapore story
   let v2 = null; // Act II-IV story
@@ -28,6 +33,11 @@
   let tx, ty, tr, tg, tb, ta, ts;
   let sx, sy, sr, sg_, sb, sa, ss;
   let drawOrder = null;
+  let activeBuffer = null;
+  let activeMarks = null;
+  let singaporePainterOrder = null;
+  let v2Promise = null;
+  let pendingV2Scene = null;
 
   let stage = { w: 0, h: 0, cx: 0, cy: 0, cell: 3, mapSize: 0 };
   let scene = "map";
@@ -35,6 +45,7 @@
   let animE = 1;
   let animStart = 0;
   let animating = false;
+  let animationFrame = 0;
   const DURATION = reduced ? 0 : 1150;
 
   /* Colour is the manuscript's. See site/AESTHETIC_PORT.md for the citations;
@@ -281,8 +292,11 @@
   // the same global basis and camera. Shown on the closing globe.
   const kdeFront = new Image();
   const kdeRear = new Image();
-  kdeFront.src = "data/world_kde_front.png";
-  kdeRear.src = "data/world_kde_rear.png";
+  for (const image of [kdeFront, kdeRear]) {
+    image.addEventListener("load", () => {
+      if (scene === "finale" && !animating) draw();
+    });
+  }
 
   function sceneShowsKde(name) {
     return name === "finale";
@@ -481,6 +495,14 @@
       }
     }
 
+    // The global payload is fetched only when Act II approaches. Until then,
+    // keep its reserved marks dormant and avoid blocking the opening story on
+    // two megabytes of unrelated JSON parsing.
+    if (!v2) {
+      for (let i = MX0; i < NT; i++) hideMark(i);
+      return;
+    }
+
     // --- Mexico City cells
     for (let k = 0; k < NCELL; k++) {
       const i = MX0 + k;
@@ -543,19 +565,35 @@
   }
 
   function beginTransition(name) {
+    if (V2_SCENES.has(name) && !v2) {
+      pendingV2Scene = name;
+      loadV2()
+        .then(() => {
+          const pending = pendingV2Scene;
+          pendingV2Scene = null;
+          if (pending) beginTransition(pending);
+        })
+        .catch((err) => {
+          captionEl.textContent = "DATA FAILED TO LOAD: " + err.message;
+        });
+      return;
+    }
     prevScene = scene;
     animE = 0;
     scene = name;
     sx.set(px); sy.set(py); sr.set(pr); sg_.set(pg); sb.set(pb); sa.set(pa); ss.set(ps);
     setTargets(name);
+    updateActiveMarks(true);
+    const transitionChanged = transitionHasChanges();
     updateChrome(name);
     animStart = performance.now();
-    animating = true;
-    if (reduced) {
+    animating = transitionChanged;
+    if (reduced || !animating) {
       snapToTargets();
       animating = false;
+      updateActiveMarks(false);
       draw();
-    }
+    } else scheduleAnimation();
   }
 
   function snapToTargets() {
@@ -563,16 +601,44 @@
     animE = 1;
   }
 
+  function updateActiveMarks(includeSource) {
+    if (!drawOrder || !activeBuffer) return;
+    let count = 0;
+    for (let k = 0; k < drawOrder.length; k++) {
+      const i = drawOrder[k];
+      if (ta[i] > 0.004 || (includeSource && sa[i] > 0.004)) activeBuffer[count++] = i;
+    }
+    activeMarks = activeBuffer.subarray(0, count);
+  }
+
+  function transitionHasChanges() {
+    for (let k = 0; k < activeMarks.length; k++) {
+      const i = activeMarks[k];
+      if (
+        sx[i] !== tx[i] || sy[i] !== ty[i] || sr[i] !== tr[i] ||
+        sg_[i] !== tg[i] || sb[i] !== tb[i] || sa[i] !== ta[i] ||
+        ss[i] !== ts[i]
+      ) return true;
+    }
+    return false;
+  }
+
   function ease(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
 
+  function scheduleAnimation() {
+    if (!animationFrame) animationFrame = requestAnimationFrame(tick);
+  }
+
   function tick(now) {
+    animationFrame = 0;
     if (animating) {
       const t = Math.min((now - animStart) / DURATION, 1);
       const e = ease(t);
       animE = e;
-      for (let i = 0; i < NT; i++) {
+      for (let k = 0; k < activeMarks.length; k++) {
+        const i = activeMarks[k];
         px[i] = sx[i] + (tx[i] - sx[i]) * e;
         py[i] = sy[i] + (ty[i] - sy[i]) * e;
         pr[i] = sr[i] + (tr[i] - sr[i]) * e;
@@ -581,14 +647,14 @@
         pa[i] = sa[i] + (ta[i] - sa[i]) * e;
         ps[i] = ss[i] + (ts[i] - ss[i]) * e;
       }
-      if (t >= 1) animating = false;
+      if (t >= 1) {
+        animating = false;
+        snapToTargets();
+        updateActiveMarks(false);
+      }
       draw();
+      if (animating) scheduleAnimation();
     }
-    // Scroll events coalesce (and can be dropped outright) under fast
-    // programmatic scrolling, so the progress sphere is sampled here too; the
-    // 0.004 threshold makes it a no-op on almost every frame.
-    updateProgressSphere(false);
-    requestAnimationFrame(tick);
   }
 
   function draw() {
@@ -607,8 +673,8 @@
       drawSphere(into[i][0], into[i][1], into[i][2], e, sceneShowsKde(scene));
 
     const base = Math.max(stage.cell, 1.6);
-    for (let k = 0; k < NT; k++) {
-      const i = drawOrder[k];
+    for (let k = 0; k < activeMarks.length; k++) {
+      const i = activeMarks[k];
       if (pa[i] <= 0.004) continue;
       const s = base * ps[i];
       ctx.globalAlpha = pa[i];
@@ -757,6 +823,8 @@
   const psCtx = psCanvas ? psCanvas.getContext("2d") : null;
   let psImage = null;
   let psLast = -1;
+  let psFrame = 0;
+  let psForce = false;
 
   function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
   function smoothstep(a, b, x) {
@@ -891,10 +959,22 @@
     psLast = p;
     renderProgressSphere(p);
   }
+
+  function scheduleProgressSphere(force) {
+    psForce = psForce || force;
+    if (psFrame) return;
+    psFrame = requestAnimationFrame(() => {
+      psFrame = 0;
+      const shouldForce = psForce;
+      psForce = false;
+      updateProgressSphere(shouldForce);
+    });
+  }
+
   if (psCtx) {
     updateProgressSphere(true);
-    window.addEventListener("scroll", () => updateProgressSphere(false), { passive: true });
-    window.addEventListener("resize", () => updateProgressSphere(true));
+    window.addEventListener("scroll", () => scheduleProgressSphere(false), { passive: true });
+    window.addEventListener("resize", () => scheduleProgressSphere(true));
   }
 
   function fillMetrics() {
@@ -912,6 +992,7 @@
         .map((m) => `<div class="metric-card"><div class="value">${m[0]}</div><div class="label">${m[1]}</div></div>`)
         .join("");
     }
+    if (!v2) return;
     const g = v2.stats;
     const globe = document.getElementById("globe-metrics");
     if (globe) {
@@ -926,69 +1007,99 @@
     }
   }
 
+  function buildPainterOrder() {
+    const p = [0, 0, 0];
+    if (!singaporePainterOrder) {
+      singaporePainterOrder = Array.from({ length: NCELL }, (_, k) => k);
+      const depth = new Float32Array(NCELL);
+      for (let k = 0; k < NCELL; k++) {
+        sphPos(data.sphereArr, k, 0, 0, 1, p);
+        depth[k] = p[2];
+      }
+      singaporePainterOrder.sort((a, b) => depth[a] - depth[b]);
+    }
+
+    const mxOrder = Array.from({ length: NCELL }, (_, k) => k);
+    const globeOrder = Array.from({ length: GLOBE_COUNT }, (_, k) => k);
+    if (v2) {
+      const mxDepth = new Float32Array(NCELL);
+      for (let k = 0; k < NCELL; k++) {
+        sphPos(v2.mxPair, k, 0, 0, 1, p);
+        mxDepth[k] = p[2];
+      }
+      mxOrder.sort((a, b) => mxDepth[a] - mxDepth[b]);
+
+      const globeDepth = new Float32Array(GLOBE_COUNT);
+      for (let k = 0; k < GLOBE_COUNT; k++) {
+        sphPos(v2.globeArr, k, 0, 0, 1, p);
+        globeDepth[k] = p[2];
+      }
+      globeOrder.sort((a, b) => globeDepth[a] - globeDepth[b]);
+    }
+
+    let w = 0;
+    for (const k of singaporePainterOrder) drawOrder[w++] = SG0 + k;
+    for (const k of mxOrder) drawOrder[w++] = MX0 + k;
+    for (const k of globeOrder) drawOrder[w++] = GB0 + k;
+  }
+
+  function loadV2() {
+    if (v2Promise) return v2Promise;
+    v2Promise = fetch("data/story_v2.json")
+      .then((response) => {
+        if (!response.ok) throw new Error(`Story data returned ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        v2 = payload;
+        v2.sgPair = Int16Array.from(v2.sg.pair);
+        v2.sgGlobal = Int16Array.from(v2.sg.global);
+        v2.mxPair = Int16Array.from(v2.mx.pair);
+        v2.mxGlobal = Int16Array.from(v2.mx.global);
+        v2.globeArr = Int16Array.from(v2.globe.xyz);
+        v2.sgIndex = v2.sg.globe_index;
+        v2.mxIndex = v2.mx.globe_index;
+        v2.nGlobe = v2.globe.continent.length;
+        if (v2.nGlobe !== GLOBE_COUNT) {
+          throw new Error(`Expected ${GLOBE_COUNT} globe points, received ${v2.nGlobe}`);
+        }
+        buildPainterOrder();
+        fillMetrics();
+        kdeFront.src = "data/world_kde_front.png";
+        kdeRear.src = "data/world_kde_rear.png";
+        return v2;
+      });
+    return v2Promise;
+  }
+
   // ---- boot --------------------------------------------------------------
 
-  Promise.all([
-    fetch("data/singapore_story.json").then((r) => r.json()),
-    fetch("data/story_v2.json").then((r) => r.json()),
-  ])
-    .then(([payload, payload2]) => {
+  fetch("data/singapore_story.json")
+    .then((response) => {
+      if (!response.ok) throw new Error(`Story data returned ${response.status}`);
+      return response.json();
+    })
+    .then((payload) => {
       data = payload;
-      v2 = payload2;
       data.sphereArr = Int16Array.from(data.sphere);
-      v2.sgPair = Int16Array.from(v2.sg.pair);
-      v2.sgGlobal = Int16Array.from(v2.sg.global);
-      v2.mxPair = Int16Array.from(v2.mx.pair);
-      v2.mxGlobal = Int16Array.from(v2.mx.global);
-      v2.globeArr = Int16Array.from(v2.globe.xyz);
-      v2.sgIndex = v2.sg.globe_index;
-      v2.mxIndex = v2.mx.globe_index;
-      v2.nGlobe = v2.globe.continent.length;
-      NT = 2 * NCELL + v2.nGlobe;
 
       const mk = () => new Float32Array(NT);
       px = mk(); py = mk(); pr = mk(); pg = mk(); pb = mk(); pa = mk(); ps = mk();
       tx = mk(); ty = mk(); tr = mk(); tg = mk(); tb = mk(); ta = mk(); ts = mk();
       sx = mk(); sy = mk(); sr = mk(); sg_ = mk(); sb = mk(); sa = mk(); ss = mk();
 
-      // Static painter order: sg by local-sphere depth, mx by pair depth,
-      // globe dots last (drawn on top in globe scenes).
-      const p = [0, 0, 0];
-      const sgIdx = Array.from({ length: NCELL }, (_, k) => k);
-      const sgDepth = new Float32Array(NCELL);
-      for (let k = 0; k < NCELL; k++) {
-        sphPos(data.sphereArr, k, 0, 0, 1, p);
-        sgDepth[k] = p[2];
-      }
-      sgIdx.sort((a, b) => sgDepth[a] - sgDepth[b]);
-      const mxIdx = Array.from({ length: NCELL }, (_, k) => k);
-      const mxDepth = new Float32Array(NCELL);
-      for (let k = 0; k < NCELL; k++) {
-        sphPos(v2.mxPair, k, 0, 0, 1, p);
-        mxDepth[k] = p[2];
-      }
-      mxIdx.sort((a, b) => mxDepth[a] - mxDepth[b]);
-      const gbIdx = Array.from({ length: v2.nGlobe }, (_, k) => k);
-      const gbDepth = new Float32Array(v2.nGlobe);
-      for (let k = 0; k < v2.nGlobe; k++) {
-        sphPos(v2.globeArr, k, 0, 0, 1, p);
-        gbDepth[k] = p[2];
-      }
-      gbIdx.sort((a, b) => gbDepth[a] - gbDepth[b]);
       drawOrder = new Int32Array(NT);
-      let w = 0;
-      for (const k of sgIdx) drawOrder[w++] = SG0 + k;
-      for (const k of mxIdx) drawOrder[w++] = MX0 + k;
-      for (const k of gbIdx) drawOrder[w++] = GB0 + k;
+      activeBuffer = new Int32Array(NT);
+      buildPainterOrder();
 
       resize();
       buildPackings();
       setTargets("map");
       snapToTargets();
+      updateActiveMarks(false);
       updateChrome("map");
       fillMetrics();
       draw();
-      requestAnimationFrame(tick);
 
       const steps = document.querySelectorAll(".step");
       steps.forEach((s, i) => {
@@ -1018,13 +1129,31 @@
       );
       steps.forEach((s) => io.observe(s));
 
+      // Begin fetching the second half of the story shortly before it is
+      // needed, leaving the opening request and parse path Singapore-only.
+      const v2Trigger = document.querySelector('[data-scene="return"]');
+      if (v2Trigger && "IntersectionObserver" in window) {
+        const v2Observer = new IntersectionObserver((entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          v2Observer.disconnect();
+          loadV2().catch(() => {});
+        }, { rootMargin: "1500px" });
+        v2Observer.observe(v2Trigger);
+      } else {
+        loadV2().catch(() => {});
+      }
+
       // Headless verification hook: jump to a scene with no animation.
       window.__gotoScene = (name) => {
+        if (V2_SCENES.has(name) && !v2) {
+          return loadV2().then(() => window.__gotoScene(name));
+        }
         scene = name;
         prevScene = name;
         setTargets(name);
         updateChrome(name);
         snapToTargets();
+        updateActiveMarks(false);
         animating = false;
         draw();
       };
@@ -1033,6 +1162,7 @@
         resize();
         setTargets(scene);
         snapToTargets();
+        updateActiveMarks(false);
         draw();
       });
     })

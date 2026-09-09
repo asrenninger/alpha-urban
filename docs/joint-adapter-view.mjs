@@ -12,6 +12,8 @@ export function mountJointAdapter(root,{loader=createJointData()}={}) {
   const triangle=$('#jo-triangle'),sphere=$('#jo-sphere'),menu=$('#jo-setting');
   let metadata=null,view=null,timer=0,ticket=0,drag=null,frame=0,coloured=null,previewLoading=false,previewQueued=false;
   let displayPosition=null,fromPosition=null,toPosition=null,transitionStart=0;
+  let projectedX=new Float32Array(0),projectedY=new Float32Array(0),sphereLine=null;
+  const depthBins=Array.from({length:16},()=>[]);
   const status=text=>{$('#jo-status').textContent=text;};
   function busy(value){$('.jo-view').setAttribute('aria-busy',String(value));$('#jo-scores').setAttribute('aria-busy',String(value));}
   function modelName(){
@@ -82,19 +84,23 @@ export function mountJointAdapter(root,{loader=createJointData()}={}) {
     let blend=1;
     if(fromPosition&&toPosition){const raw=clamp((now-transitionStart)/duration);blend=raw*raw*(3-2*raw);if(raw>=1){displayPosition=toPosition;fromPosition=toPosition=null;}}
     const position=displayPosition||toPosition||view.position,w=sphere.clientWidth,h=sphere.clientHeight,dpr=Math.min(devicePixelRatio||1,2);if(!w||!h)return;
-    sphere.width=Math.round(w*dpr);sphere.height=Math.round(h*dpr);const ctx=sphere.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
-    const r=Math.min(w,h)*.44,cx=w/2,cy=h/2;ctx.clearRect(0,0,w,h);ctx.strokeStyle=color('--jo-line');ctx.lineWidth=1;
+    const pixelWidth=Math.round(w*dpr),pixelHeight=Math.round(h*dpr);
+    if(sphere.width!==pixelWidth||sphere.height!==pixelHeight){sphere.width=pixelWidth;sphere.height=pixelHeight;}
+    const ctx=sphere.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+    const r=Math.min(w,h)*.44,cx=w/2,cy=h/2;ctx.clearRect(0,0,w,h);ctx.strokeStyle=sphereLine??=color('--jo-line');ctx.lineWidth=1;
     ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.ellipse(cx,cy,r,r*.24,-.2,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.ellipse(cx,cy,r*.32,r,.2,0,Math.PI*2);ctx.stroke();
-    const cyaw=Math.cos(state.yaw),syaw=Math.sin(state.yaw),cp=Math.cos(state.pitch),sp=Math.sin(state.pitch),bins=Array.from({length:16},()=>[]);
+    if(projectedX.length!==view.count){projectedX=new Float32Array(view.count);projectedY=new Float32Array(view.count);}
+    depthBins.forEach(bin=>{bin.length=0;});
+    const cyaw=Math.cos(state.yaw),syaw=Math.sin(state.yaw),cp=Math.cos(state.pitch),sp=Math.sin(state.pitch);
     for(let row=0;row<view.count;row++){
       const k=row*3;
       let x=position[k],y=position[k+1],z=position[k+2];
       if(fromPosition&&toPosition){x=fromPosition[k]*(1-blend)+toPosition[k]*blend;y=fromPosition[k+1]*(1-blend)+toPosition[k+1]*blend;z=fromPosition[k+2]*(1-blend)+toPosition[k+2]*blend;}
       const xx=x*cyaw+z*syaw,zz=-x*syaw+z*cyaw,yy=y*cp-zz*sp,depth=y*sp+zz*cp;
-      bins[Math.floor(clamp((depth+1)/2)*15)].push([cx+xx*r,cy-yy*r,coloured.indices[row]]);
+      projectedX[row]=cx+xx*r;projectedY[row]=cy-yy*r;depthBins[Math.floor(clamp((depth+1)/2)*15)].push(row);
     }
     const dot=Math.max(.85,Math.min(1.35,r/160));
-    bins.forEach((points,j)=>{for(const [x,y,index] of points){ctx.globalAlpha=index?.24+.58*j/15:.14;ctx.fillStyle=coloured.palette[index];ctx.fillRect(x-dot/2,y-dot/2,dot,dot);}});ctx.globalAlpha=1;
+    depthBins.forEach((rows,j)=>{for(const row of rows){const index=coloured.indices[row];ctx.globalAlpha=index?.24+.58*j/15:.14;ctx.fillStyle=coloured.palette[index];ctx.fillRect(projectedX[row]-dot/2,projectedY[row]-dot/2,dot,dot);}});ctx.globalAlpha=1;
     if(fromPosition&&toPosition)schedule();
   }
   function schedule(){if(!frame)frame=requestAnimationFrame(drawSphere);}
