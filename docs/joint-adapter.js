@@ -1,4 +1,4 @@
-/* The v2 experiment is global rather than tied to the two-city comparison.
+/* The country-robust v3 experiment is global rather than tied to the two-city comparison.
    Defer its data and renderer until the section approaches the viewport. */
 (function(){
   const root=document.getElementById('joint-adapter');

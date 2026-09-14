@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export the completed joint_adapter_v2_20260909 run for the static site.
+"""Export the completed country-robust v3 joint-adapter run for the static site.
 
 Only a deterministic, visual-only global sample, its observed outcomes, frozen
 3D display projections, and aggregate score summaries are published. Native
@@ -21,9 +21,13 @@ import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
-RUN = ROOT / "joint_adapter_v2_20260909"
+EXPERIMENT = ROOT / "joint_adapter_v2_20260909"
+RUN = EXPERIMENT / "robust_v3"
+DESIGN = EXPERIMENT / "design.json"
 SOURCE = ROOT / "counterbakeoff_20260908/site_work/embedding_adapter/data"
-DESTINATION = ROOT / "docs/data/joint-adapter-v2"
+DESTINATION = Path(os.environ.get(
+    "JOINT_ADAPTER_EXPORT", ROOT / "docs/data/joint-adapter-v2"
+))
 TASKS = ("ndvi", "volume", "landcover")
 SEEDS = (1103, 2207, 3301)
 SAMPLE_SEED = 20260909
@@ -48,6 +52,13 @@ def digest(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def gzip_bytes(data: bytes) -> bytes:
+    """Create byte-stable gzip across Python and operating-system versions."""
+    compressed = bytearray(gzip.compress(data, compresslevel=9, mtime=0))
+    compressed[9] = 255  # RFC 1952: unknown operating system.
+    return bytes(compressed)
+
+
 def load_npz(path: Path) -> dict[str, np.ndarray]:
     with np.load(path) as stored:
         return {key: stored[key] for key in stored.files}
@@ -70,8 +81,9 @@ def forward(x: np.ndarray, params: dict[str, np.ndarray]) -> np.ndarray:
 
 def ensemble_mean(x: np.ndarray, model_id: str) -> np.ndarray:
     values = []
+    model_root = RUN / ("refinement/models" if model_id.startswith("refine_") else "models")
     for seed in SEEDS:
-        stored = load_npz(RUN / "models" / model_id / f"seed_{seed}" / "best.npz")
+        stored = load_npz(model_root / model_id / f"seed_{seed}" / "model.npz")
         values.append(forward(x, {key: stored[key] for key in ("w1", "b1", "w2", "b2")}))
     return np.mean(values, axis=0, dtype=np.float32)
 
@@ -147,41 +159,34 @@ def pca_basis(representations: dict[str, np.ndarray]) -> tuple[np.ndarray, np.nd
     return center.astype(np.float32), basis.astype(np.float32)
 
 
-def metric_record(model_id: str, scope: str, task: str, ensemble: dict) -> dict:
-    key = "nll" if task == "landcover" else "rmse_original"
-    exact = ensemble[scope][task]
-    values = []
-    for seed in SEEDS:
-        seed_score = read(RUN / "scores" / model_id / f"seed_{seed}.json")
-        values.append(float(seed_score[scope][task][key]))
-    return {"n": int(exact["n"]), "mean": float(exact[key]), "values": values}
+def metric_record(scope: str, task: str, result: dict) -> dict:
+    if scope == "pixel":
+        exact = result["pixel_and_geometry"][task]
+        mean = exact["loss"]
+    else:
+        exact = result["country_robust"][task]
+        mean = exact["country_macro_loss"]
+    return {"n": int(exact["n"]), "mean": float(mean), "values": [float(mean)]}
 
 
 def score_payload(design: dict) -> dict:
     baseline = read(RUN / "scores/baseline.json")
     models = {
         "baseline": {
-            scope: {
-                task: {
-                    "n": int(baseline[scope][task]["n"]),
-                    "mean": float(baseline[scope][task]["nll" if task == "landcover" else "rmse_original"]),
-                    "values": [float(baseline[scope][task]["nll" if task == "landcover" else "rmse_original"])],
-                }
-                for task in TASKS
-            }
-            for scope in ("validation", "test")
+            scope: {task: metric_record(scope, task, baseline) for task in TASKS}
+            for scope in ("pixel", "country")
         }
     }
     for number, vertex in enumerate(design["vertices"], start=1):
         ensemble = read(RUN / "scores/ensemble" / f"{vertex['id']}.json")
         models[vertex["id"]] = {
-            scope: {task: metric_record(vertex["id"], scope, task, ensemble) for task in TASKS}
-            for scope in ("validation", "test")
+            scope: {task: metric_record(scope, task, ensemble) for task in TASKS}
+            for scope in ("pixel", "country")
         }
         if number % 10 == 0:
             print(f"Collected scores {number}/{len(design['vertices'])}", flush=True)
     extents = {}
-    for scope in ("validation", "test"):
+    for scope in ("pixel", "country"):
         extents[scope] = {}
         for task in TASKS:
             values = [model[scope][task]["mean"] for model in models.values()]
@@ -190,19 +195,22 @@ def score_payload(design: dict) -> dict:
             extents[scope][task] = [low - pad, high + pad]
     return {
         "metricDefinition": {
-            "ndvi": "RMSE in native NDVI units",
-            "volume": "RMSE of log1p cubic metres",
+            "ndvi": "standardized mean square error",
+            "volume": "standardized mean square error",
             "landcover": "negative log likelihood in nats",
         },
         "models": models,
         "extents": extents,
-        "support": read(RUN / "audit/support.json"),
+        "support": read(EXPERIMENT / "audit/support.json"),
         "conditionalLandcover": read(RUN / "audit/conditional_landcover.json"),
+        "testRole": read(RUN / "audit/final_summary.json")["test_role"],
     }
 
 
 def main() -> None:
-    design = read(RUN / "design.json")
+    design = read(DESIGN)
+    refinements = read(RUN / "refinement/training.json")["vertices"]
+    display_design = {**design, "vertices": design["vertices"] + refinements}
     x, sample_support, observations = visual_sample()
     if DESTINATION.exists() and any(DESTINATION.iterdir()):
         raise FileExistsError(f"Refusing to overwrite non-empty export: {DESTINATION}")
@@ -215,13 +223,13 @@ def main() -> None:
     pca_center, basis = pca_basis(fitted)
 
     projected: dict[str, np.ndarray] = {}
-    for number, vertex in enumerate(design["vertices"], start=1):
+    for number, vertex in enumerate(display_design["vertices"], start=1):
         representation = fitted.get(vertex["id"])
         if representation is None:
             representation = ensemble_mean(x, vertex["id"])
         projected[vertex["id"]] = mm(representation - pca_center, basis)
         if number % 5 == 0:
-            print(f"Projected models {number}/{len(design['vertices'])}", flush=True)
+            print(f"Projected models {number}/{len(display_design['vertices'])}", flush=True)
     projected["baseline"] = mm(x - pca_center, basis)
     maximum_radius = max(float(np.max(np.linalg.norm(value, axis=1))) for value in projected.values())
     coordinate_scale = maximum_radius / 32760
@@ -244,7 +252,7 @@ def main() -> None:
             float(np.max(np.abs(quantized.astype(np.float32) * coordinate_scale - coordinates))),
         )
         raw = quantized.tobytes()
-        compressed = gzip.compress(raw, compresslevel=9, mtime=0)
+        compressed = gzip_bytes(raw)
         chunks[model_id] = {
             **save(f"projections/{model_id}.bin.gz", compressed),
             "rawBytes": len(raw),
@@ -254,7 +262,7 @@ def main() -> None:
     observation_raw = b"".join(
         [observations["landcover"].tobytes(), observations["ndvi"].tobytes(), observations["volume"].tobytes()]
     )
-    observation_file = gzip.compress(observation_raw, compresslevel=9, mtime=0)
+    observation_file = gzip_bytes(observation_raw)
     observation_record = {
         **save("observations.bin.gz", observation_file),
         "rawBytes": len(observation_raw),
@@ -263,26 +271,32 @@ def main() -> None:
     }
 
     vertex_records = []
-    for vertex in design["vertices"]:
-        role = "offgrid_check" if vertex["id"].startswith("offgrid") else (
-            "equal_priority" if vertex["id"] == "center" else "lattice"
-        )
+    for vertex in display_design["vertices"]:
+        role = ("post_audit_refinement" if vertex["id"].startswith("refine_") else
+                "offgrid_check" if vertex["id"].startswith("offgrid") else
+                "equal_priority" if vertex["id"] == "center" else "lattice")
         vertex_records.append({**vertex, "role": role})
     interpolation_ids = [
-        vertex["id"] for vertex in vertex_records if vertex["role"] in ("lattice", "equal_priority")
+        vertex["id"] for vertex in vertex_records
+        if vertex["role"] in ("lattice", "equal_priority", "post_audit_refinement")
     ]
-    interpolation = read(RUN / "audit/representation_interpolation.json")
+    metric_interpolation_ids = [
+        vertex["id"] for vertex in vertex_records
+        if vertex["role"] in ("lattice", "equal_priority")
+    ]
+    interpolation = read(RUN / "audit/refined_representation_interpolation.json")
     surface = read(RUN / "audit/surface_interpolation.json")
     classes = [
         {"code": int(code), "name": CLASS_NAMES[int(code)]}
         for code in np.unique(observations["landcover"])
     ]
     manifest = {
-        "schema": 2,
-        "run": RUN.name,
+        "schema": 3,
+        "run": "joint_adapter_v2_20260909/robust_v3",
         "seeds": list(SEEDS),
         "vertices": vertex_records,
         "interpolationVertexIds": interpolation_ids,
+        "metricInterpolationVertexIds": metric_interpolation_ids,
         "chunks": chunks,
         "coordinateScale": coordinate_scale,
         "coordinateEncoding": "gzip-interleaved-int16-le-xyz",
@@ -303,6 +317,10 @@ def main() -> None:
             "summary": interpolation["summary"],
             "metricSurfaceDefinition": surface["definition"],
             "metricSurface": surface["metrics"],
+            "postAuditRefinement": True,
+            "refinementDisclosure": (
+                "two systematic 5%-spaced pure-volume-adjacent knots added after the original audit"
+            ),
         },
     }
     scores = score_payload(design)
@@ -310,11 +328,17 @@ def main() -> None:
     save("manifest.json", compact_json(manifest))
 
     audit = {
-        "sourceRun": RUN.name,
-        "sourceDesignSha256": digest((RUN / "design.json").read_bytes()),
-        "trainedModels": len(design["vertices"]),
+        "sourceRun": "joint_adapter_v2_20260909/robust_v3",
+        "sourceDesignSha256": digest(DESIGN.read_bytes()),
+        "refinementTrainingSha256": digest((RUN / "refinement/training.json").read_bytes()),
+        "trainedSettings": len(display_design["vertices"]),
+        "scoredSettings": len(design["vertices"]),
         "interpolationAnchors": len(interpolation_ids),
+        "metricInterpolationAnchors": len(metric_interpolation_ids),
         "offgridAuditModels": sum(v["role"] == "offgrid_check" for v in vertex_records),
+        "postAuditRefinementModels": sum(
+            v["role"] == "post_audit_refinement" for v in vertex_records
+        ),
         "visualSample": sample_support,
         "projectionChunks": len(chunks),
         "projectionEncoding": manifest["coordinateEncoding"],

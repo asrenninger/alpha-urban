@@ -1,4 +1,4 @@
-/* Validate the shipped v2 global payload through the real website loader. */
+/* Validate the shipped country-robust v3 payload through the real website loader. */
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -11,8 +11,9 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const base=new URL('../docs/data/joint-adapter-v2/',import.meta.url);
 const manifest=JSON.parse(await fs.readFile(new URL('manifest.json',base))),scores=JSON.parse(await fs.readFile(new URL('scores.json',base)));
 const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
-assert.equal(manifest.schema,2);assert.equal(manifest.run,'joint_adapter_v2_20260909');
-assert.equal(manifest.vertices.length,79);assert.equal(manifest.interpolationVertexIds.length,67);
+assert.equal(manifest.schema,3);assert.equal(manifest.run,'joint_adapter_v2_20260909/robust_v3');
+assert.equal(manifest.vertices.length,81);assert.equal(manifest.interpolationVertexIds.length,69);assert.equal(manifest.metricInterpolationVertexIds.length,67);
+assert.equal(manifest.vertices.filter(vertex=>vertex.role==='post_audit_refinement').length,2);
 assert.equal(manifest.sample.startingRows,501969);assert.equal(manifest.sample.retainedRows,15970);
 assert.equal(manifest.sample.retainedCities,998);assert.equal(manifest.sample.retainedCountries,162);
 const interpolate=createWeightInterpolator(manifest.vertices,manifest.interpolationVertexIds);
@@ -44,20 +45,27 @@ for(const vertex of manifest.vertices){
     const k=row*3,x=view.position[k],y=view.position[k+1],z=view.position[k+2];assert([x,y,z].every(Number.isFinite));
     maxRadius=Math.max(maxRadius,Math.hypot(x,y,z));pointChecks++;
   }
-  for(const task of TASKS){const metric=view.metrics('test')[task];assert.equal(metric.mean,scores.models[vertex.id].test[task].mean);assert.equal(metric.values.length,3);}
+  for(const task of TASKS){
+    const metric=view.metrics('pixel')[task];assert.equal(metric.values.length,1);
+    if(scores.models[vertex.id])assert.equal(metric.mean,scores.models[vertex.id].pixel[task].mean);
+    else assert(view.scoreInterpolated,'Unscored refinement knots must disclose metric interpolation');
+  }
 }
 assert(maxRadius<=1.0001,'Projected visual points must remain inside the display sphere');
 const baseline=await loader.loadModel('baseline'),centre=await loader.loadModel('center');
-assert(Math.abs(baseline.metrics().ndvi.mean-0.061067463084758605)<1e-12);
-assert(Math.abs(centre.metrics().ndvi.mean-0.05413363277998491)<1e-12);
-assert(Math.abs(centre.metrics().volume.mean-1.9624443635438318)<1e-12);
-assert(Math.abs(centre.metrics().landcover.mean-0.6539558285472109)<1e-12);
+assert(Math.abs(baseline.metrics().ndvi.mean-0.07645838188537935)<1e-12);
+assert(Math.abs(centre.metrics().ndvi.mean-0.061935623984987295)<1e-12);
+assert(Math.abs(centre.metrics().volume.mean-0.6437134595989781)<1e-12);
+assert(Math.abs(centre.metrics().landcover.mean-0.6304046084010149)<1e-12);
+assert(Math.abs(centre.metrics('country').ndvi.mean-0.054222741324546735)<1e-12);
+assert(Math.abs(centre.metrics('country').volume.mean-0.590176715478231)<1e-12);
+assert(Math.abs(centre.metrics('country').landcover.mean-0.4933515151676571)<1e-12);
 for(const task of TASKS)assert.deepEqual(baseline[task],centre[task],'Observed outcomes must not change with model weights');
 
 loader.clearCache();
 const blended=await loader.loadBlend([.35,.35,.3]);assert(blended.interpolated);assert(blended.sources.length<=3);assert(Math.abs(blended.sources.reduce((sum,source)=>sum+source.factor,0)-1)<1e-12);
 for(const task of TASKS){
-  const expected=blended.sources.reduce((sum,source)=>sum+source.factor*scores.models[source.model].test[task].mean,0);
+  const expected=blended.scoreSources.reduce((sum,source)=>sum+source.factor*scores.models[source.model].pixel[task].mean,0);
   assert(Math.abs(blended.metrics()[task].mean-expected)<1e-12);
 }
 const left=await loader.loadBlend([.35001,.34999,.3]),right=await loader.loadBlend([.34999,.35001,.3]);
@@ -73,5 +81,5 @@ const latest=await loader.loadModel('center');assert(await obsolete);assert.equa
 loader.clearCache();fail='g00_00';await assert.rejects(loader.loadModel('g00_00'));assert.equal((await loader.loadModel('g00_00')).model,'g00_00');
 await assert.rejects(loader.loadModel('untrained-mixture'));
 
-const report={passed:true,sourceRun:manifest.run,trainedSettings:manifest.vertices.length,interpolationAnchors:manifest.interpolationVertexIds.length,offgridAuditSettings:manifest.vertices.filter(vertex=>vertex.role==='offgrid_check').length,projectionChunks:chunkChecks,visualSamplePoints:manifest.sample.retainedRows,visualSampleCities:manifest.sample.retainedCities,visualSampleCountries:manifest.sample.retainedCountries,pointChecks,maxRadius,maximumContinuityStep,continuousRepresentationInterpolation:true,fullTaskScoreSupport:true,cacheRetryAndRaceChecks:true,observedOutcomesFixed:true};
+const report={passed:true,sourceRun:manifest.run,trainedSettings:manifest.vertices.length,scoredSettings:Object.keys(scores.models).length-1,interpolationAnchors:manifest.interpolationVertexIds.length,metricInterpolationAnchors:manifest.metricInterpolationVertexIds.length,offgridAuditSettings:manifest.vertices.filter(vertex=>vertex.role==='offgrid_check').length,postAuditRefinementSettings:manifest.vertices.filter(vertex=>vertex.role==='post_audit_refinement').length,projectionChunks:chunkChecks,visualSamplePoints:manifest.sample.retainedRows,visualSampleCities:manifest.sample.retainedCities,visualSampleCountries:manifest.sample.retainedCountries,pointChecks,maxRadius,maximumContinuityStep,continuousRepresentationInterpolation:true,fullTaskScoreSupport:true,pixelAndCountryWeighting:true,cacheRetryAndRaceChecks:true,observedOutcomesFixed:true};
 await fs.writeFile(path.join(root,'validation/joint_validation_result.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));

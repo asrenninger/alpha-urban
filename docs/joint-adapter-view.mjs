@@ -2,13 +2,13 @@ import {createJointData,TASKS} from './joint-adapter-data.mjs';
 
 const number=n=>n.toLocaleString('en-GB');
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
-const labels={ndvi:['Vegetation','NDVI · root mean square error'],volume:['Building volume','log volume · root mean square error'],landcover:['Land cover','negative log likelihood']};
+const labels={ndvi:['Vegetation','standardized mean square error'],volume:['Building volume','standardized mean square error'],landcover:['Land cover','negative log likelihood']};
 const weightLabel=weights=>weights.map(w=>(Math.round(w*1000)/10)+'%').join(' / ');
 const TRIANGLE={width:360,height:330,a:[180,30],b:[30,30+150*Math.sqrt(3)],c:[330,30+150*Math.sqrt(3)]};
 
 export function mountJointAdapter(root,{loader=createJointData()}={}) {
   const $=selector=>root.querySelector(selector);
-  const state={mode:'adapted',selectedModel:'center',weights:[1/3,1/3,1/3],lastSelection:{selectedModel:'center',weights:[1/3,1/3,1/3]},scope:'test',outcome:'landcover',yaw:.65,pitch:-.55};
+  const state={mode:'adapted',selectedModel:'center',weights:[1/3,1/3,1/3],lastSelection:{selectedModel:'center',weights:[1/3,1/3,1/3]},scope:'pixel',outcome:'landcover',yaw:.65,pitch:-.55};
   const triangle=$('#jo-triangle'),sphere=$('#jo-sphere'),menu=$('#jo-setting');
   let metadata=null,view=null,timer=0,ticket=0,drag=null,frame=0,coloured=null,previewLoading=false,previewQueued=false;
   let displayPosition=null,fromPosition=null,toPosition=null,transitionStart=0;
@@ -31,11 +31,11 @@ export function mountJointAdapter(root,{loader=createJointData()}={}) {
     const vertices=metadata.manifest.vertices,{width:w,height:h,a,b,c}=TRIANGLE;
     triangle.setAttribute('viewBox',`0 0 ${w} ${h}`);
     const xy=weights=>[a[0]*weights[0]+b[0]*weights[1]+c[0]*weights[2],a[1]*weights[0]+b[1]*weights[1]+c[1]*weights[2]];
-    let svg=`<title>Drag across the v2 joint-objective surface</title><path d="M${a}L${b}L${c}Z" fill="var(--jo-soft)" stroke="var(--jo-line)"/>`;
+    let svg=`<title>Drag across the country-robust v3 joint-objective surface</title><path d="M${a}L${b}L${c}Z" fill="var(--jo-soft)" stroke="var(--jo-line)"/>`;
     for(let i=1;i<10;i++){const t=i/10;for(const [p,q] of [[[t,0,1-t],[t,1-t,0]],[[0,t,1-t],[1-t,t,0]],[[0,1-t,t],[1-t,0,t]]])svg+=`<path d="M${xy(p)}L${xy(q)}" stroke="var(--jo-line)" stroke-width=".45"/>`;}
     vertices.forEach(vertex=>{
-      const p=xy(vertex.weights),active=state.mode==='adapted'&&vertex.id===state.selectedModel,audit=vertex.role==='offgrid_check';
-      svg+=`<circle cx="${p[0]}" cy="${p[1]}" r="${active?4:audit?2.2:2.5}" fill="${active?'var(--jo-ink)':audit?'var(--jo-panel)':'var(--jo-muted)'}" stroke="${audit?'var(--jo-orange)':'none'}" stroke-width="${audit?1.2:0}" opacity=".82"/>`;
+      const p=xy(vertex.weights),active=state.mode==='adapted'&&vertex.id===state.selectedModel,audit=vertex.role==='offgrid_check',refinement=vertex.role==='post_audit_refinement';
+      svg+=`<circle cx="${p[0]}" cy="${p[1]}" r="${active?4:audit?2.2:refinement?3.2:2.5}" fill="${active?'var(--jo-ink)':audit?'var(--jo-panel)':refinement?'var(--jo-purple)':'var(--jo-muted)'}" stroke="${audit?'var(--jo-orange)':'none'}" stroke-width="${audit?1.2:0}" opacity=".82"/>`;
     });
     const anchor=xy(state.weights),opacity=state.mode==='baseline'?'.42':'1';
     svg+=`<circle cx="${anchor[0]}" cy="${anchor[1]}" r="7" fill="var(--jo-panel)" stroke="var(--jo-ink)" stroke-width="2" opacity="${opacity}"/><circle cx="${anchor[0]}" cy="${anchor[1]}" r="12" fill="none" stroke="var(--jo-ink)" opacity="${opacity}"/>`;
@@ -108,15 +108,15 @@ export function mountJointAdapter(root,{loader=createJointData()}={}) {
   function scores(){
     if(!view)return;
     const actual=view.metrics(state.scope),baseline=view.baselineMetrics(state.scope),container=$('#jo-scores');container.replaceChildren();
-    $('#jo-score-note').textContent=view.interpolated?'Barycentric lattice estimate · exact values appear at trained dots':'Exact ensemble score · lower error is better · original AlphaEarth is the reference';
+    $('#jo-score-note').textContent=view.scoreInterpolated?'Barycentric score estimate · exact values appear at the 79 scored settings':'Exact three-seed ensemble score · lower is better · original AlphaEarth is the reference';
     for(const task of TASKS){
       const a=actual[task],b=baseline[task],change=(a.mean/b.mean-1)*100,domain=view.scores.extents[state.scope][task],x=value=>clamp((value-domain[0])/(domain[1]-domain[0]))*100,card=document.createElement('div');card.className='jo-score';
-      const digits=task==='volume'?3:4,changeText=view.model==='baseline'?'Original reference':`${view.interpolated?'Estimated · ':''}${Math.abs(change).toFixed(1)}% ${change>0?'higher error':'lower error'}`;
-      card.innerHTML=`<div><div class="jo-score-title">${labels[task][0]}</div><div class="jo-small">${labels[task][1]}</div></div><div class="jo-score-number">${a.mean.toFixed(digits)}</div><div class="jo-change ${change>0?'worse':''}">${changeText}</div><div class="jo-range" aria-label="Range across runs ${a.min.toFixed(4)} to ${a.max.toFixed(4)}; original ${b.mean.toFixed(4)}"><div class="jo-track"></div><div class="jo-baseline-mark" style="left:${x(b.mean)}%"></div><div class="jo-seed-range" style="left:${x(a.min)}%;width:${Math.max(.4,x(a.max)-x(a.min))}%"></div><div class="jo-mean-mark" style="left:${x(a.mean)}%"></div></div><div class="jo-footnote">${number(a.n)} task-valid pixels</div>`;
+      const digits=4,changeText=view.model==='baseline'?'Original reference':`${view.scoreInterpolated?'Estimated · ':''}${Math.abs(change).toFixed(1)}% ${change>0?'higher error':'lower error'}`;
+      card.innerHTML=`<div><div class="jo-score-title">${labels[task][0]}</div><div class="jo-small">${labels[task][1]}</div></div><div class="jo-score-number">${a.mean.toFixed(digits)}</div><div class="jo-change ${change>0?'worse':''}">${changeText}</div><div class="jo-range" aria-label="Selected score ${a.mean.toFixed(4)}; original ${b.mean.toFixed(4)}"><div class="jo-track"></div><div class="jo-baseline-mark" style="left:${x(b.mean)}%"></div><div class="jo-mean-mark" style="left:${x(a.mean)}%"></div></div><div class="jo-footnote">${number(a.n)} task-valid pixels</div>`;
       container.append(card);
     }
-    const scope=state.scope==='test'?'Held-out countries':'Validation countries';
-    $('#jo-support').textContent=`${scope} · full task-specific support`;
+    const scope=state.scope==='pixel'?'Pixel-weighted':'Country-weighted';
+    $('#jo-support').textContent=`${scope} · confirmatory held-out countries · full task-specific support`;
   }
 
   function beginTransition(next){
@@ -134,17 +134,18 @@ export function mountJointAdapter(root,{loader=createJointData()}={}) {
     if(quiet){previewLoading=true;previewQueued=false;}
     const current=++ticket,mode=state.mode,selectedModel=state.selectedModel,weights=state.weights.slice();
     if(!quiet||!view)busy(true);$('#jo-retry').hidden=true;
-    if(!quiet||!view)status('Loading '+(metadata?modelName():'the v2 global experiment')+'…');
+    if(!quiet||!view)status('Loading '+(metadata?modelName():'the country-robust v3 experiment')+'…');
     try{
       const next=mode==='baseline'?await loader.loadModel('baseline'):selectedModel?await loader.loadModel(selectedModel):await loader.loadBlend(weights);
       if(current!==ticket)return;
       beginTransition(next);view=next;metadata={manifest:view.manifest,scores:view.scores};
       if(!menu.options.length){
         const preview=document.createElement('option');preview.value='__interpolated';preview.textContent='Interpolated position';preview.disabled=true;menu.append(preview);
-        for(const vertex of metadata.manifest.vertices){const option=document.createElement('option');option.value=vertex.id;const prefix=vertex.role==='offgrid_check'?'Audit check · ':'';option.textContent=vertex.id==='center'?'Equal priorities':prefix+weightLabel(vertex.weights);menu.append(option);}
+        for(const vertex of metadata.manifest.vertices){const option=document.createElement('option');option.value=vertex.id;const prefix=vertex.role==='offgrid_check'?'Audit check · ':vertex.role==='post_audit_refinement'?'Display refinement · ':'';option.textContent=vertex.id==='center'?'Equal priorities':prefix+weightLabel(vertex.weights);menu.append(option);}
       }
       $('#jo-view-title').textContent=mode==='baseline'?'Original AlphaEarth':'Adapted embedding';
-      const stateText=mode==='baseline'?'reference':view.interpolated?`representation blend of ${view.sources.length} neighbouring fits`:metadata.manifest.vertices.find(vertex=>vertex.id===view.model)?.role==='offgrid_check'?'trained off-grid audit fit':'exact trained ensemble';
+      const role=metadata.manifest.vertices.find(vertex=>vertex.id===view.model)?.role;
+      const stateText=mode==='baseline'?'reference':view.interpolated?`representation blend of ${view.sources.length} neighbouring fits`:role==='offgrid_check'?'trained off-grid audit fit':role==='post_audit_refinement'?'trained post-audit display refinement':'exact trained ensemble';
       $('#jo-model-state').textContent=modelName()+' · '+stateText;
       const sample=view.manifest.sample;
       status(`${number(sample.retainedRows)} visual points · ${number(sample.retainedCities)} cities · ${sample.retainedCountries} countries`);

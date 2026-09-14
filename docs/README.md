@@ -1,17 +1,31 @@
-# Website: city comparisons and joint objectives
+# The website
 
-This is the complete static website for <https://asrenninger.github.io/alpha-urban/>. See the repository [README](../README.md) for preview and validation commands. Current file hashes are in `../releases/2026-09-09-joint-objectives.json`; the preceding eight-city baseline remains tagged `website-2026-09-08-eight-cities`.
+This folder is the complete static site at <https://asrenninger.github.io/alpha-urban/>. Nothing here is built or installed. The repository [README](../README.md) explains the inquiry.
 
-## Current flow
+The page is one continuous handoff. The opening walk follows one field, then two cities, then 1,000, and ends on the sphere of city means. That same sphere becomes an interactive fingerprint atlas, anchored on Singapore by default, with native 64-dimensional neighbour angles and repeated split-half checks. The same 1,000 cities then collapse to their own 2017 origins and move through all eight annual layers. The temporal canvas continues into eight centred urban-centre clouds, then the unadjusted HDI scatter of 977 cities in 157 countries. Scrolling introduces context controls, makes the switch to a common 942-city sample explicit, and adds the remaining controls one block at a time. All 1,000 identities persist; missing-input cities stay in a grey row. [DISPERSION_DATA.md](DISPERSION_DATA.md) documents the geometry, model adjustments and largest-sample sensitivities.
 
-The original walk ends on the sphere of city means. The reader selects two city tiles and follows their fields from false-colour maps into paired spheres. Colour controls apply false colour, Urbanisation, NDVI, land cover or building volume to both. Clicking selected A lets the reader replace it while preserving B; any unselected tile can replace B.
+The global adapter experiment follows, moving the embeddings toward vegetation, building volume and land cover in whatever balance the reader sets and scoring them against original AlphaEarth. The ending comparison lets the reader choose two of eight cities and follow their pixels from maps into paired spheres, with two native 64-dimensional measures and distribution curves for the values behind each colour.
 
-Two native AlphaEarth measures sit with the fields: mean-direction angular distance and covariance-direction overlap. The next section compares observed distributions, with translucent density curves for NDVI and building volume, native angular spread for the false-colour selection, and exact class shares for Urbanisation and land cover. Its controls and the sphere controls stay synchronized. City A is crimson and B navy, using the existing site palette.
+The data notes live beside the code. [COMPARISON_DATA.md](COMPARISON_DATA.md) covers the eight fields, their sources and file sizes. [JOINT_ADAPTER_DATA.md](JOINT_ADAPTER_DATA.md) covers the experiment's samples, scores and limits. The experiment uses the run held in `joint_adapter_v2_20260909/robust_v3`; the eight-city site that preceded it is tagged `website-2026-09-08-eight-cities`, and `LIVE_BASELINE.json` records the files that were live before that.
 
-All eight fields, all 28 pairs and every valid embedding remain available. Missing measurements are identified separately. Only the selected pixel buffers and projection load, followed by one small shared statistics file. Read [COMPARISON_DATA.md](COMPARISON_DATA.md) for support, sources and payload sizes.
+One caveat carried forward. The final scene of the walk reports 273,410 non-city pixels, and a later audit of the source found 241,841 with valid support. The scene is preserved as published. Any correction has to change the text and the assets together.
 
-The next section asks what happens when the representation serves three objectives. It now uses the completed global `joint_adapter_v2_20260909` run rather than the selected city pair. The 79 fitted settings include a 66-point regular lattice, the exact equal-priority fit and 12 off-grid interpolation checks. The equilateral control blends neighbouring three-seed mean representations continuously; the sphere uses a documented visual-only sample retaining all 998 eligible cities, while score cards use every task-valid row. Original AlphaEarth remains a separate reference. See [JOINT_ADAPTER_DATA.md](JOINT_ADAPTER_DATA.md) for data, methods and scientific limits.
+The code is `app.js` for the walk and shared globe; `city-evolution.js`, `city-evolution-data.mjs`, `city-evolution.css`, `split-half-view.mjs` and `dispersion-story.mjs` for fingerprints, time and dispersion; `joint-adapter.js`, `joint-adapter-view.mjs`, `joint-adapter-data.mjs` and `joint-adapter.css` for the experiment; and `comparison.js`, `comparison-statistics.js` and `comparison.css` for the final comparison. Everything is wired together in `index.html`. Model training and checkpoints stay outside this folder.
 
-Implementation: `comparison.js`, `comparison-statistics.js`, `comparison.css`, `joint-adapter.js`, `joint-adapter-view.mjs`, `joint-adapter-data.mjs`, `joint-adapter.css` and the ending of `index.html`. Portable interaction checks and independent data-audit reports are in `../validation/`. Model training and checkpoints remain outside the website. Joint release hashes are in `../releases/2026-09-09-joint-objectives.json`.
+To publish the current website from the repository root on `main`, check the prospective files and stage only the website, documentation and validation paths:
 
-`LIVE_BASELINE.json` records the preceding live files. The guided walk retains its existing content and limitations. A source audit found valid non-city terrestrial support of 241,841 rather than the existing density caption's 273,410. This checkpoint preserves that scene; any future correction must update its text and assets together.
+```sh
+python3 validation/verify_publish_scope.py --worktree
+git add -- docs README.md .gitignore validation
+git diff --cached --stat
+git diff --cached --check
+```
+
+Review the staged list, then commit and push:
+
+```sh
+git commit -m "Polish city dispersion and HDI scroll story"
+git push origin main
+```
+
+This publishes all current website changes, including the adapter updates already in the working tree. The explicit allowlist generates `.gitignore`, so research datasets and offline exports remain excluded. With `core.hooksPath` set to `.githooks`, the pre-push hook checks every outgoing commit against that allowlist and the file-size limit. A push sends committed history; it does not include uncommitted edits.

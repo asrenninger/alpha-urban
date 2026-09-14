@@ -8,7 +8,8 @@
 <link rel="icon" type="image/png" href="favicon.png" sizes="64x64" />
 <link rel="stylesheet" href="styles.css" />
 <link rel="stylesheet" href="comparison.css" />
-  <link rel="stylesheet" href="joint-adapter.css" />
+<link rel="stylesheet" href="city-evolution.css" />
+<link rel="stylesheet" href="joint-adapter.css" />
 </head>
 <body>
 <header class="masthead">
@@ -16,7 +17,7 @@
   <span class="brand">ALPHAURBAN · INSIDE THE FIELD</span>
   <span class="context" id="masthead-context">ALPHAEARTH · 2024</span>
   <!-- The manuscript class's page-progress sphere (alphaurbanism.cls:95-146),
-       re-shaded on canvas; fills with scroll through the 19 scenes. -->
+       re-shaded on canvas; fills with scroll through the 20 scenes. -->
   <canvas id="progress-sphere" aria-hidden="true"></canvas>
 </header>
 
@@ -42,7 +43,7 @@
 
   <section class="scrolly" id="scrolly">
     <div class="sticky">
-      <canvas id="field"></canvas>
+      <canvas id="field" role="img" aria-label="Animated scrollytelling figure."></canvas>
       <div class="stage-caption" id="stage-caption"></div>
       <div class="legend" id="legend"></div>
     </div>
@@ -228,20 +229,298 @@
       </article>
 
       <article class="step" data-scene="finale">
-        <p class="step-index">19 / 19</p>
+        <p class="step-index">19 / 20</p>
         <h2>Cities cluster away from the rest of the land.</h2>
         <p>The grey density behind the points is the rest of the land: 273,410
         non-city pixels sampled across the planet. Cities sit apart from it,
         in a region of their own, a median 73.7° from one another — while
         Singapore's own cells spread 37.4° around its mean and Mexico
         City's 33.9°. The embedding separates cities from the world and
-        from each other by wide margins. Whether it also separates the
-        parts of one city is the question the next section asks.</p>
+        from each other by wide margins. Keep this sphere in place: the next
+        scroll makes each city point available to inspect.</p>
         <div class="metric-cards" id="globe-metrics"></div>
         <p class="fine">Each city counts once, 2024. Grey density: non-city
         land pixels, same projection and camera as the points.</p>
       </article>
 
+      <article class="step fingerprint-step" id="city-fingerprints" data-scene="fingerprints">
+        <p class="step-index">20 / 20</p>
+        <h2>Every city leaves a fingerprint.</h2>
+        <p>The sphere has not changed. Select any point to follow that city,
+        or find one by name. Its measured split-half angles, statistics and
+        nearest neighbours continue directly below.</p>
+        <div class="fingerprint-picker">
+          <label for="atlas-search">Find a city</label>
+          <div>
+            <input id="atlas-search" list="atlas-city-list" placeholder="Search 1,000 cities" autocomplete="off" />
+            <datalist id="atlas-city-list"></datalist>
+            <button type="button" id="atlas-find">Find</button>
+          </div>
+          <span id="atlas-selection" role="status">Preparing the city identities…</span>
+          <a id="fingerprint-readout-link" href="#fingerprint-details" hidden>See this city’s angles and neighbours ↓</a>
+        </div>
+        <p class="fine">All 1,000 city means remain visible. Point positions
+        are the exact final positions from the story; selection changes only
+        the highlighted city.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="city-evolution" id="city-evolution" aria-labelledby="city-evolution-title">
+    <div class="fingerprint-results" id="fingerprint-details">
+      <div class="fingerprint-results-heading">
+        <div>
+          <p class="kicker">THE CITY BEHIND THE POINT</p>
+          <h2>One direction.<br /><em>A repeatable identity.</em></h2>
+        </div>
+        <p id="fingerprint-results-intro">Select a point on the sphere above,
+          or find a city by name, to inspect its native 64-dimensional angles.</p>
+      </div>
+      <div id="selected-city" class="selected-city fingerprint-selection" aria-live="polite"></div>
+      <section id="split-half-panel" class="split-half-panel" hidden aria-label="Split-half matching angles"></section>
+      <p class="load-status" id="city-status" role="status">Loading the city identities…</p>
+      <button type="button" class="retry-button" id="city-retry" hidden>Try again</button>
+    </div>
+
+    <div class="temporal-prologue">
+      <p class="kicker">THE SAME 1,000 CITIES · EIGHT YEARS</p>
+      <h2 id="city-evolution-title">Now let every city move.</h2>
+      <p>To compare change rather than location, give every city the same
+        start. Scroll once to bring the sphere to a shared 2017 origin, then
+        release the paths.</p>
+    </div>
+
+    <div class="temporal-scrolly" id="through-time">
+      <div class="temporal-sticky">
+        <figure class="temporal-stage">
+          <canvas id="time-canvas" role="img" tabindex="0" aria-label="The 1,000 city points before temporal normalisation" aria-description="Use the left and right arrow keys to follow a visible city."></canvas>
+          <output id="time-year-label" class="temporal-year" for="city-year">2024</output>
+          <div id="time-selection" class="temporal-selection" aria-live="polite">All 1,000 cities remain in view.</div>
+          <div class="compact-legend temporal-key" id="time-key" aria-label="Continent colour legend"></div>
+          <figcaption id="time-caption">The same 1,000 city directions that ended the opening story.</figcaption>
+          <article id="dispersion-narration" class="dispersion-narration" hidden aria-live="polite"></article>
+          <div id="dispersion-heading" class="dispersion-heading" hidden>
+            <span class="small-label">INSIDE THE CITY POINT</span>
+            <h3 id="dispersion-view-title">Give every city its own centre.</h3>
+            <p id="dispersion-controls">No statistical controls</p>
+          </div>
+          <div id="dispersion-reading" class="dispersion-reading" hidden aria-live="polite">
+            <p id="dispersion-estimate"></p>
+            <p id="dispersion-caption"></p>
+            <p id="dispersion-sample"></p>
+            <p id="dispersion-selected"></p>
+            <div id="dispersion-legend" class="dispersion-legend" aria-label="Continent colours"></div>
+            <button type="button" id="dispersion-retry" hidden>Retry the dispersion data</button>
+          </div>
+        </figure>
+      </div>
+      <div class="temporal-steps">
+        <article class="temporal-step" data-time-scene="sphere">
+          <p class="step-index">01 / 02</p>
+          <h3>Keep every city in view.</h3>
+          <p>These are the same thousand 2024 city directions from the
+            fingerprint sphere. The selected city keeps its identity.</p>
+        </article>
+        <article class="temporal-step" id="time-origin" data-time-scene="origin">
+          <p class="step-index">02 / 02</p>
+          <h3>Give every city the same start.</h3>
+          <p>Move each trajectory so its own 2017 position is the origin.
+            The cities collapse to one point because location has been removed;
+            their subsequent paths show change alone.</p>
+          <button type="button" id="time-go" class="time-go">View change over the years →</button>
+          <div class="time-scrubber">
+            <label for="city-year">Annual layer</label>
+            <input type="range" id="city-year" min="2017" max="2024" step="1" value="2017" disabled />
+            <div class="range-labels"><span>2017</span><span>2024</span></div>
+          </div>
+          <p class="fine">All 1,000 cities and 8,000 city-years are retained.
+            The display uses two shared directions; the motion statistics use
+            all 64 dimensions.</p>
+        </article>
+        <article class="temporal-step dispersion-step" id="unequal-contrast" data-contrast-scene="centres">
+          <p class="step-index">INSIDE THE POINT · 01</p>
+          <h3 id="unequal-contrast-title">A city is more than its centre.</h3>
+          <p>We have followed how each city’s average moves over time. Now
+            return to 2024 and look at the variation around that average.</p>
+          <p>Eight familiar cities move into a grid. Each has its own origin;
+            the other cities will rejoin the comparison.</p>
+        </article>
+        <article class="temporal-step dispersion-step" data-contrast-scene="clouds">
+          <p class="step-index">INSIDE THE POINT · 02</p>
+          <h3>Let the point become a cloud.</h3>
+          <p>For this comparison, focus on urban centres. Each small dot is
+            an observation from that part of the city, positioned relative
+            to its urban-centre mean. A wider angular cloud means more
+            variation in the embeddings.</p>
+          <p>We call the average squared angle from that mean <em>dispersion</em>.
+            Moving the centres does not equalise their spread.</p>
+          <p class="fine">These are two shared display directions through the
+            sampled clouds. The analysis measures dispersion in all 64
+            dimensions over every valid urban-centre cell.</p>
+        </article>
+        <article class="temporal-step dispersion-step" data-contrast-scene="raw">
+          <p class="step-index">DEVELOPMENT &amp; DISPERSION · 03</p>
+          <h3>Does the spread vary with development?</h3>
+          <p>The same eight centres take their places among all cities with
+            dispersion and national Human Development Index (HDI) data.</p>
+          <p>Higher points have greater urban-centre dispersion. Further
+            right means higher national HDI. This first relationship has
+            <strong>no controls</strong>.</p>
+        </article>
+        <article class="temporal-step dispersion-step" data-contrast-scene="context">
+          <p class="step-index">ADDING CONTROLS · 04</p>
+          <h3>First, account for city context.</h3>
+          <p>Compare cities after adjusting for total population, land area,
+            continent and the stage at which they entered the collection.</p>
+          <p>The vertical positions now show dispersion after those adjustments.
+            HDI stays on the same horizontal axis.</p>
+        </article>
+        <article class="temporal-step dispersion-step" data-contrast-scene="matched">
+          <p class="step-index">THE COMPARISON SAMPLE · 05</p>
+          <h3>Hold the cities constant.</h3>
+          <p>The next question is how the relationship changes as we add
+            measurements of cities’ physical environments.</p>
+          <p>Those inputs are all available for 942 cities. We first refit the
+            same context model on those cities, then keep them fixed through
+            the following steps. This move changes the sample only.</p>
+        </article>
+        <article class="temporal-step dispersion-step" data-contrast-scene="population">
+          <p class="step-index">ADDING CONTROLS · 06</p>
+          <h3>How is population distributed?</h3>
+          <p>Total population is already included. Now add the average and
+            variation of the population field within each urban centre.</p>
+          <p>This distinguishes cities with similar totals but different
+            population distributions.</p>
+        </article>
+        <article class="temporal-step dispersion-step" data-contrast-scene="built_form">
+          <p class="step-index">ADDING CONTROLS · 07</p>
+          <h3>Account for the built environment.</h3>
+          <p>Add measured building coverage, height and volume, including
+            variation in coverage and height.</p>
+          <p>Some of the development gradient overlaps with these measured
+            differences in urban form.</p>
+        </article>
+        <article class="temporal-step dispersion-step" data-contrast-scene="vintage">
+          <p class="step-index">ADDING CONTROLS · 08</p>
+          <h3>When did the settlement develop?</h3>
+          <p>Add the average and variation of mapped settlement age.
+            Older and newer urban fabric can present different surfaces
+            to the satellite record.</p>
+        </article>
+        <article class="temporal-step dispersion-step" data-contrast-scene="climate">
+          <p class="step-index">ADDING CONTROLS · 09</p>
+          <h3>Place those surfaces in their climate.</h3>
+          <p>Add the shares of the climate zones used in the analysis.
+            The earlier population, built-form and settlement-age controls
+            remain in place.</p>
+        </article>
+        <article class="temporal-step dispersion-step" data-contrast-scene="ndvi">
+          <p class="step-index">ADDING CONTROLS · 10</p>
+          <h3>Include the vegetation signal.</h3>
+          <p>Add average greenness and its variation, measured with NDVI.
+            The estimated HDI association becomes smaller, and its uncertainty
+            interval now includes zero.</p>
+        </article>
+        <article class="temporal-step dispersion-step" data-contrast-scene="vh">
+          <p class="step-index">ADDING CONTROLS · 11</p>
+          <h3>What remains after radar structure?</h3>
+          <p>Finally, add summaries of the radar signal and its variation.
+            The remaining HDI association is small and uncertain.</p>
+          <p>Much of the original gradient overlaps with measured surface
+            characteristics. The sequence describes an association; it does
+            not establish what causes it. Each block’s contribution also
+            depends on which controls came before it.</p>
+        </article>
+      </div>
+    </div>
+
+    <details class="city-methods">
+      <summary>Samples, geometry and interpretation</summary>
+      <p>The fingerprint view retains all 1,000 sampled city mean directions
+        in 2024, spanning 162 countries. Neighbour distances are computed in
+        the native 64-dimensional geometry; the sphere is a fixed
+        three-dimensional display. The split-half check uses all 840,776
+        sampled urban pixels and repeats the comparison five times.</p>
+      <p>The time view requires the same cities across the eight annual layers
+        and retains all 1,000 cities and all 8,000 city-years from 2017–2024.
+        Each trajectory starts at its own 2017 position. The displayed axes
+        carry 17.25% of displacement variation; the motion summaries use all
+        64 dimensions. Connected annual means do not track fixed pixels.</p>
+      <p>The dispersion story starts with 1,000 cities in 162 countries
+        (1,000 city-years in 2024). Valid urban-centre outcomes are available
+        for 992 cities in 162 countries; adding national HDI retains 977 cities
+        in 157 countries. All 977 also have the baseline context controls.
+        No complete four-class or eight-year requirement is imposed here.</p>
+      <p>The clouds show all 250 cached urban-centre observations for each of
+        eight illustrative cities: 2,000 observations, eight countries and
+        eight city-years in 2024. Tangent vectors are transported from each
+        city’s mean to a common reference and projected onto two shared axes,
+        with one display scale. They illustrate a sampled cloud; the regression
+        outcome uses every valid urban-centre cell, in all 64 dimensions.
+        The rectangular regional fields in the city picker below have different
+        boundaries and are not used to estimate this relationship.</p>
+      <p>The context controls are log total population, log land area,
+        collection stage and continent. Comparing the effect of adding all
+        subsequent controls requires identical rows: 942 cities in 155
+        countries, or 942 city-years in 2024. The sample-only step refits the
+        context model before any additional control enters. Cities without
+        required inputs remain in the grey row outside the axes.</p>
+      <p>Adjusted vertical positions are component-plus-residual values from
+        each full log-dispersion model, anchored at the unadjusted sample’s
+        mean log dispersion and mean HDI, then exponentiated. They show a
+        model-adjusted comparison on a common scale. HDI remains national HDI;
+        all effects are reported per +0.1 HDI, with 95% country-clustered
+        intervals. The axes and reference remain fixed across models.</p>
+      <p>Every step below includes the largest valid sample for that model as
+        a sensitivity check. All controls are cumulative. HDI describes
+        national context, and these associations are not causal. The contribution
+        attributed to a block depends on its position in the sequence.</p>
+      <div class="dispersion-table-wrap" tabindex="0" role="region" aria-label="Control sequence sensitivity table">
+        <table class="dispersion-table">
+          <caption>Dispersion difference per +0.1 HDI, with 95% country-clustered intervals. All observations are from 2024; city counts also equal city-year counts.</caption>
+          <thead><tr><th scope="col">Cumulative controls</th><th scope="col">Common 942-city sample</th><th scope="col">Largest sample: cities / countries</th><th scope="col">Largest-sample result</th></tr></thead>
+          <tbody id="dispersion-sensitivity"></tbody>
+        </table>
+      </div>
+      <p><a href="data/narrative/dispersion.json">Dispersion data, model specifications and sample ledger</a></p>
+      <p><a href="data/narrative/provenance.json">Sources and sample ledger</a></p>
+    </details>
+  </section>
+
+  <section id="joint-adapter" class="joint-adapter" aria-labelledby="joint-adapter-title">
+    <div class="jo-main">
+      <div class="jo-eyebrow" style="margin-bottom:9px">Global experiment · Country-robust joint adapter v3</div>
+      <h2 id="joint-adapter-title">What should a shared representation learn?</h2>
+      <div class="jo-sub">Vegetation, building volume, land cover. Move through the global trade-off surface.</div>
+      <div class="jo-topline"><span>2024 global city atlas</span><button type="button" id="jo-original" aria-pressed="false">Compare with original AlphaEarth</button></div>
+      <div class="jo-loading"><span id="jo-status" role="status">Loading the country-robust v3 experiment…</span><button type="button" id="jo-retry" hidden>Try again</button></div>
+      <div class="jo-lab">
+        <section class="jo-control" aria-label="Objective balance">
+          <div class="jo-section-title">Training priorities <span class="jo-small">81 trained settings</span></div>
+          <svg class="jo-triangle" id="jo-triangle" role="img" aria-label="Equilateral triangle of training priorities. Drag for a continuous representation blend; filled dots define the surface, purple dots are post-audit refinements, and orange rings are off-grid audit fits."></svg>
+          <div aria-live="polite" id="jo-weights">
+            <div class="jo-weight"><span><i class="jo-dot"></i>Vegetation</span><span id="jo-w0">33.3%</span></div>
+            <div class="jo-weight"><span><i class="jo-dot" style="background:var(--jo-orange)"></i>Building volume</span><span id="jo-w1">33.3%</span></div>
+            <div class="jo-weight"><span><i class="jo-dot" style="background:var(--jo-purple)"></i>Land cover</span><span id="jo-w2">33.3%</span></div>
+          </div>
+          <div class="jo-presets"><button type="button" data-preset="center">Equal priorities</button><button type="button" data-preset="g10_00">Vegetation</button><button type="button" data-preset="g00_10">Volume</button><button type="button" data-preset="g00_00">Land cover</button></div>
+          <select class="jo-select" id="jo-setting" aria-label="Select a trained model"></select>
+          <div class="jo-small" style="margin-top:8px">Drag anywhere. Filled dots define the surface; two purple edge points refine it, and orange rings are independent interpolation checks.</div>
+        </section>
+        <section class="jo-view" aria-label="Embedding comparison">
+          <div class="jo-section-title"><span id="jo-view-title">Adapted embedding</span><span class="jo-small">Global visual sample · shared projection</span></div>
+          <div class="jo-color-control"><label for="jo-color" class="jo-small">Colour by</label><select id="jo-color"><option value="landcover">Land cover</option><option value="ndvi">Vegetation · NDVI</option><option value="volume">Building volume · log scale</option></select></div>
+          <div class="jo-spatial"><canvas id="jo-sphere" class="jo-sphere" role="img" aria-label="A global visual sample of embeddings coloured by land cover in a shared three-dimensional projection; drag to rotate."></canvas></div>
+          <div class="jo-legend" id="jo-outcome-legend" aria-label="Colour legend"></div>
+          <div class="jo-view-meta"><span class="jo-small" id="jo-model-state">Equal priorities · trained model</span><div class="jo-rotation"><button type="button" id="jo-left" aria-label="Rotate sphere left">←</button><span class="jo-small">Rotate</span><button type="button" id="jo-right" aria-label="Rotate sphere right">→</button></div></div>
+          <div class="jo-small" style="margin-top:8px">Colours stay fixed as embeddings move · every eligible city retained in the visual layer</div>
+        </section>
+      </div>
+      <div class="jo-scores-head"><div><div class="jo-section-title">How well does it predict?</div><span class="jo-small" id="jo-score-note">Exact three-seed ensemble score · lower is better · original AlphaEarth is the reference</span></div><select id="jo-scope" aria-label="Score weighting"><option value="pixel">Pixel-weighted</option><option value="country">Country-weighted</option></select></div>
+      <div class="jo-score-grid" id="jo-scores" aria-live="polite"></div>
+      <div class="jo-footer"><span>● Three-seed ensemble &nbsp; ┆ Original</span><span id="jo-support"></span></div>
+      <details><summary>About this experiment</summary><div class="jo-method"><p>A country-weighted 64 → 128 → 64 residual adapter nudges existing AlphaEarth embeddings toward three weighted goals. One architecture and a fixed 24-epoch horizon were selected by three-fold country-held-out validation, then held constant across the surface. It does not retrain AlphaEarth or impose a geometry-preservation penalty.</p><p>The regular 66-model lattice and exact equal-priority fit define the base surface. Two explicitly post-audit, 5%-spaced knots refine the nonlinear edge near pure building volume. Between anchors, the browser blends neighbouring three-seed mean representations before the fixed projection. Twelve separately trained off-grid fits audit the refined interpolation: all 12 were within 5% of their trained objective, with mean cosine similarity 0.995. Scores between the 79 evaluated settings are labelled estimates.</p><p>The sphere is a visual-only common-support layer: 15,970 deterministic rows retain all 998 eligible cities, 162 countries and 998 city-years from 501,969 rows with all three observed, non-water outcomes. It is not the analytical sample. Score cards use every target-valid held-out row: 216,504 NDVI pixels, 138,473 volume pixels and 1,036,656 non-water land-cover pixels. Land cover begins with 3,982,891 rows; 224,503 permanent-water rows are excluded, leaving 3,758,388. Colours show observations and never model predictions.</p><p>The sphere is one fixed three-dimensional projection of the 64-dimensional ensemble means. Visible separation is not the prediction score. The original test countries were excluded from every v3 fit and selection step, but they had already been inspected during v2, so these results are confirmatory rather than a new sealed evaluation. Any best point is descriptive, not a test-selected recommendation.</p><p><a href="JOINT_ADAPTER_DATA.md">Data, samples and limits</a></p></div></details>
     </div>
   </section>
 
@@ -353,41 +632,6 @@
         displayed fields, whose extents differ; they do not compare whole-city area or population.</p>
     </details>
   </section>
-<section id="joint-adapter" class="joint-adapter" aria-labelledby="joint-adapter-title">
-<div class="jo-main">
-<div class="jo-eyebrow" style="margin-bottom:9px">Global experiment · Joint adapter v2</div>
-<h2 id="joint-adapter-title">What should a shared representation learn?</h2>
-<div class="jo-sub">Vegetation, building volume, land cover. Move through the global trade-off surface.</div>
-<div class="jo-topline"><span>2024 global city atlas</span><button type="button" id="jo-original" aria-pressed="false">Compare with original AlphaEarth</button></div>
-<div class="jo-loading"><span id="jo-status" role="status">Loading the v2 global experiment…</span><button type="button" id="jo-retry" hidden>Try again</button></div>
-<div class="jo-lab">
-<section class="jo-control" aria-label="Objective balance">
-<div class="jo-section-title">Training priorities <span class="jo-small">79 fitted results</span></div>
-<svg class="jo-triangle" id="jo-triangle" role="img" aria-label="Equilateral triangle of training priorities. Drag for a continuous representation blend; filled dots are lattice fits and outlined dots are off-grid audit fits."></svg>
-<div aria-live="polite" id="jo-weights">
-<div class="jo-weight"><span><i class="jo-dot"></i>Vegetation</span><span id="jo-w0">33.3%</span></div>
-<div class="jo-weight"><span><i class="jo-dot" style="background:var(--jo-orange)"></i>Building volume</span><span id="jo-w1">33.3%</span></div>
-<div class="jo-weight"><span><i class="jo-dot" style="background:var(--jo-purple)"></i>Land cover</span><span id="jo-w2">33.3%</span></div>
-</div>
-<div class="jo-presets"><button type="button" data-preset="center">Equal priorities</button><button type="button" data-preset="g10_00">Vegetation</button><button type="button" data-preset="g00_10">Volume</button><button type="button" data-preset="g00_00">Land cover</button></div>
-<select class="jo-select" id="jo-setting" aria-label="Select a trained model"></select>
-<div class="jo-small" style="margin-top:8px">Drag anywhere. Filled dots define the surface; orange rings are independent interpolation checks.</div>
-</section>
-<section class="jo-view" aria-label="Embedding comparison">
-<div class="jo-section-title"><span id="jo-view-title">Adapted embedding</span><span class="jo-small">Global visual sample · shared projection</span></div>
-<div class="jo-color-control"><label for="jo-color" class="jo-small">Colour by</label><select id="jo-color"><option value="landcover">Land cover</option><option value="ndvi">Vegetation · NDVI</option><option value="volume">Building volume · log scale</option></select></div>
-<div class="jo-spatial"><canvas id="jo-sphere" class="jo-sphere" role="img" aria-label="A global visual sample of embeddings coloured by land cover in a shared three-dimensional projection; drag to rotate."></canvas></div>
-<div class="jo-legend" id="jo-outcome-legend" aria-label="Colour legend"></div>
-<div class="jo-view-meta"><span class="jo-small" id="jo-model-state">Equal priorities · trained model</span><div class="jo-rotation"><button type="button" id="jo-left" aria-label="Rotate sphere left">←</button><span class="jo-small">Rotate</span><button type="button" id="jo-right" aria-label="Rotate sphere right">→</button></div></div>
-<div class="jo-small" style="margin-top:8px">Colours stay fixed as embeddings move · every eligible city retained in the visual layer</div>
-</section>
-</div>
-<div class="jo-scores-head"><div><div class="jo-section-title">How well does it predict?</div><span class="jo-small" id="jo-score-note">Exact ensemble score · lower error is better · original AlphaEarth is the reference</span></div><select id="jo-scope" aria-label="Evaluation sample"><option value="test">Held-out countries</option><option value="validation">Validation countries</option></select></div>
-<div class="jo-score-grid" id="jo-scores" aria-live="polite"></div>
-<div class="jo-footer"><span>● Exact ensemble &nbsp; ━ Range across 3 fitted seeds &nbsp; ┆ Original</span><span id="jo-support"></span></div>
-<details><summary>About this experiment</summary><div class="jo-method"><p>A 64 → 24 → 64 residual adapter nudges existing AlphaEarth embeddings toward three weighted goals. It does not retrain AlphaEarth, and v2 does not impose a geometry-preservation penalty.</p><p>The regular 66-model lattice and the exact equal-priority fit define the continuous display surface. Between anchors, the browser blends neighbouring three-seed mean representations before the fixed projection. Twelve separately trained off-grid fits test that interpolation: 11 of 12 were within 5% of their trained validation objective, with mean cosine similarity 0.970. Score values between dots are labelled lattice estimates; exact ensemble scores appear at every fitted dot.</p><p>The sphere is a visual-only common-support layer: 15,970 deterministic rows retain all 998 eligible cities, 162 countries and 998 city-years from 501,969 rows with all three observed, non-water outcomes. It is not the analytical sample. Score cards use every target-valid row: the held-out test has 216,504 NDVI pixels, 138,473 volume pixels and 1,036,656 non-water land-cover pixels. Land cover begins with 3,982,891 rows; 224,503 permanent-water rows are excluded, leaving 3,758,388. Colours show observations and never model predictions.</p><p>The sphere is one fixed three-dimensional projection of the 64-dimensional ensemble means. Visible separation is not the prediction score. The sealed test is reported once; any best point on that surface is descriptive, not a selected optimum.</p><p><a href="JOINT_ADAPTER_DATA.md">Data, samples and limits</a></p></div></details>
-</div>
-</section>
 </main>
 
 <footer>
@@ -395,6 +639,7 @@
   <span>Data: Google AlphaEarth · ESA WorldCover · JRC GHSL · DLR WSF3D · NOAA VIIRS</span>
 </footer>
 
+<script type="module" src="city-evolution.js"></script>
 <script src="app.js"></script>
 <script src="joint-adapter.js"></script>
 <script src="comparison-loader.js"></script>

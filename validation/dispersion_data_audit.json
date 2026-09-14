@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "maxPartialResidualSlopeError": 5.88418203051333e-15,
+  "canonicalLadderReproduced": true,
+  "rawValuesReproduced": true,
+  "allEightCloudsUseObservedUCPoints": true,
+  "cloudPixels": 2000,
+  "stages": {
+    "raw": {
+      "cities": 977,
+      "countries": 157,
+      "effectPer01": 14.9960979083067,
+      "intervalPer01": [
+        10.832596632757236,
+        19.31600391854753
+      ]
+    },
+    "context": {
+      "cities": 977,
+      "countries": 157,
+      "effectPer01": 9.825369986593294,
+      "intervalPer01": [
+        4.562485139772869,
+        15.353148661002718
+      ]
+    },
+    "matched": {
+      "cities": 942,
+      "countries": 155,
+      "effectPer01": 10.38324676686575,
+      "intervalPer01": [
+        5.261870362345943,
+        15.753796933798153
+      ]
+    },
+    "population": {
+      "cities": 942,
+      "countries": 155,
+      "effectPer01": 10.38898136018084,
+      "intervalPer01": [
+        5.58968449597217,
+        15.40641743468028
+      ]
+    },
+    "built_form": {
+      "cities": 942,
+      "countries": 155,
+      "effectPer01": 5.94923209466789,
+      "intervalPer01": [
+        1.2981062884838124,
+        10.813915410045116
+      ]
+    },
+    "vintage": {
+      "cities": 942,
+      "countries": 155,
+      "effectPer01": 5.073629052937081,
+      "intervalPer01": [
+        0.49585344307526946,
+        9.859930973251252
+      ]
+    },
+    "climate": {
+      "cities": 942,
+      "countries": 155,
+      "effectPer01": 4.980122579290916,
+      "intervalPer01": [
+        0.4097908628349951,
+        9.758481140728287
+      ]
+    },
+    "ndvi": {
+      "cities": 942,
+      "countries": 155,
+      "effectPer01": 3.149510826280123,
+      "intervalPer01": [
+        -0.638635493306984,
+        7.082080006904273
+      ]
+    },
+    "vh": {
+      "cities": 942,
+      "countries": 155,
+      "effectPer01": 0.9958419310236857,
+      "intervalPer01": [
+        -2.6834847006421154,
+        4.814275932295173
+      ]
+    }
+  },
+  "sha256": "cb0f93f15ea4d58f617768877bd4a91d91a0ca95e9589ebf6f71823f404efb89"
+}

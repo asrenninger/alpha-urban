@@ -22,7 +22,7 @@
   const GLOBE_COUNT = 1000;
   const V2_SCENES = new Set([
     "mx_map", "pair", "frame", "dou", "collapse",
-    "globe_continent", "globe_climate", "globe_pop", "finale",
+    "globe_continent", "globe_climate", "globe_pop", "finale", "fingerprints",
   ]);
   const NT = 2 * NCELL + GLOBE_COUNT;
 
@@ -38,6 +38,8 @@
   let singaporePainterOrder = null;
   let v2Promise = null;
   let pendingV2Scene = null;
+  let globeCityIds = null;
+  let selectedGlobeIndex = -1;
 
   let stage = { w: 0, h: 0, cx: 0, cy: 0, cell: 3, mapSize: 0 };
   let scene = "map";
@@ -208,7 +210,7 @@
 
   const SPHERE_SCENES = {
     sphere: 1, ndvi: 1, city: 1, audit: 1, frame: 1, dou: 1, collapse: 1,
-    globe_continent: 1, globe_climate: 1, globe_pop: 1, finale: 1,
+    globe_continent: 1, globe_climate: 1, globe_pop: 1, finale: 1, fingerprints: 1,
   };
 
   // [centreX, centreY, radius] for every sphere a scene shows; [] otherwise.
@@ -294,33 +296,34 @@
   const kdeRear = new Image();
   for (const image of [kdeFront, kdeRear]) {
     image.addEventListener("load", () => {
-      if (scene === "finale" && !animating) draw();
+      if ((scene === "finale" || scene === "fingerprints") && !animating) draw();
+      window.dispatchEvent(new CustomEvent("alphaurban:globe-chrome-ready"));
     });
   }
 
   function sceneShowsKde(name) {
-    return name === "finale";
+    return name === "finale" || name === "fingerprints";
   }
 
-  function drawSphere(cx, cy, R, alpha, withKde) {
+  function drawSphere(cx, cy, R, alpha, withKde, targetContext = ctx) {
     if (alpha <= 0.004 || R <= 0) return;
-    ctx.globalAlpha = alpha;
-    ctx.beginPath();
-    ctx.arc(cx, cy, R, 0, Math.PI * 2);
-    ctx.fillStyle = SPHERE_FACE;
-    ctx.fill();
+    targetContext.globalAlpha = alpha;
+    targetContext.beginPath();
+    targetContext.arc(cx, cy, R, 0, Math.PI * 2);
+    targetContext.fillStyle = SPHERE_FACE;
+    targetContext.fill();
 
     if (withKde && kdeRear.complete && kdeRear.naturalWidth > 0) {
-      ctx.drawImage(kdeRear, cx - R, cy - R, 2 * R, 2 * R);
+      targetContext.drawImage(kdeRear, cx - R, cy - R, 2 * R, 2 * R);
     }
 
     // Rear pass first, then front — the paper draws both and fades the far side
     // rather than removing it (wp2_occupancy.py:240-288).
     for (let pass = 0; pass < 2; pass++) {
       const front = pass === 1;
-      ctx.strokeStyle = front ? GRAT_FRONT : GRAT_REAR;
-      ctx.lineWidth = front ? Math.max(0.7, R * 0.0042) : Math.max(0.55, R * 0.0030);
-      ctx.beginPath();
+      targetContext.strokeStyle = front ? GRAT_FRONT : GRAT_REAR;
+      targetContext.lineWidth = front ? Math.max(0.7, R * 0.0042) : Math.max(0.55, R * 0.0030);
+      targetContext.beginPath();
       for (let c = 0; c < GRATICULE.length; c++) {
         const arr = GRATICULE[c];
         let started = false;
@@ -328,24 +331,24 @@
           if ((arr[i + 2] >= 0) !== front) { started = false; continue; }
           const X = cx + arr[i] * R;
           const Y = cy - arr[i + 1] * R;
-          if (started) ctx.lineTo(X, Y);
-          else { ctx.moveTo(X, Y); started = true; }
+          if (started) targetContext.lineTo(X, Y);
+          else { targetContext.moveTo(X, Y); started = true; }
         }
       }
-      ctx.stroke();
+      targetContext.stroke();
     }
 
     if (withKde && kdeFront.complete && kdeFront.naturalWidth > 0) {
-      ctx.drawImage(kdeFront, cx - R, cy - R, 2 * R, 2 * R);
+      targetContext.drawImage(kdeFront, cx - R, cy - R, 2 * R, 2 * R);
     }
 
-    ctx.globalAlpha = alpha * 0.85;
-    ctx.beginPath();
-    ctx.arc(cx, cy, R, 0, Math.PI * 2);
-    ctx.strokeStyle = SPHERE_EDGE;
-    ctx.lineWidth = Math.max(0.8, R * 0.0088);
-    ctx.stroke();
-    ctx.globalAlpha = 1;
+    targetContext.globalAlpha = alpha * 0.85;
+    targetContext.beginPath();
+    targetContext.arc(cx, cy, R, 0, Math.PI * 2);
+    targetContext.strokeStyle = SPHERE_EDGE;
+    targetContext.lineWidth = Math.max(0.8, R * 0.0088);
+    targetContext.stroke();
+    targetContext.globalAlpha = 1;
   }
 
   function mapPosition(k, out) {
@@ -542,11 +545,11 @@
         } else {
           setMark(i, tmp[0], tmp[1], FADE, 0, 1.6);
         }
-      } else if (name === "globe_continent" || name === "globe_climate" || name === "globe_pop" || name === "finale") {
+      } else if (name === "globe_continent" || name === "globe_climate" || name === "globe_pop" || name === "finale" || name === "fingerprints") {
         sphPos(v2.globeArr, k, stage.cx, stage.cy, GLOBE_R(), tmp);
         const depth = (tmp[2] + 1) / 2;
         let color;
-        if (name === "globe_continent" || name === "finale") {
+        if (name === "globe_continent" || name === "finale" || name === "fingerprints") {
           const c = v2.globe.continent[k];
           color = c >= 0 && continentRgb[c] ? continentRgb[c] : FADE;
         } else if (name === "globe_climate") {
@@ -556,7 +559,7 @@
           const q = v2.globe.pop_q[k];
           color = q >= 1 ? ramp(POP_RAMP, (q - 1) / 4) : FADE;
         }
-        const alpha = (name === "finale" ? 0.45 : 0.6) + depth * 0.35;
+        const alpha = (name === "finale" || name === "fingerprints" ? 0.45 : 0.6) + depth * 0.35;
         setMark(i, tmp[0], tmp[1], color, alpha, (featured ? 3.2 : 1.7) + depth * 0.7);
       } else {
         hideMark(i);
@@ -685,6 +688,24 @@
 
     if (scene === "dou") drawDouArrows(e);
     else if (prevScene === "dou" && e < 1) drawDouArrows(1 - e);
+
+    if (selectedGlobeIndex >= 0 && (scene === "fingerprints" || (prevScene === "fingerprints" && e < 1))) {
+      const i = GB0 + selectedGlobeIndex;
+      const radius = Math.max(8, base * ps[i] * 1.9);
+      ctx.globalAlpha = Math.max(0.5, pa[i]);
+      ctx.fillStyle = "#ffffff";
+      ctx.strokeStyle = "#202735";
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.arc(px[i], py[i], radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#c84c4c";
+      ctx.beginPath();
+      ctx.arc(px[i], py[i], Math.max(3.2, radius * 0.34), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
   }
 
   // ---- chrome ------------------------------------------------------------
@@ -709,6 +730,7 @@
     globe_climate: "1,000 CITY MEAN DIRECTIONS · COLOURED BY KÖPPEN CLIMATE FAMILY",
     globe_pop: "1,000 CITY MEAN DIRECTIONS · COLOURED BY POPULATION QUINTILE",
     finale: "1,000 CITIES OVER THE GREY DENSITY OF 273,410 NON-CITY LAND PIXELS · 2024",
+    fingerprints: "CITY FINGERPRINTS · SELECT ANY OF 1,000 CITY MEAN DIRECTIONS · 2024",
   };
 
   function legendItems(items) {
@@ -734,6 +756,7 @@
     globe_climate: "1,000 CITIES · 2024",
     globe_pop: "1,000 CITIES · 2024",
     finale: "1,000 CITIES · 2024",
+    fingerprints: "CITY FINGERPRINTS · 2024",
   };
 
   // The masthead names a city only while the walk is at one: neutral on the
@@ -770,7 +793,7 @@
     } else if (name === "globe_continent") {
       const hexes = cutColors("continent");
       legendItems(v2.meta.cut_levels.continent.map((c, i) => [c, hexes[i]]));
-    } else if (name === "finale") {
+    } else if (name === "finale" || name === "fingerprints") {
       const hexes = cutColors("continent");
       legendItems(
         v2.meta.cut_levels.continent
@@ -790,6 +813,13 @@
         )
         .join("");
     }
+    canvas.classList.toggle("is-city-selectable", name === "fingerprints");
+    canvas.setAttribute(
+      "aria-label",
+      name === "fingerprints"
+        ? "Interactive globe of 1,000 city mean directions. Select a point, or use the city search in the story card."
+        : "Animated scrollytelling figure."
+    );
   }
 
   // ---- the progress sphere ------------------------------------------------
@@ -798,7 +828,7 @@
      whose southern cap fills navy as the pages advance, with a coral latitude
      band on the fill boundary. This is the same shader as
      scripts/render_page_progress_spheres.py, re-implemented per pixel, with
-     scroll through the 18 scenes standing in for the page counter. */
+     scroll through the 20 scenes standing in for the page counter. */
 
   const PS_PALE = [0.925, 0.942, 0.963];
   const PS_INK = [32 / 255, 39 / 255, 53 / 255];
@@ -1071,6 +1101,94 @@
       });
     return v2Promise;
   }
+
+  // The narrative city records and this canvas deliberately remain separate:
+  // the bridge supplies the exact city id for each analysis-rank-ordered globe
+  // point, while this file stays the sole owner of the original geometry.
+  function selectGlobePoint(index, emit) {
+    if (!Number.isInteger(index) || index < 0 || index >= GLOBE_COUNT) return false;
+    selectedGlobeIndex = index;
+    if (!animating) draw();
+    if (emit) {
+      window.dispatchEvent(new CustomEvent("alphaurban:globe-select", {
+        detail: {index, id: globeCityIds ? globeCityIds[index] : null},
+      }));
+    }
+    return true;
+  }
+
+  function closestGlobePoint(clientX, clientY) {
+    if (scene !== "fingerprints" || !v2 || animating) return -1;
+    const bounds = canvas.getBoundingClientRect();
+    const x = clientX - bounds.left;
+    const y = clientY - bounds.top;
+    let best = -1;
+    let bestDistance = 14 * 14;
+    let bestAlpha = -1;
+    for (let k = 0; k < GLOBE_COUNT; k++) {
+      const i = GB0 + k;
+      if (pa[i] <= 0.004) continue;
+      const distance = (x - px[i]) ** 2 + (y - py[i]) ** 2;
+      if (distance < bestDistance - 0.5 || (Math.abs(distance - bestDistance) <= 0.5 && pa[i] > bestAlpha)) {
+        bestDistance = distance;
+        bestAlpha = pa[i];
+        best = k;
+      }
+    }
+    return best;
+  }
+
+  window.AlphaUrbanSphere = {
+    setCityOrder(ids) {
+      if (!Array.isArray(ids) || ids.length !== GLOBE_COUNT || new Set(ids).size !== GLOBE_COUNT) {
+        throw new Error(`Expected ${GLOBE_COUNT} unique globe city identities.`);
+      }
+      globeCityIds = ids.slice();
+    },
+    selectCity(id) {
+      if (!globeCityIds) return false;
+      return selectGlobePoint(globeCityIds.indexOf(id), false);
+    },
+    selectIndex(index) {
+      return selectGlobePoint(index, false);
+    },
+    async getGlobeLayout() {
+      await loadV2();
+      const point = [0, 0, 0];
+      const layout = [];
+      const size = Math.min(stage.w, stage.h);
+      const offsetX = (stage.w - size) / 2;
+      const offsetY = (stage.h - size) / 2;
+      for (let k = 0; k < GLOBE_COUNT; k++) {
+        sphPos(v2.globeArr, k, stage.cx, stage.cy, GLOBE_R(), point);
+        const depth = (point[2] + 1) / 2;
+        layout.push([
+          (point[0] - offsetX) / size,
+          (point[1] - offsetY) / size,
+          0.45 + depth * 0.35,
+          Math.max(stage.cell, 1.6) * ((k === v2.sgIndex || k === v2.mxIndex ? 3.2 : 1.7) + depth * 0.7),
+        ]);
+      }
+      return layout;
+    },
+    async getGlobeFrame() {
+      await loadV2();
+      const size = Math.min(stage.w, stage.h);
+      return {
+        cx: (stage.cx - (stage.w - size) / 2) / size,
+        cy: (stage.cy - (stage.h - size) / 2) / size,
+        radius: GLOBE_R() / size,
+      };
+    },
+    drawGlobeChrome(targetContext, cx, cy, radius) {
+      drawSphere(cx, cy, radius, 1, true, targetContext);
+    },
+  };
+
+  canvas.addEventListener("click", (event) => {
+    const index = closestGlobePoint(event.clientX, event.clientY);
+    if (index >= 0) selectGlobePoint(index, true);
+  });
 
   // ---- boot --------------------------------------------------------------
 

@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-14",
+  "method": "The existing Codex browser preview was scrolled with UI tools; screenshots and read-only DOM geometry were inspected.",
+  "url": "http://127.0.0.1:8765/",
+  "viewports": [
+    {"width": 691, "height": 951, "narrationRight": 235.296875, "plotHeaderLeft": 271.296875, "horizontalGap": 36},
+    {"width": 390, "height": 844, "readingBottom": 565.46875, "narrationTop": 582.359375, "verticalGap": 16.890625, "fullControlHeaderBottom": 152.375, "axisLabelBaseline": 173},
+    {"width": 1440, "height": 900, "separateNarrationAndGraphic": true}
+  ],
+  "observedIntermediateFrames": [
+    {"scene": "centres", "progress": 0.5742, "observation": "Eight coloured means between the shared centre and their grid destinations."},
+    {"scene": "centres", "progress": 1, "observation": "The same means at their eight grid origins."},
+    {"scene": "clouds", "progress": 0.3805, "observation": "Small observed clouds expanding out from the means."},
+    {"scene": "clouds", "progress": 1, "observation": "Fully expanded, differently shaped observed clouds."},
+    {"scene": "raw", "progress": 0.2608, "observation": "Clouds contracting before the means leave the grid."},
+    {"scene": "raw", "progress": 0.6636, "observation": "Eight means moving toward their scatter positions; other cities and regression axes fading in."},
+    {"scene": "raw", "progress": 1, "observation": "Completed 977-city scatter and separate missing-input row."},
+    {"scene": "raw", "progress": 0.4219, "direction": "reverse", "observation": "The same means moving back toward the grid on upward scroll."}
+  ],
+  "phoneFullControlListChecked": true,
+  "phoneHeaderAxisCollisionCorrected": true,
+  "clutterFollowup": {
+    "controlLayout": "Three fixed columns; all block positions reserved; only included controls are visible and exposed to accessibility tools.",
+    "chartTopMeasuredBelowHeader": true,
+    "checkedLayouts": [
+      {"width": 691, "height": 951, "scene": "vh", "headerBottom": 240.703125, "plotTop": 277},
+      {"width": 390, "height": 844, "scene": "ndvi", "headerBottom": 184.984375, "plotTop": 221},
+      {"width": 1440, "height": 900, "scene": "vh", "headerBottom": 256.75, "plotTop": 293}
+    ],
+    "allCitiesRetainedWithSmallerLighterMarks": true,
+    "viewportRestored": true
+  },
+  "statisticalDataUnchanged": true,
+  "passed": true
+}

@@ -11,7 +11,7 @@ export function decodeProjection(buffer) {
 
 export function summarizeScores(scores,model,scope) {
   const record=scores.models[model];
-  if(!record||!['test','validation'].includes(scope))throw new Error('Unknown score selection');
+  if(!record||!['pixel','country'].includes(scope))throw new Error('Unknown score selection');
   const result={};
   for(const task of TASKS){
     const metric=record[scope][task],values=metric.values.slice();
@@ -105,7 +105,7 @@ function decodeObservations(buffer,count) {
 }
 
 export function createJointData(baseURL=new URL('./data/joint-adapter-v2/',import.meta.url),{fetchImpl=fetch,maxCacheBytes=8_000_000}={}) {
-  const base=new URL(baseURL,import.meta.url),cache=new Map();let cacheBytes=0,controller=null,generation=0,metadataPromise,interpolator,observationsPromise;
+  const base=new URL(baseURL,import.meta.url),cache=new Map();let cacheBytes=0,controller=null,generation=0,metadataPromise,interpolator,metricInterpolator,observationsPromise;
   async function request(file,signal){const response=await fetchImpl(new URL(file,base),{signal});if(!response.ok)throw new Error(`Could not load ${file} (${response.status})`);return response;}
   async function metadata(){
     if(!metadataPromise)metadataPromise=Promise.all(['manifest.json','scores.json'].map(async file=>(await request(file)).json())).then(([manifest,scores])=>({manifest,scores})).catch(error=>{metadataPromise=null;throw error;});
@@ -133,7 +133,7 @@ export function createJointData(baseURL=new URL('./data/joint-adapter-v2/',impor
     if(!observationsPromise)observationsPromise=binary(manifest.observations.file,manifest.observations.bytes).then(buffer=>decodeObservations(buffer,manifest.sample.retainedRows)).catch(error=>{observationsPromise=null;throw error;});
     return observationsPromise;
   }
-  async function loadSelection(sources,weights=null){
+  async function loadSelection(sources,weights=null,scoreSources=sources){
     const token=++generation;controller?.abort();controller=new AbortController();const signal=controller.signal;
     const {manifest,scores}=await metadata();if(signal.aborted)throw abortError();
     for(const source of sources)if(source.model!=='baseline'&&!manifest.vertices.some(vertex=>vertex.id===source.model))throw new Error('Choose a trained setting');
@@ -149,19 +149,26 @@ export function createJointData(baseURL=new URL('./data/joint-adapter-v2/',impor
     const count=manifest.sample.retainedRows,position=new Float32Array(count*3);
     for(let index=0;index<position.length;index++)position[index]=arrays.reduce((sum,array)=>sum+array.factor*array.xyz[index]*manifest.coordinateScale,0);
     const model=sources.length===1?sources[0].model:'interpolated';
-    return {model,weights,sources,interpolated:sources.length>1,count,position,...observed,manifest,scores,
-      metrics(scope='test'){return sources.length===1?summarizeScores(scores,model,scope):summarizeInterpolatedScores(scores,sources,scope);},
-      baselineMetrics(scope='test'){return summarizeScores(scores,'baseline',scope);}};
+    const scoreInterpolated=!scores.models[model]||scoreSources.length!==1||scoreSources[0].model!==model;
+    return {model,weights,sources,scoreSources,interpolated:sources.length>1,scoreInterpolated,count,position,...observed,manifest,scores,
+      metrics(scope='pixel'){return scoreInterpolated?summarizeInterpolatedScores(scores,scoreSources,scope):summarizeScores(scores,model,scope);},
+      baselineMetrics(scope='pixel'){return summarizeScores(scores,'baseline',scope);}};
   }
   async function loadModel(model='center'){
-    const {manifest}=await metadata(),vertex=manifest.vertices.find(item=>item.id===model);
+    const {manifest,scores}=await metadata(),vertex=manifest.vertices.find(item=>item.id===model);
     if(model!=='baseline'&&!vertex)throw new Error('Choose a trained setting');
-    return loadSelection([{model,factor:1}],vertex?.weights||null);
+    let scoreSources=[{model,factor:1}];
+    if(vertex&&!scores.models[model]){
+      metricInterpolator??=createWeightInterpolator(manifest.vertices,manifest.metricInterpolationVertexIds);
+      scoreSources=metricInterpolator(vertex.weights);
+    }
+    return loadSelection([{model,factor:1}],vertex?.weights||null,scoreSources);
   }
   async function loadBlend(weights){
     const {manifest}=await metadata();
     interpolator??=createWeightInterpolator(manifest.vertices,manifest.interpolationVertexIds);
-    return loadSelection(interpolator(weights),weights.slice());
+    metricInterpolator??=createWeightInterpolator(manifest.vertices,manifest.metricInterpolationVertexIds);
+    return loadSelection(interpolator(weights),weights.slice(),metricInterpolator(weights));
   }
   return {metadata,loadModel,loadBlend,cancel(){generation++;controller?.abort();},clearCache(){cache.clear();cacheBytes=0;observationsPromise=null;},cacheInfo(){return {bytes:cacheBytes,entries:cache.size};}};
 }
