@@ -5,7 +5,7 @@ export const DISPERSION_SCENES = ['centres', 'clouds', 'raw', 'context', 'matche
 const TITLES = {
   centres: 'Give every city its own centre.', clouds: 'The variation inside the point.',
   raw: 'Dispersion and national development.', context: 'After city context.',
-  matched: 'The same model. A common sample.', population: 'Add population distribution.',
+  matched: 'The same model on a common sample.', population: 'Add population distribution.',
   built_form: 'Add the built environment.', vintage: 'Add settlement age.',
   climate: 'Add climate.', ndvi: 'Add vegetation.', vh: 'Add radar structure.',
 };

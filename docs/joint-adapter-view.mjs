@@ -108,7 +108,7 @@ export function mountJointAdapter(root,{loader=createJointData()}={}) {
   function scores(){
     if(!view)return;
     const actual=view.metrics(state.scope),baseline=view.baselineMetrics(state.scope),container=$('#jo-scores');container.replaceChildren();
-    $('#jo-score-note').textContent=view.scoreInterpolated?'Barycentric score estimate · exact values appear at the 79 scored settings':'Exact three-seed ensemble score · lower is better · original AlphaEarth is the reference';
+    $('#jo-score-note').textContent=view.scoreInterpolated?'Estimated score between trained settings · exact values at the 79 scored settings':'Score after combining three training runs · lower is better · original AlphaEarth is the reference';
     for(const task of TASKS){
       const a=actual[task],b=baseline[task],change=(a.mean/b.mean-1)*100,domain=view.scores.extents[state.scope][task],x=value=>clamp((value-domain[0])/(domain[1]-domain[0]))*100,card=document.createElement('div');card.className='jo-score';
       const digits=4,changeText=view.model==='baseline'?'Original reference':`${view.scoreInterpolated?'Estimated · ':''}${Math.abs(change).toFixed(1)}% ${change>0?'higher error':'lower error'}`;
@@ -141,7 +141,7 @@ export function mountJointAdapter(root,{loader=createJointData()}={}) {
       beginTransition(next);view=next;metadata={manifest:view.manifest,scores:view.scores};
       if(!menu.options.length){
         const preview=document.createElement('option');preview.value='__interpolated';preview.textContent='Interpolated position';preview.disabled=true;menu.append(preview);
-        for(const vertex of metadata.manifest.vertices){const option=document.createElement('option');option.value=vertex.id;const prefix=vertex.role==='offgrid_check'?'Audit check · ':vertex.role==='post_audit_refinement'?'Display refinement · ':'';option.textContent=vertex.id==='center'?'Equal priorities':prefix+weightLabel(vertex.weights);menu.append(option);}
+        for(const vertex of metadata.manifest.vertices){const option=document.createElement('option');option.value=vertex.id;const prefix=vertex.role==='offgrid_check'?'Separately trained check · ':vertex.role==='post_audit_refinement'?'Added model · ':'';option.textContent=vertex.id==='center'?'Equal priorities':prefix+weightLabel(vertex.weights);menu.append(option);}
       }
       $('#jo-view-title').textContent=mode==='baseline'?'Original AlphaEarth':'Adapted embedding';
       const role=metadata.manifest.vertices.find(vertex=>vertex.id===view.model)?.role;

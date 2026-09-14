@@ -272,7 +272,7 @@
       <div class="fingerprint-results-heading">
         <div>
           <p class="kicker">THE CITY BEHIND THE POINT</p>
-          <h2>One direction.<br /><em>A repeatable identity.</em></h2>
+          <h2>Each city’s mean direction,<br />and whether it repeats.</h2>
         </div>
         <p id="fingerprint-results-intro">Select a point on the sphere above,
           or find a city by name, to inspect its native 64-dimensional angles.</p>
@@ -340,7 +340,7 @@
         </article>
         <article class="temporal-step dispersion-step" id="unequal-contrast" data-contrast-scene="centres">
           <p class="step-index">INSIDE THE POINT · 01</p>
-          <h3 id="unequal-contrast-title">A city is more than its centre.</h3>
+          <h3 id="unequal-contrast-title">Variation around each city’s mean.</h3>
           <p>We have followed how each city’s average moves over time. Now
             return to 2024 and look at the variation around that average.</p>
           <p>Eight familiar cities move into a grid. Each has its own origin;
@@ -490,15 +490,15 @@
 
   <section id="joint-adapter" class="joint-adapter" aria-labelledby="joint-adapter-title">
     <div class="jo-main">
-      <div class="jo-eyebrow" style="margin-bottom:9px">Global experiment · Country-robust joint adapter v3</div>
+      <div class="jo-eyebrow" style="margin-bottom:9px">Global experiment · A small adapter trained on AlphaEarth</div>
       <h2 id="joint-adapter-title">What should a shared representation learn?</h2>
-      <div class="jo-sub">Vegetation, building volume, land cover. Move through the global trade-off surface.</div>
+      <div class="jo-sub">The adapter is trained to predict vegetation, building volume and land cover. Change how much weight each goal receives and watch the embedding and its scores move.</div>
       <div class="jo-topline"><span>2024 global city atlas</span><button type="button" id="jo-original" aria-pressed="false">Compare with original AlphaEarth</button></div>
-      <div class="jo-loading"><span id="jo-status" role="status">Loading the country-robust v3 experiment…</span><button type="button" id="jo-retry" hidden>Try again</button></div>
+      <div class="jo-loading"><span id="jo-status" role="status">Loading the adapter experiment…</span><button type="button" id="jo-retry" hidden>Try again</button></div>
       <div class="jo-lab">
         <section class="jo-control" aria-label="Objective balance">
           <div class="jo-section-title">Training priorities <span class="jo-small">81 trained settings</span></div>
-          <svg class="jo-triangle" id="jo-triangle" role="img" aria-label="Equilateral triangle of training priorities. Drag for a continuous representation blend; filled dots define the surface, purple dots are post-audit refinements, and orange rings are off-grid audit fits."></svg>
+          <svg class="jo-triangle" id="jo-triangle" role="img" aria-label="Triangle of training priorities. Drag to blend between trained models; filled dots are trained models, purple dots are two models added later near the building-volume corner, and orange rings are separately trained checks on the blends."></svg>
           <div aria-live="polite" id="jo-weights">
             <div class="jo-weight"><span><i class="jo-dot"></i>Vegetation</span><span id="jo-w0">33.3%</span></div>
             <div class="jo-weight"><span><i class="jo-dot" style="background:var(--jo-orange)"></i>Building volume</span><span id="jo-w1">33.3%</span></div>
@@ -506,7 +506,7 @@
           </div>
           <div class="jo-presets"><button type="button" data-preset="center">Equal priorities</button><button type="button" data-preset="g10_00">Vegetation</button><button type="button" data-preset="g00_10">Volume</button><button type="button" data-preset="g00_00">Land cover</button></div>
           <select class="jo-select" id="jo-setting" aria-label="Select a trained model"></select>
-          <div class="jo-small" style="margin-top:8px">Drag anywhere. Filled dots define the surface; two purple edge points refine it, and orange rings are independent interpolation checks.</div>
+          <div class="jo-small" style="margin-top:8px">Drag anywhere. Filled dots are trained models and positions between them are blends of their neighbours. The two purple dots are models added later along the building-volume edge, and the orange rings are separately trained checks on the blends.</div>
         </section>
         <section class="jo-view" aria-label="Embedding comparison">
           <div class="jo-section-title"><span id="jo-view-title">Adapted embedding</span><span class="jo-small">Global visual sample · shared projection</span></div>
@@ -514,13 +514,13 @@
           <div class="jo-spatial"><canvas id="jo-sphere" class="jo-sphere" role="img" aria-label="A global visual sample of embeddings coloured by land cover in a shared three-dimensional projection; drag to rotate."></canvas></div>
           <div class="jo-legend" id="jo-outcome-legend" aria-label="Colour legend"></div>
           <div class="jo-view-meta"><span class="jo-small" id="jo-model-state">Equal priorities · trained model</span><div class="jo-rotation"><button type="button" id="jo-left" aria-label="Rotate sphere left">←</button><span class="jo-small">Rotate</span><button type="button" id="jo-right" aria-label="Rotate sphere right">→</button></div></div>
-          <div class="jo-small" style="margin-top:8px">Colours stay fixed as embeddings move · every eligible city retained in the visual layer</div>
+          <div class="jo-small" style="margin-top:8px">Colours stay fixed as the embeddings move · every eligible city is shown</div>
         </section>
       </div>
-      <div class="jo-scores-head"><div><div class="jo-section-title">How well does it predict?</div><span class="jo-small" id="jo-score-note">Exact three-seed ensemble score · lower is better · original AlphaEarth is the reference</span></div><select id="jo-scope" aria-label="Score weighting"><option value="pixel">Pixel-weighted</option><option value="country">Country-weighted</option></select></div>
+      <div class="jo-scores-head"><div><div class="jo-section-title">How well does it predict?</div><span class="jo-small" id="jo-score-note">Score after combining three training runs · lower is better · original AlphaEarth is the reference</span></div><select id="jo-scope" aria-label="Score weighting"><option value="pixel">Pixel-weighted</option><option value="country">Country-weighted</option></select></div>
       <div class="jo-score-grid" id="jo-scores" aria-live="polite"></div>
-      <div class="jo-footer"><span>● Three-seed ensemble &nbsp; ┆ Original</span><span id="jo-support"></span></div>
-      <details><summary>About this experiment</summary><div class="jo-method"><p>A country-weighted 64 → 128 → 64 residual adapter nudges existing AlphaEarth embeddings toward three weighted goals. One architecture and a fixed 24-epoch horizon were selected by three-fold country-held-out validation, then held constant across the surface. It does not retrain AlphaEarth or impose a geometry-preservation penalty.</p><p>The regular 66-model lattice and exact equal-priority fit define the base surface. Two explicitly post-audit, 5%-spaced knots refine the nonlinear edge near pure building volume. Between anchors, the browser blends neighbouring three-seed mean representations before the fixed projection. Twelve separately trained off-grid fits audit the refined interpolation: all 12 were within 5% of their trained objective, with mean cosine similarity 0.995. Scores between the 79 evaluated settings are labelled estimates.</p><p>The sphere is a visual-only common-support layer: 15,970 deterministic rows retain all 998 eligible cities, 162 countries and 998 city-years from 501,969 rows with all three observed, non-water outcomes. It is not the analytical sample. Score cards use every target-valid held-out row: 216,504 NDVI pixels, 138,473 volume pixels and 1,036,656 non-water land-cover pixels. Land cover begins with 3,982,891 rows; 224,503 permanent-water rows are excluded, leaving 3,758,388. Colours show observations and never model predictions.</p><p>The sphere is one fixed three-dimensional projection of the 64-dimensional ensemble means. Visible separation is not the prediction score. The original test countries were excluded from every v3 fit and selection step, but they had already been inspected during v2, so these results are confirmatory rather than a new sealed evaluation. Any best point is descriptive, not a test-selected recommendation.</p><p><a href="JOINT_ADAPTER_DATA.md">Data, samples and limits</a></p></div></details>
+      <div class="jo-footer"><span>● Adapted &nbsp; ┆ Original</span><span id="jo-support"></span></div>
+      <details><summary>About this experiment</summary><div class="jo-method"><p>A small network takes each 64-dimensional AlphaEarth embedding, passes it through a hidden layer of 128 units and adds a correction to the original, pulling the embedding toward three goals in chosen proportions. Every country carries equal weight in training. The network design and a fixed training length of 24 epochs were chosen by validation on held-out countries in three folds, then kept the same for every setting. AlphaEarth itself is never retrained, and nothing penalises the adapter for changing the geometry.</p><p>Models were trained at 66 evenly spaced weightings across the triangle and at equal weights. Two more were added afterwards near the building-volume corner, 5% apart, where the surface bends sharply. Each setting is trained three times with different random seeds and the three embeddings are averaged. Between trained settings the browser blends the nearest averaged embeddings before projecting them. Twelve further models, trained at positions between the grid, check those blends: every blended embedding scores within 5% of the separately trained model on its own objective, with a mean cosine similarity of 0.995 between the two. Scores shown between the 79 scored settings are labelled as estimates.</p><p>The sphere shows a fixed sample of 15,970 pixels, drawn from the 501,969 non-water pixels that carry all three measurements, and keeps every one of the 998 eligible cities in 162 countries. It is for display only. The score cards use every held-out pixel with a valid target: 216,504 for vegetation, 138,473 for building volume and 1,036,656 for land cover. Land cover starts from 3,982,891 pixels, of which 224,503 are permanent water and excluded, leaving 3,758,388. Colours show measurements, never model predictions.</p><p>The sphere is one fixed three-dimensional projection of the averaged 64-dimensional embeddings. Separation on screen is not the prediction score. The test countries were excluded from every fit and selection step in this round, but an earlier round of the experiment had already looked at them, so these results confirm that round rather than provide a fresh sealed test. The best point on the surface describes the surface; it is not a recommendation chosen on test data.</p><p><a href="JOINT_ADAPTER_DATA.md">Data, samples and limits</a></p></div></details>
     </div>
   </section>
 

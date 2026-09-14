@@ -51,11 +51,11 @@ async function settle(){for(let i=0;i<800;i++){await pause(10);if(!pending&&!tim
 const get=id=>ids.get(id),preset=id=>all.find(element=>element.dataset.preset===id),canvas=get('jo-sphere').getContext('2d');
 await settle();assert.equal(get('jo-setting').options.length,82);assert.equal(canvas.points,15970);assert.match(get('jo-status').textContent,/998 cities · 162 countries/);
 const initialGeometry=canvas.geometry,initialColors=canvas.colors;
-get('jo-setting').value='refine_volume_ndvi_05';get('jo-setting').emit('change');await settle();assert.match(get('jo-model-state').textContent,/post-audit display refinement/);assert.match(get('jo-score-note').textContent,/Barycentric score estimate/);
-preset('center').emit('click');await settle();assert.match(get('jo-score-note').textContent,/Exact three-seed ensemble score/);
+get('jo-setting').value='refine_volume_ndvi_05';get('jo-setting').emit('change');await settle();assert.match(get('jo-model-state').textContent,/post-audit display refinement/);assert.match(get('jo-score-note').textContent,/Estimated score between trained settings/);
+preset('center').emit('click');await settle();assert.match(get('jo-score-note').textContent,/Score after combining three training runs/);
 get('jo-color').emit('change',{target:{value:'ndvi'}});await settle();assert.equal(canvas.geometry,initialGeometry);assert.notEqual(canvas.colors,initialColors);
 get('jo-color').emit('change',{target:{value:'landcover'}});await settle();
-preset('g00_00').emit('click');await settle();assert.notEqual(canvas.geometry,initialGeometry);assert.match(get('jo-model-state').textContent,/100%/);assert.match(get('jo-score-note').textContent,/Exact three-seed ensemble score/);
+preset('g00_00').emit('click');await settle();assert.notEqual(canvas.geometry,initialGeometry);assert.match(get('jo-model-state').textContent,/100%/);assert.match(get('jo-score-note').textContent,/Score after combining three training runs/);
 get('jo-original').emit('click');await settle();assert.equal(get('jo-view-title').textContent,'Original AlphaEarth');
 get('jo-original').emit('click');await settle();assert.match(get('jo-model-state').textContent,/100%/);
 get('jo-scope').emit('change',{target:{value:'country'}});assert.match(get('jo-support').textContent,/Country-weighted · confirmatory held-out countries/);
@@ -63,7 +63,7 @@ get('jo-right').emit('click');await settle();const rotated=canvas.geometry;get('
 preset('center').emit('click');preset('g00_00').emit('click');preset('center').emit('click');await settle();assert.match(get('jo-model-state').textContent,/Equal priorities/);
 loader.clearCache();failed=true;preset('g00_00').emit('click');await settle();assert.equal(get('jo-retry').hidden,false);assert.match(get('jo-status').textContent,/previous result remains/);get('jo-retry').emit('click');await settle();assert.equal(get('jo-retry').hidden,true);
 const triangle=get('jo-triangle');triangle.emit('pointerdown',{pointerId:1,clientX:150,clientY:30/330*340});triangle.emit('pointerup',{pointerId:1});await settle();assert.equal(get('jo-w0').textContent,'100%');
-triangle.emit('pointerdown',{pointerId:2,clientX:173,clientY:175});triangle.emit('pointerup',{pointerId:2});await settle();assert.match(get('jo-model-state').textContent,/representation blend/);assert.match(get('jo-score-note').textContent,/Barycentric score estimate/);
+triangle.emit('pointerdown',{pointerId:2,clientX:173,clientY:175});triangle.emit('pointerup',{pointerId:2});await settle();assert.match(get('jo-model-state').textContent,/representation blend/);assert.match(get('jo-score-note').textContent,/Estimated score between trained settings/);
 assert(canvas.completedFrames>5,'Geometry changes should animate across multiple frames');
 assert.deepEqual(errors,[]);
 const report={passed:true,sourceRun:'joint_adapter_v2_20260909/robust_v3',all81FitsAccessible:true,postAuditRefinementsAccessible:true,globalVisualSampleRendered:true,visualSamplePoints:canvas.points,allEligibleCitiesRetained:true,colorsLeaveGeometryFixed:true,cityRasterBoxesRemoved:!ids.has('jo-map0')&&!ids.has('jo-map1'),baselineReturn:true,pixelAndCountryWeighting:true,keyboardRotation:true,rapidSelectionAndRetry:true,continuousTrianglePreview:true,multiFrameGeometryTween:true,errors:0};
