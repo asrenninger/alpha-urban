@@ -216,6 +216,7 @@
     "validation/validate_joint_adapter.mjs",
     "validation/validate_joint_interface.mjs",
     "validation/validation_result.json",
-    "validation/verify_publish_scope.py"
+    "validation/verify_publish_scope.py",
+    "paper/alpha-urban.pdf"
   ]
 }
