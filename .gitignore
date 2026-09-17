@@ -6,10 +6,16 @@
 
 # Permit traversal only into publication directories.
 !/.githooks/
+!/dataset/
 !/docs/
 !/paper/
 !/releases/
 !/validation/
+!/dataset/city_year/
+!/dataset/placebo/
+!/dataset/reference/
+!/dataset/scripts/
+!/dataset/sentinel1b/
 !/docs/assets/
 !/docs/data/
 !/docs/assets/fonts/
@@ -23,6 +29,27 @@
 !/.githooks/pre-push
 !/.gitignore
 !/README.md
+!/dataset/MANIFEST.json
+!/dataset/README.md
+!/dataset/cities.csv
+!/dataset/cities.parquet
+!/dataset/city_year/covariates_2017_2024.parquet
+!/dataset/city_year/spherical_2017.parquet
+!/dataset/city_year/spherical_2018.parquet
+!/dataset/city_year/spherical_2019.parquet
+!/dataset/city_year/spherical_2020.parquet
+!/dataset/city_year/spherical_2021.parquet
+!/dataset/city_year/spherical_2022.parquet
+!/dataset/city_year/spherical_2023.parquet
+!/dataset/city_year/spherical_2024.parquet
+!/dataset/placebo/covariates_native_pseudo_2024.parquet
+!/dataset/placebo/spherical_native_pseudo_2024.parquet
+!/dataset/reference/global_land_2024_context.parquet
+!/dataset/reference/global_land_2024_embeddings.parquet
+!/dataset/scripts/build_dataset.py
+!/dataset/scripts/load_example.py
+!/dataset/sentinel1b/city_support_points_730.parquet
+!/dataset/sentinel1b/paired_global_sample_n4800.parquet
 !/docs/.nojekyll
 !/docs/COMPARISON_DATA.md
 !/docs/DISPERSION_DATA.md

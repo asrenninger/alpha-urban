@@ -1,0 +1,314 @@
+{
+  "schema": "alphaurban-dataset/1",
+  "built": "2026-09-15T14:35:07Z",
+  "built_by": "dataset/scripts/build_dataset.py",
+  "attribution": "The AlphaEarth Foundations Satellite Embedding dataset is produced by Google and Google DeepMind.",
+  "licence": "CC-BY 4.0",
+  "join_key": "system_index",
+  "tree": {
+    "dataset/cities.parquet": {
+      "rows": 1000,
+      "columns": 50,
+      "bytes": 105596,
+      "sha256": "b82daf23dda10b1a7a4d3c06edc0667f128eda90a0aaced65e0fe940b8231be9",
+      "note": "One row per city: sampling design, inclusion probabilities and design weights, GHS-FUA identity, country, continent, climate, HDI tertile, centroid, area.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/city_catalog_1000.csv",
+        "sha256": "6995ccc1cfe1789d36658745e4c15ffadf7931db249ce4f3bcf1f01c91620ba1"
+      }
+    },
+    "dataset/cities.csv": {
+      "rows": 1000,
+      "columns": 50,
+      "bytes": 395275,
+      "sha256": "6995ccc1cfe1789d36658745e4c15ffadf7931db249ce4f3bcf1f01c91620ba1",
+      "note": "Same table as cities.parquet, as plain CSV.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/city_catalog_1000.csv",
+        "sha256": "6995ccc1cfe1789d36658745e4c15ffadf7931db249ce4f3bcf1f01c91620ba1"
+      }
+    },
+    "dataset/city_year/spherical_2017.parquet": {
+      "rows": 13000,
+      "columns": 264,
+      "bytes": 10043907,
+      "sha256": "715e4b205a7a9395c841340d6f6ff24ae67d79db370201431ba3aa9f2829efbc",
+      "note": "Spherical summary of the embedding within each city and support: N, mean resultant length Rbar, mean direction mu_A00..mu_A63, per-axis mean and standard deviation, tangent variance. 13 supports per city.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/spherical/atlas_v2_spherical_1000_2017.csv.gz",
+        "sha256": "dd04eb1775e8d42c9a03ea0ec2698d874201ae675832cd6bb473ae026848ea89"
+      }
+    },
+    "dataset/city_year/spherical_2018.parquet": {
+      "rows": 13000,
+      "columns": 264,
+      "bytes": 10039136,
+      "sha256": "e5081bc1609b481f3da8450509e6e1430bed8c4514d34edb261df966b8513639",
+      "note": "Spherical summary of the embedding within each city and support: N, mean resultant length Rbar, mean direction mu_A00..mu_A63, per-axis mean and standard deviation, tangent variance. 13 supports per city.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/spherical/atlas_v2_spherical_1000_2018.csv.gz",
+        "sha256": "d1e2c074803c6935836caf43b347c79337b2da75774e5bb07a9897b05c08ae02"
+      }
+    },
+    "dataset/city_year/spherical_2019.parquet": {
+      "rows": 13000,
+      "columns": 264,
+      "bytes": 10037409,
+      "sha256": "41f8139918a9fbd1adde0c05ee5058aacbce69d261212a5f4519ddd9c112d5e8",
+      "note": "Spherical summary of the embedding within each city and support: N, mean resultant length Rbar, mean direction mu_A00..mu_A63, per-axis mean and standard deviation, tangent variance. 13 supports per city.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/spherical/atlas_v2_spherical_1000_2019.csv.gz",
+        "sha256": "901cc7aecdbbf740bdfbde79b8ad5fa3817f1a4d7fd879481396622c87f1fe81"
+      }
+    },
+    "dataset/city_year/spherical_2020.parquet": {
+      "rows": 13000,
+      "columns": 264,
+      "bytes": 10040829,
+      "sha256": "99eee4614f467fc433cb8fc963940ca6e8eb3c9ac32e8993b397d3aafa0de9df",
+      "note": "Spherical summary of the embedding within each city and support: N, mean resultant length Rbar, mean direction mu_A00..mu_A63, per-axis mean and standard deviation, tangent variance. 13 supports per city.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/spherical/atlas_v2_spherical_1000_2020.csv.gz",
+        "sha256": "f6e86aa5d506b0437ccda69be11623d0b4c99829eebd0b51161574fa2f71463e"
+      }
+    },
+    "dataset/city_year/spherical_2021.parquet": {
+      "rows": 13000,
+      "columns": 264,
+      "bytes": 10035936,
+      "sha256": "e2c8f433948537d2a4b87043879685e4a3a3826b1b669d0034aa9bd54578b1b9",
+      "note": "Spherical summary of the embedding within each city and support: N, mean resultant length Rbar, mean direction mu_A00..mu_A63, per-axis mean and standard deviation, tangent variance. 13 supports per city.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/spherical/atlas_v2_spherical_1000_2021.csv.gz",
+        "sha256": "5171d4e504a3ea5595f7f0a4717ed19b9227c6c89e64c6322aec7ba2b4361598"
+      }
+    },
+    "dataset/city_year/spherical_2022.parquet": {
+      "rows": 13000,
+      "columns": 264,
+      "bytes": 10040113,
+      "sha256": "b4d7b6055f500d8f4f173902faff89bf2b7a5cce7542ee0d627d4aac3d0aa1e0",
+      "note": "Spherical summary of the embedding within each city and support: N, mean resultant length Rbar, mean direction mu_A00..mu_A63, per-axis mean and standard deviation, tangent variance. 13 supports per city.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/spherical/atlas_v2_spherical_1000_2022.csv.gz",
+        "sha256": "ec2cc833a33ed22b673c2d1c19c014e5318246b2ddbba93cfb7db7870417920a"
+      }
+    },
+    "dataset/city_year/spherical_2023.parquet": {
+      "rows": 13000,
+      "columns": 264,
+      "bytes": 10037302,
+      "sha256": "cd163b3480e0e26dc51b8289c57d6908318faccd149e8d2e95d26a1148205a19",
+      "note": "Spherical summary of the embedding within each city and support: N, mean resultant length Rbar, mean direction mu_A00..mu_A63, per-axis mean and standard deviation, tangent variance. 13 supports per city.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/spherical/atlas_v2_spherical_1000_2023.csv.gz",
+        "sha256": "31fece3f677a5e5fd1b070154c6485818c5dca62e84c38b10fdb13264e1f0aba"
+      }
+    },
+    "dataset/city_year/spherical_2024.parquet": {
+      "rows": 13000,
+      "columns": 264,
+      "bytes": 10040353,
+      "sha256": "583fa0311e87054a377639e14ceba329742f7c22be6e85df6bd27578f154f63d",
+      "note": "Spherical summary of the embedding within each city and support: N, mean resultant length Rbar, mean direction mu_A00..mu_A63, per-axis mean and standard deviation, tangent variance. 13 supports per city.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/spherical/atlas_v2_spherical_1000_2024.csv.gz",
+        "sha256": "f8c98dcdd7d1680ac4be673fb7e0d6eb17e7a856bd6d9332b75537c659c01d18"
+      }
+    },
+    "dataset/city_year/covariates_2017_2024.parquet": {
+      "rows": 88000,
+      "columns": 229,
+      "bytes": 25159498,
+      "sha256": "98359150f1529e47611efeb4b6052966c4069706ec2224bd82ba03d9f71a3f5d",
+      "note": "Aggregate covariates (mean, p10, p50, p90, sd; class fractions) within each city and support and year. 11 supports per city.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/covariates/atlas_v2_covariates_1000_2017_2024.csv.gz",
+        "sha256": "77d0cdf2d16cc70aa945a8a4dd8379a3b0d1e0a126f3ccdf811545c4e83e40bc"
+      }
+    },
+    "dataset/reference/global_land_2024_context.parquet": {
+      "rows": 247565,
+      "columns": 14,
+      "bytes": 3816383,
+      "sha256": "fbe7c95a5288829bceeeae7563baae8e7d8eed323e34cb6ef6f7529cfbee090b",
+      "note": "Global land reference, context: 247,565 equal-area-sampled land pixels for 2024 with coordinates, WorldCover, GHS-SMOD, climate and population. Join on pixel_id.",
+      "source": {
+        "path": "bakeoff_20260831/inputs/reference_land_2024/ae_global_2024_context_labels_land.npz",
+        "sha256": "92d5f8387dfaf87da63aace8e6bbd8baf7f0baf17baf97347d9a97f393313345"
+      },
+      "population_decile_cuts": [
+        0.20534135401248932,
+        0.9536591172218323,
+        2.598001718521118,
+        5.975771903991699,
+        12.600290298461914,
+        26.759193420410156,
+        61.07085418701172,
+        148.99185180664062,
+        440.09033203125
+      ]
+    },
+    "dataset/reference/global_land_2024_embeddings.parquet": {
+      "rows": 247565,
+      "columns": 65,
+      "bytes": 51347871,
+      "sha256": "164db81022211cd1eb1dde46c62a889f7e58c0f5056536368e80ce66666ca5ce",
+      "note": "Global land reference, embeddings: unit-norm AlphaEarth vectors A00..A63 (float32) for the same 247,565 pixels, in the same row order. Join on pixel_id.",
+      "source": {
+        "path": "bakeoff_20260831/inputs/reference_land_2024/ae_global_2024_mass_land.npz",
+        "sha256": "1c1078514468493632ec288ec4773a155ba1b58bf92a290fe1dc0169c394c0e1"
+      }
+    },
+    "dataset/sentinel1b/paired_global_sample_n4800.parquet": {
+      "rows": 4629,
+      "columns": 413,
+      "bytes": 5458387,
+      "sha256": "57e859e6d47f6887af320ce638b709d0524bb3b17b8f2346b3fbae5947651af0",
+      "note": "Global paired sample used for the Sentinel-1B outage test.",
+      "source": {
+        "path": "data/derived/sentinel1b_outage/paired_global_sample_n4800_seed20211223.csv.gz",
+        "sha256": "f1b555510b4fedaea36fbe28ab37ba1dc80246cd1e80182695249a1e6f8736b2"
+      }
+    },
+    "dataset/sentinel1b/city_support_points_730.parquet": {
+      "rows": 17923,
+      "columns": 16,
+      "bytes": 196210,
+      "sha256": "fd2ed61592bfd11630d62936f1a30be1d5404ceb68f7bfc632b1bafc8b165adb",
+      "note": "Sentinel-1 support points per city (730-city cohort, 8 per city).",
+      "source": {
+        "path": "data/derived/sentinel1b_city_support/s1_city_support_points_730_n8_seed20211223.csv.gz",
+        "sha256": "0079d0050d2e331c059bfef7f1c0bcb037e4e4b0c24f0f7dfd0b5149258d3c08"
+      }
+    },
+    "dataset/placebo/spherical_native_pseudo_2024.parquet": {
+      "rows": 1836,
+      "columns": 323,
+      "bytes": 3234347,
+      "sha256": "849a71cdb5ef652c146b0bb6bb5877f0d42dd1b11b77fab73362132c9fb7ce1d",
+      "note": "Placebo city summaries, native and pseudo placements, 2024.",
+      "source": {
+        "path": "data/derived/placebo_cities_canonical_v1_exports/pcb_canonical_v1_spherical_native_pseudo_2024.csv",
+        "sha256": "276afd3388ca3d03f36bfb243dec231df3d0a41661168ec4cddf47fcc5538fd9"
+      }
+    },
+    "dataset/placebo/covariates_native_pseudo_2024.parquet": {
+      "rows": 1620,
+      "columns": 227,
+      "bytes": 643827,
+      "sha256": "bad02df87c79111f68f1e2ebae29fad7f8f25759754a3ee30a7038613b02791d",
+      "note": "Placebo city summaries, native and pseudo placements, 2024.",
+      "source": {
+        "path": "data/derived/placebo_cities_canonical_v1_exports/pcb_canonical_v1_covariates_native_pseudo_2024.csv",
+        "sha256": "48e53ebe1a9039e847406076f5bf810f07dd9cd0b6da906a8b854586380e06ce"
+      }
+    }
+  },
+  "release_assets": {
+    "placebo_samples_native_2024.parquet": {
+      "rows": 12416,
+      "columns": 203,
+      "bytes": 3773963,
+      "sha256": "d86da21dd967b2e75d3519fe3d291ca046d6cb70ea2491e6d0605f90189abe84",
+      "note": "Placebo city pixel samples, native placement, 2024. Concatenated from 4 rank-chunk exports."
+    },
+    "placebo_samples_pseudo_2024.parquet": {
+      "rows": 92000,
+      "columns": 203,
+      "bytes": 24978269,
+      "sha256": "3db9a5c29eca63c0081dd49bda3d13f26b28e752a37d0c8d5d161c1092c1224d",
+      "note": "Placebo city pixel samples, pseudo placement, 2024. Concatenated from 5 rank-chunk exports."
+    },
+    "pixels_2017.parquet": {
+      "rows": 840776,
+      "columns": 140,
+      "bytes": 231762450,
+      "sha256": "921aae0bb3d805cc2f7c3c0e3ac4851fe4ec1445d52de52801b4a44d5b48c820",
+      "note": "Pixel samples: up to 250 per city per degree-of-urbanisation support. A00..A63 are the unit-norm AlphaEarth embedding (float32); the remaining columns are pixel covariates with valid_* flags.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/samples/atlas_v2_samples_1000_2017.csv.gz",
+        "sha256": "09380643328746c52aba824384277507cdc8fc1f6278ab140a7bed7815846354"
+      }
+    },
+    "pixels_2018.parquet": {
+      "rows": 840776,
+      "columns": 140,
+      "bytes": 235504804,
+      "sha256": "79330c60967833c15be8998781e084679c4ffb47b16bd623ac85244e54f43abf",
+      "note": "Pixel samples: up to 250 per city per degree-of-urbanisation support. A00..A63 are the unit-norm AlphaEarth embedding (float32); the remaining columns are pixel covariates with valid_* flags.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/samples/atlas_v2_samples_1000_2018.csv.gz",
+        "sha256": "5248097b6418add11334578448f97f772768c4a035ce574462d9b615a343250c"
+      }
+    },
+    "pixels_2019.parquet": {
+      "rows": 840776,
+      "columns": 140,
+      "bytes": 235681571,
+      "sha256": "4430e49c0e4ef07225b1b19dc19a4568f80dad0f5760296184ff918dd84e4a75",
+      "note": "Pixel samples: up to 250 per city per degree-of-urbanisation support. A00..A63 are the unit-norm AlphaEarth embedding (float32); the remaining columns are pixel covariates with valid_* flags.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/samples/atlas_v2_samples_1000_2019.csv.gz",
+        "sha256": "b7e719c46e1dd9fbeee169c105c5e1a42d8743e46fa6658583293f0a1056ea5f"
+      }
+    },
+    "pixels_2020.parquet": {
+      "rows": 840776,
+      "columns": 140,
+      "bytes": 235678252,
+      "sha256": "0183d99691f9a9fd1270e2a869238cc5d90189bc362aa8b97e4204059341c388",
+      "note": "Pixel samples: up to 250 per city per degree-of-urbanisation support. A00..A63 are the unit-norm AlphaEarth embedding (float32); the remaining columns are pixel covariates with valid_* flags.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/samples/atlas_v2_samples_1000_2020.csv.gz",
+        "sha256": "f0ff36c9d2aab23c34dadca611c7759e2c15b06c13e971ac84a373dea9a2a664"
+      }
+    },
+    "pixels_2021.parquet": {
+      "rows": 840776,
+      "columns": 140,
+      "bytes": 235798518,
+      "sha256": "d48ae0266bdedbf639352394e3f64f5fe59a27337573feac681107504968ebea",
+      "note": "Pixel samples: up to 250 per city per degree-of-urbanisation support. A00..A63 are the unit-norm AlphaEarth embedding (float32); the remaining columns are pixel covariates with valid_* flags.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/samples/atlas_v2_samples_1000_2021.csv.gz",
+        "sha256": "c062c1b4d0336c01ecb29db5f357765c5b83fa6dfc948ddccbc6712e3d22097a"
+      }
+    },
+    "pixels_2022.parquet": {
+      "rows": 840776,
+      "columns": 140,
+      "bytes": 235236621,
+      "sha256": "7c61e0b7cd6dc1878873bfeac2a9910e170858707ca9cf3f46bbe14225efd3f8",
+      "note": "Pixel samples: up to 250 per city per degree-of-urbanisation support. A00..A63 are the unit-norm AlphaEarth embedding (float32); the remaining columns are pixel covariates with valid_* flags.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/samples/atlas_v2_samples_1000_2022.csv.gz",
+        "sha256": "991c840c387b0b28fdcbd812378e342fde2d67f5f5aeb752d33eac3b3506bb2b"
+      }
+    },
+    "pixels_2023.parquet": {
+      "rows": 840776,
+      "columns": 140,
+      "bytes": 235317875,
+      "sha256": "17274eb1bb7cbed19eb0304313b88d691ad2776e2b50e7fa64c2855cfd11a5a9",
+      "note": "Pixel samples: up to 250 per city per degree-of-urbanisation support. A00..A63 are the unit-norm AlphaEarth embedding (float32); the remaining columns are pixel covariates with valid_* flags.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/samples/atlas_v2_samples_1000_2023.csv.gz",
+        "sha256": "bcdae9fb5ddc746808203ab02cf11b094306778e3c4c43741e5b65a629f77ddf"
+      }
+    },
+    "pixels_2024.parquet": {
+      "rows": 840776,
+      "columns": 140,
+      "bytes": 235361891,
+      "sha256": "6363b217cc2ce3d1ef8cee22dcbce97d6a800081100e7e00e19c0bc7a6a1cc28",
+      "note": "Pixel samples: up to 250 per city per degree-of-urbanisation support. A00..A63 are the unit-norm AlphaEarth embedding (float32); the remaining columns are pixel covariates with valid_* flags.",
+      "source": {
+        "path": "data/atlas_v2_integrated_1000/samples/atlas_v2_samples_1000_2024.csv.gz",
+        "sha256": "bbf3d5a1212cbda73f9d8a4d289e00ecb9727fe50ef1d5d5df47bcc562e8e06f"
+      }
+    }
+  },
+  "tree_bytes": 170672379,
+  "release_asset_bytes": 1909094214
+}
