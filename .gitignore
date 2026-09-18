@@ -8,6 +8,7 @@
 !/.githooks/
 !/dataset/
 !/docs/
+!/earthengine/
 !/paper/
 !/releases/
 !/validation/
@@ -226,6 +227,7 @@
 !/docs/data/world_kde_manifest.json
 !/docs/data/world_kde_rear.png
 !/docs/dispersion-story.mjs
+!/docs/earth-engine-finale.js
 !/docs/favicon.ico
 !/docs/favicon.png
 !/docs/index.html
@@ -235,6 +237,10 @@
 !/docs/joint-adapter.js
 !/docs/split-half-view.mjs
 !/docs/styles.css
+!/earthengine/README.md
+!/earthengine/alphaurban_explorer.js
+!/earthengine/export_city_catalog.py
+!/earthengine/validate_explorer.py
 !/paper/alpha-urban.pdf
 !/releases/2026-09-08-comparison-statistics.json
 !/releases/2026-09-08-eight-cities.json
